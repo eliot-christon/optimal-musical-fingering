@@ -3,7 +3,7 @@ __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 import mido
-from MidiTrack import MidiTrack
+from .MidiTrack import MidiTrack
 
 # inherit the origin mido class
 class MidiObject(mido.MidiFile):
@@ -24,7 +24,7 @@ class MidiObject(mido.MidiFile):
         return super().__repr__()
 
 if __name__ == "__main__":
-    # Load the midi file
+    # Load the midi file    
     midi_file = MidiObject('src/midi/AUD_NK0155.mid')
     print("Midi file loaded")
     for i, track in enumerate(midi_file.better_tracks):

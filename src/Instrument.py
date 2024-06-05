@@ -3,7 +3,7 @@ __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 from typing import Tuple, Dict
-from utils.note2num import note2num
+from .utils.note2num import note2num
 
 class Instrument:
     """Class representing an instrument"""

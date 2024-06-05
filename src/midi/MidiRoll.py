@@ -13,6 +13,8 @@ class MidiRoll:
 
     def __init__(self):
         self.notes = np.array([], dtype="bool")
+        self.lowest_note = 0
+        self.highest_note = 127
 
     @classmethod
     def from_channel_events(cls, channel_events: List[mido.messages.Message]):
@@ -29,6 +31,8 @@ class MidiRoll:
                 time_total += event.time
 
         roll.notes = np.zeros((note_max - note_min + 1, time_total), dtype="int8")
+        roll.lowest_note = note_min
+        roll.highest_note = note_max
 
         time = 0
         old_time_step = 0
@@ -59,6 +63,8 @@ class MidiRoll:
     def display(self, title:str=""):
         """Display the midi roll"""
         plt.matshow(self.notes, aspect='auto', cmap='Grays')
+        # y labels
+        plt.yticks(np.arange(self.highest_note - self.lowest_note + 1), np.arange(self.lowest_note, self.highest_note + 1))
         # invert y axis
         plt.gca().invert_yaxis()
         plt.title(title, fontsize=15)
@@ -82,12 +88,13 @@ if __name__ == "__main__":
         return MidiRoll.from_channel_events(notes)
 
     def roll_2(track_number=4):
-        from MidiObject import MidiObject
+        from .MidiObject import MidiObject
         midi_file = MidiObject('src/midi/AUD_NK0155.mid')
         # pretty print messages
         dict_channels = midi_file.better_tracks[track_number].channels
         channel_number = list(dict_channels.keys())[0]
         channel_events = dict_channels[channel_number]
+        print("Channel events:", channel_events)
         return MidiRoll.from_channel_events(channel_events)
 
     roll = roll_2(4)

@@ -5,7 +5,7 @@ __github__ = "eliot-christon"
 import mido
 import matplotlib.pyplot as plt
 
-from MidiRoll import MidiRoll
+from .MidiRoll import MidiRoll
 
 # inherit the origin mido class
 class MidiTrack(mido.MidiTrack):
@@ -53,7 +53,7 @@ class MidiTrack(mido.MidiTrack):
     
 if __name__ == "__main__":
     # Load the midi file
-    midi_file = mido.MidiFile('src/midi/AUD_NK0155.mid')
+    midi_file = mido.MidiFile('AUD_NK0155.mid')
     track_num = 6
     track = MidiTrack(midi_file.tracks[track_num])
     
