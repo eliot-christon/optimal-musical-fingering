@@ -6,7 +6,7 @@ from typing import List
 import numpy as np
 import mido
 
-class Roll:
+class MidiRoll:
     """Class reprensenting a midi roll for one channel.
     A midi roll is a matrix where the rows are the notes and the columns are the time steps."""
 
@@ -70,18 +70,18 @@ if __name__ == "__main__":
                 mido.Message('note_on', note=65, time=300),
                 mido.Message('note_off', note=65, time=100)]
         
-        return Roll.from_channel_events(notes)
+        return MidiRoll.from_channel_events(notes)
 
     def roll_2(track_number=4):
-        from MyMidiObject import MyMidiObject
-        midi_file = MyMidiObject('src/AUD_NK0155.mid')
+        from MidiObject import MidiObject
+        midi_file = MidiObject('src/AUD_NK0155.mid')
         # pretty print messages
         dict_channels = midi_file.tracks_channels[track_number]
         channel_number = list(dict_channels.keys())[0]
         channel_events = dict_channels[channel_number]
         for msg in channel_events:
             print(msg)
-        return Roll.from_channel_events(channel_events)
+        return MidiRoll.from_channel_events(channel_events)
 
     roll = roll_2(4)
 

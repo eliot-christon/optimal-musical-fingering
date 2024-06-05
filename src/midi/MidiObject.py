@@ -5,7 +5,7 @@ __github__ = "eliot-christon"
 import mido
 
 # inherit the origin mido class
-class MyMidiObject(mido.MidiFile):
+class MidiObject(mido.MidiFile):
     """Custom class to handle midi files.
     New methods to plot the midi roll and extract only the notes"""
 
@@ -47,7 +47,7 @@ class MyMidiObject(mido.MidiFile):
 
 if __name__ == "__main__":
     # Load the midi file
-    midi_file = MyMidiObject('src/AUD_NK0155.mid')
+    midi_file = MidiObject('src/AUD_NK0155.mid')
     print("Midi file loaded")
     for i, track in enumerate(midi_file.tracks):
         print('\nTrack {}: {}'.format(i, track.name))
