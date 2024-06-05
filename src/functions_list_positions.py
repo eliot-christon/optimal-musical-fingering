@@ -54,7 +54,10 @@ if __name__ == "__main__":
     
     positions = get_positions_from_midiroll(roll)
 
-    for pos in positions:
-        print(pos, "cost:", piano.position_cost(pos))
+    for i in range(len(positions)-1):
+        pos = positions[i]
+        next_pos = positions[i+1]
+        print(pos, "cost:", piano.position_cost(pos), "transition cost:", piano.transition_cost(pos, next_pos))
+    print(positions[-1], "cost:", piano.position_cost(positions[-1]))
     
     print("Total cost:", positions_cost(positions, piano))
