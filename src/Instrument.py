@@ -35,9 +35,6 @@ class Instrument:
                 return False
         return True
 
-    def __hash__(self) -> int:
-        return hash(self.name)
-
 
 
 
