@@ -11,7 +11,6 @@ class MidiObject(mido.MidiFile):
     New methods to plot the midi roll and extract only the notes"""
 
     def __init__(self, path:str, max_channels:int=16):
-        """Constructor"""
         mido.MidiFile.__init__(self, path)
         self.max_channels = max_channels
         self.types = {"notes": ["note_on", "note_off"],

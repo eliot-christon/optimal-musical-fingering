@@ -9,10 +9,10 @@ from utils.note2num import note2num
 class Position:
     """Class representing a position on an instrument"""
 
-    def __init__(self, notes:List[int], fingers:List[int]):
-        """Constructor"""
+    def __init__(self, notes:List[int], fingers:List[int], id:int=None):
         self.notes = notes
         self.fingers = fingers
+        self.id = id
 
     @classmethod
     def from_str_notes(cls, notes:List[str], fingers:List[int]):
@@ -20,7 +20,10 @@ class Position:
         return cls([note2num(note) for note in notes], fingers)
     
     def __str__(self) -> str:
-        return f"Notes: {self.notes}, Fingers: {self.fingers}"
+        return f"Notes: {self.notes}, Fingers: {self.fingers}, ID: {self.id}"
+    
+    def __repr__(self) -> str:
+        return f"Position({self.notes}, {self.fingers}, {self.id})"
 
     def __len__(self) -> int:
         return len(self.notes)

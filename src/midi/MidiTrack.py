@@ -12,7 +12,6 @@ class MidiTrack(mido.MidiTrack):
     """Custom class to handle midi tracks."""
 
     def __init__(self, track:mido.MidiTrack):
-        """Constructor"""
         mido.MidiTrack.__init__(self, track)
         self.notes = []
         self.changes = []

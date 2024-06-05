@@ -12,7 +12,6 @@ class MidiRoll:
     A midi roll is a matrix where the rows are the notes and the columns are the time steps."""
 
     def __init__(self):
-        """Constructor"""
         self.notes = np.array([], dtype="bool")
 
     @classmethod
