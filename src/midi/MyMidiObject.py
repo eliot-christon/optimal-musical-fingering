@@ -16,7 +16,6 @@ class MyMidiObject(mido.MidiFile):
         self.types = {"notes": ["note_on", "note_off"],
                       "changes": ["program_change", "control_change"]}
         self.__divide_tracks()
-        self.__divide_channels()
     
     def __divide_tracks(self):
         """Divide the tracks in 3 categories: meta data, notes and changes"""
@@ -24,6 +23,7 @@ class MyMidiObject(mido.MidiFile):
         self.tracks_meta_data = [[] for _ in range(len(self.tracks))]
         self.tracks_notes     = [[] for _ in range(len(self.tracks))]
         self.tracks_changes   = [[] for _ in range(len(self.tracks))]
+        self.tracks_channels  = [dict() for _ in range(len(self.tracks))]
 
         for i, track in enumerate(self.tracks):
             for msg in track:
@@ -33,19 +33,11 @@ class MyMidiObject(mido.MidiFile):
                     self.tracks_changes[i].append(msg)
                 else:
                     self.tracks_meta_data[i].append(msg)
-    
-    def __divide_channels(self):
-        """Divide all the info by channel"""
 
-        self.channels_events = [[] for _ in range(self.max_channels)]
-
-        for track in self.tracks:
-            for msg in track:
                 if "channel" in msg.dict() and msg.channel < self.max_channels:
-                    channel = msg.channel
-                    self.channels_events[channel].append(msg)
-                else:
-                    continue
+                    if msg.channel not in self.tracks_channels[i]:
+                        self.tracks_channels[i][msg.channel] = []
+                    self.tracks_channels[i][msg.channel].append(msg)
 
     def __str__(self) -> str:
         return super().__str__()
@@ -62,6 +54,7 @@ if __name__ == "__main__":
         print("  notes     :", len(midi_file.tracks_notes[i]))
         print("  changes   :", len(midi_file.tracks_changes[i]))
         print("  meta data :", len(midi_file.tracks_meta_data[i]))
+        print("  channels  :", ', '.join([str(k) for k in midi_file.tracks_channels[i].keys()]))
 
     print(type(midi_file.tracks_notes[-2][0]))
     print(midi_file.tracks_notes[-2][0])

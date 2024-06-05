@@ -166,7 +166,7 @@ class MidiFile(mido.MidiFile):
                 pass
         return array
 
-    def draw_roll(self):
+    def draw_roll(self, channels=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]):
 
 
         roll = self.get_roll()
@@ -208,20 +208,20 @@ class MidiFile(mido.MidiFile):
 
 
         # draw piano roll and stack image on a1
-        for i in range(channel_nb):
+        for i in channels:
             try:
                 a1.imshow(roll[i], origin="lower", interpolation='nearest', cmap=cmaps[i], aspect='auto')
             except IndexError:
                 pass
 
-        # draw color bar
+            # draw color bar
 
-        colors = [mpl.colors.hsv_to_rgb((i / channel_nb, 1, 1)) for i in range(channel_nb)]
-        cmap = mpl.colors.LinearSegmentedColormap.from_list('my_cmap', colors, 16)
-        a2 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
-        cbar = mpl.colorbar.ColorbarBase(a2, cmap=cmap,
-                                        orientation='horizontal',
-                                        ticks=list(range(16)))
+            colors = [mpl.colors.hsv_to_rgb((i / channel_nb, 1, 1)) for i in range(channel_nb)]
+            cmap = mpl.colors.LinearSegmentedColormap.from_list('my_cmap', colors, 16)
+            a2 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
+            cbar = mpl.colorbar.ColorbarBase(a2, cmap=cmap,
+                                            orientation='horizontal',
+                                            ticks=list(range(16)))
 
         # show piano roll
         plt.draw()
@@ -253,6 +253,6 @@ if __name__ == "__main__":
     roll = mid.get_roll()
 
     # draw piano roll by pyplot
-    mid.draw_roll()
+    mid.draw_roll(channels=[4])
 
 
