@@ -4,9 +4,12 @@ __github__ = "eliot-christon"
 
 from typing import List
 import numpy as np
+import mido
 
 from .Position import Position
+from .Instrument import Instrument
 from .midi.MidiRoll import MidiRoll
+from .midi.MidiTrack import MidiTrack
 
 def get_positions_from_midiroll(roll:MidiRoll) -> List[Position]:
     """Get the positions from a midi roll. the figers will be set naively from 0, the id will be set to the index of the position"""
@@ -21,10 +24,22 @@ def get_positions_from_midiroll(roll:MidiRoll) -> List[Position]:
         last_pos = positions[-1]
     
     return positions
-    
+
+def positions_cost(positions:List[Position], instrument:Instrument) -> float:
+    """Computes the cost of a list of positions"""
+    cost = 0
+    for i in range(len(positions)-1):
+        cost += instrument.position_cost(positions[i])
+        cost += instrument.transition_cost(positions[i], positions[i+1])
+    return cost + instrument.position_cost(positions[-1])
+
 
 
 if __name__ == "__main__":
+
+    from .IKeyboard import IKeyboard
+
+    piano = IKeyboard("piano")
     
     def roll_2(track_number=4):
         from .midi.MidiObject import MidiObject
@@ -40,4 +55,6 @@ if __name__ == "__main__":
     positions = get_positions_from_midiroll(roll)
 
     for pos in positions:
-        print(pos)
+        print(pos, "cost:", piano.position_cost(pos))
+    
+    print("Total cost:", positions_cost(positions, piano))
