@@ -11,9 +11,9 @@ class IKeyboard(Instrument):
     """Class representing a keyboard instrument"""
 
     def __init__(self, 
-                 name:str, 
-                 description:str, 
-                 range:Tuple[str, str], # (min, max), 0 is the lowest note (C0), 127 is the highest note (G10)
+                 name:str = "keyboard", 
+                 description:str = "A keyboard instrument", 
+                 range:Tuple[str, str] = ("A0", "B8"), # (min, max), 0 is the lowest note (C0), 127 is the highest note (G10)
                  fingers:Dict[int, str] = {0: "left pinky", 1: "left ring", 2: "left middle", 3: "left index", 4: "left thumb", 5: "right thumb", 6: "right index", 7: "right middle", 8: "right ring", 9: "right pinky"}):
         super().__init__(name, "keyboard", description, range, fingers)
 
@@ -71,7 +71,7 @@ class IKeyboard(Instrument):
                     if distance < 0:
                         cost += self.overlapping_penalty_factor
                 if distance > ok_distance:
-                    cost += abs(distance) - ok_distance
+                    cost += (abs(distance) - ok_distance)**2
         
         return cost + len(position)
     

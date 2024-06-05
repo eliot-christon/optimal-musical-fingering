@@ -3,7 +3,9 @@ __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 from typing import Tuple, Dict
+
 from .utils.note2num import note2num
+from .Position import Position
 
 class Instrument:
     """Class representing an instrument"""
@@ -34,6 +36,20 @@ class Instrument:
                 return False
         return True
 
+    def position_cost(self, position:Position) -> float:
+        """Computes the cost of a position.
+        In a keyboard instrument, the cost is for each hand
+            . 0 when two fingers are below the ok distance (non overlapping <=> non negative distance)
+            . the summed distance between the two fingers otherwise
+
+        Args:
+            position (Position): the position to evaluate
+        """
+        pass
+
+    def transition_cost(self, position_1:Position, position_2:Position) -> float:
+        """Computes the cost of a transition between two positions."""
+        pass
 
 
 
