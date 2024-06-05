@@ -31,12 +31,22 @@ class Roll:
         roll.notes = np.zeros((note_max - note_min + 1, time_total))
 
         time = 0
+        old_time_step = 0
         for event in channel_events:
+
+            if event.time == 0:
+                time -= old_time_step
+                new_time_step = old_time_step
+            else:
+                new_time_step = event.time
+
             if event.type == "note_on":
-                roll.notes[event.note - note_min, time:time + event.time] += 0
+                roll.notes[event.note - note_min, time:time + new_time_step] += 0
             elif event.type == "note_off":
-                roll.notes[event.note - note_min, time:time + event.time] -= 1
-            time += event.time
+                roll.notes[event.note - note_min, time:time + new_time_step] -= 1
+
+            old_time_step = new_time_step
+            time += new_time_step
             
         return roll
 
@@ -66,6 +76,9 @@ if __name__ == "__main__":
     def roll_2(channel_number=4):
         from MyMidiObject import MyMidiObject
         midi_file = MyMidiObject('src/AUD_NK0155.mid')
+        # pretty print messages$
+        for msg in midi_file.channels_events[channel_number]:
+            print(msg)
         return Roll.from_notes(midi_file.channels_events[channel_number])
 
     roll = roll_2(4)
