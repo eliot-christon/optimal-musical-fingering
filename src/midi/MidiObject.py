@@ -3,6 +3,7 @@ __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 import mido
+from MidiTrack import MidiTrack
 
 # inherit the origin mido class
 class MidiObject(mido.MidiFile):
@@ -15,30 +16,8 @@ class MidiObject(mido.MidiFile):
         self.max_channels = max_channels
         self.types = {"notes": ["note_on", "note_off"],
                       "changes": ["program_change", "control_change"]}
-        self.__divide_tracks()
-    
-    def __divide_tracks(self):
-        """Divide the tracks in 3 categories: meta data, notes and changes"""
-        
-        self.tracks_meta_data = [[] for _ in range(len(self.tracks))]
-        self.tracks_notes     = [[] for _ in range(len(self.tracks))]
-        self.tracks_changes   = [[] for _ in range(len(self.tracks))]
-        self.tracks_channels  = [dict() for _ in range(len(self.tracks))]
-
-        for i, track in enumerate(self.tracks):
-            for msg in track:
-                if msg.type in self.types["notes"]:
-                    self.tracks_notes[i].append(msg)
-                elif msg.type in self.types["changes"]:
-                    self.tracks_changes[i].append(msg)
-                else:
-                    self.tracks_meta_data[i].append(msg)
-
-                if "channel" in msg.dict() and msg.channel < self.max_channels:
-                    if msg.channel not in self.tracks_channels[i]:
-                        self.tracks_channels[i][msg.channel] = []
-                    self.tracks_channels[i][msg.channel].append(msg)
-
+        self.better_tracks = [MidiTrack(track) for track in self.tracks]
+            
     def __str__(self) -> str:
         return super().__str__()
     
@@ -47,14 +26,11 @@ class MidiObject(mido.MidiFile):
 
 if __name__ == "__main__":
     # Load the midi file
-    midi_file = MidiObject('src/AUD_NK0155.mid')
+    midi_file = MidiObject('src/midi/AUD_NK0155.mid')
     print("Midi file loaded")
-    for i, track in enumerate(midi_file.tracks):
+    for i, track in enumerate(midi_file.better_tracks):
         print('\nTrack {}: {}'.format(i, track.name))
-        print("  notes     :", len(midi_file.tracks_notes[i]))
-        print("  changes   :", len(midi_file.tracks_changes[i]))
-        print("  meta data :", len(midi_file.tracks_meta_data[i]))
-        print("  channels  :", ', '.join([str(k) for k in midi_file.tracks_channels[i].keys()]))
-
-    print(type(midi_file.tracks_notes[-2][0]))
-    print(midi_file.tracks_notes[-2][0])
+        print("  notes     :", len(track.notes))
+        print("  changes   :", len(track.changes))
+        print("  meta data :", len(track.meta_data))
+        print("  channels  :", ', '.join([str(k) for k in track.channels.keys()]))

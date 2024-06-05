@@ -4,6 +4,7 @@ __github__ = "eliot-christon"
 
 from typing import List
 import numpy as np
+import matplotlib.pyplot as plt
 import mido
 
 class MidiRoll:
@@ -56,6 +57,15 @@ class MidiRoll:
     def __repr__(self) -> str:
         return "Midi Roll: {} notes".format(len(self.notes))
 
+    def display(self, title:str=""):
+        """Display the midi roll"""
+        plt.matshow(self.notes, aspect='auto', cmap='Grays')
+        # invert y axis
+        plt.gca().invert_yaxis()
+        plt.title(title, fontsize=15)
+        plt.title(title, fontsize=15)
+        plt.show()
+
 
 if __name__ == "__main__":
     # create a midi roll from a list of notes
@@ -74,21 +84,13 @@ if __name__ == "__main__":
 
     def roll_2(track_number=4):
         from MidiObject import MidiObject
-        midi_file = MidiObject('src/AUD_NK0155.mid')
+        midi_file = MidiObject('src/midi/AUD_NK0155.mid')
         # pretty print messages
-        dict_channels = midi_file.tracks_channels[track_number]
+        dict_channels = midi_file.better_tracks[track_number].channels
         channel_number = list(dict_channels.keys())[0]
         channel_events = dict_channels[channel_number]
-        for msg in channel_events:
-            print(msg)
         return MidiRoll.from_channel_events(channel_events)
 
     roll = roll_2(4)
-
-    import matplotlib.pyplot as plt
-
-    plt.matshow(roll.notes, aspect='auto', cmap='Grays')
-    # invert y axis
-    plt.gca().invert_yaxis()
-    plt.show()
+    roll.display(title="Roll 2")
 
