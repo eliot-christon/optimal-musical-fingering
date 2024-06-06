@@ -87,13 +87,13 @@ if __name__ == "__main__":
         
         return MidiRoll.from_channel_events(notes)
 
-    def roll_2(track_number=4):
+    def roll_2(track_number=5):
         from .MidiObject import MidiObject
         midi_file = MidiObject('src/midi/AUD_NK0155.mid')
         track = midi_file.better_tracks[track_number]
         print("Track {}: {}".format(track_number, track.name))
         return track.get_first_roll()
 
-    roll = roll_2(4)
+    roll = roll_2(6)
     roll.display(title="Roll 2")
 

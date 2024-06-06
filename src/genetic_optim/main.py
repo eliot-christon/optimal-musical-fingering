@@ -97,9 +97,9 @@ if __name__ == "__main__":
 
     piano = IKeyboard("piano")
     midi_file = MidiObject('src/midi/AUD_NK0155.mid')
-    track = midi_file.better_tracks[4]
+    track = midi_file.better_tracks[6]
 
-    print("Track {}: {}".format(4, track.name))
+    print("Track {}: {}".format(6, track.name))
     
     piece = MusicPiece("piece", "A piece of music", piano, track)
     
