@@ -5,7 +5,7 @@ __github__ = "eliot-christon"
 from typing import Tuple, Dict
 
 from .Instrument import Instrument
-from .Position import Position
+from ..Position import Position
 
 class IKeyboard(Instrument):
     """Class representing a keyboard instrument"""
