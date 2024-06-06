@@ -39,7 +39,7 @@ class MusicPiece:
 if __name__ == "__main__":
     from .instruments.IKeyboard import IKeyboard
     from .midi.MidiObject import MidiObject
-    from .functions_list_positions import get_positions_from_midiroll
+    from .functions_list_positions import get_basic_positions_from_midiroll
 
     piano = IKeyboard("piano")
     midi_file = MidiObject('src/midi/AUD_NK0155.mid')
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     print("Track {}: {}".format(4, track.name))
     
-    positions = get_positions_from_midiroll(track.get_first_roll())
+    positions = get_basic_positions_from_midiroll(track.get_first_roll())
     
     piece = MusicPiece("piece", "A piece of music", piano, track)
     

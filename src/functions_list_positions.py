@@ -11,7 +11,7 @@ from .instruments.Instrument import Instrument
 from .midi.MidiRoll import MidiRoll
 from .midi.MidiTrack import MidiTrack
 
-def get_positions_from_midiroll(roll:MidiRoll) -> List[Position]:
+def get_basic_positions_from_midiroll(roll:MidiRoll) -> List[Position]:
     """Get the positions from a midi roll. the figers will be set naively from 0, the id will be set to the index of the position"""
     positions = np.array([], dtype=Position)
     last_pos = Position([], [], 0)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     roll = roll_2(6)
     
-    positions = get_positions_from_midiroll(roll)
+    positions = get_basic_positions_from_midiroll(roll)
 
     for i in range(len(positions)-1):
         pos = positions[i]
