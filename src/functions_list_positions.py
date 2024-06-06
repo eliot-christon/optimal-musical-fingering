@@ -7,7 +7,7 @@ import numpy as np
 import mido
 
 from .Position import Position
-from .Instrument import Instrument
+from .instruments.Instrument import Instrument
 from .midi.MidiRoll import MidiRoll
 from .midi.MidiTrack import MidiTrack
 
@@ -37,7 +37,7 @@ def positions_cost(positions:List[Position], instrument:Instrument) -> float:
 
 if __name__ == "__main__":
 
-    from .IKeyboard import IKeyboard
+    from .instruments.IKeyboard import IKeyboard
 
     piano = IKeyboard("piano")
     
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         channel_events = dict_channels[channel_number]
         return MidiRoll.from_channel_events(channel_events)
 
-    roll = roll_2(4)
+    roll = roll_2(6)
     
     positions = get_positions_from_midiroll(roll)
 
@@ -61,3 +61,5 @@ if __name__ == "__main__":
     print(positions[-1], "cost:", piano.position_cost(positions[-1]))
     
     print("Total cost:", positions_cost(positions, piano))
+
+    print(len(positions), "positions")
