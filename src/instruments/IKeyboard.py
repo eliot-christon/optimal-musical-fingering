@@ -18,6 +18,8 @@ class IKeyboard(Instrument):
         super().__init__(name, "keyboard", description, range, fingers)
 
         self.overlapping_penalty_factor = 200
+        self.same_finger_penalty_factor = 500
+        self.two_hands_penalty_factor   = 50
 
         self.ok_distances_matrix = [
            #   0   1   2   3   4   5   6   7   8   9
@@ -73,7 +75,17 @@ class IKeyboard(Instrument):
                 if distance > ok_distance:
                     cost += (abs(distance) - ok_distance)**2
         
-        return cost + len(position)
+        # if two times same finger in position
+        for i in range(len(position)-1):
+            if position.fingers[i] == position.fingers[i+1]:
+                cost += self.same_finger_penalty_factor
+        
+        # if two hands used and less than 4 notes and delta between max and min note is less than 9
+        if len(position) < 4 and (min(position.notes) - max(position.notes)) < 9:
+            if min(position.fingers) < 5 and max(position.fingers) >= 5:
+                cost += self.two_hands_penalty_factor
+        
+        return cost
     
     def hand_placements(self, position:Position) -> Tuple[float, float]:
         """Computes the placement of the two hands within one position."""
