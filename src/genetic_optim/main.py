@@ -38,7 +38,9 @@ def main(music_piece:MusicPiece,
     genome_values = list(music_piece.instrument.fingers.keys())
 
     # Initialize the population
-    population = [Individual([random.choice(genome_values) for _ in range(genome_length)]) for _ in range(num_population)]
+    population = [Individual([random.choice(genome_values) for _ in range(genome_length)],
+                                mutation_rate=mutation_rate,
+                                crossover_rate=crossover_rate) for _ in range(num_population)]
 
     best_individual = Individual(genes=[0]*genome_length, fitness=-np.inf)
 
@@ -46,7 +48,8 @@ def main(music_piece:MusicPiece,
         fitnesses = np.zeros((num_generations, num_population))
 
     # Main loop
-    for generation in tqdm(range(num_generations)):
+    pbar = tqdm(range(num_generations))
+    for generation in pbar:
         # Compute the fitness of the population
         for individual in population:
             individual.compute_fitness(lambda x: cost_function(x, music_piece, base_positions))
@@ -59,16 +62,17 @@ def main(music_piece:MusicPiece,
 
         # Update the best individual
         if population[0].fitness > best_individual.fitness:
-            best_individual = population[0]
+            best_individual = population[0].copy()
+            pbar.set_description(f"Best fitness: {round(best_individual.fitness)}")
 
         # Crossover
         new_population = list[Individual]()
         for i in range(num_population//2):
-            new_population += population[i].crossover(population[i+1])
+            new_population += population[i].single_crossover(population[i+1])
 
         # Mutate
         for individual in new_population:
-            individual.mutate()
+            individual.mutate(genome_values)
 
         # Replace the population
         population = new_population
