@@ -45,6 +45,10 @@ class Position:
             else:
                 new_notes.append(-1)
         return Position(new_notes, new_fingers)
+    
+    def copy(self):
+        """Returns a copy of the position"""
+        return Position(self.notes.copy(), self.fingers.copy(), self.id)
         
 
 
