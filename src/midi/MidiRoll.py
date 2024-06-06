@@ -90,12 +90,9 @@ if __name__ == "__main__":
     def roll_2(track_number=4):
         from .MidiObject import MidiObject
         midi_file = MidiObject('src/midi/AUD_NK0155.mid')
-        # pretty print messages
-        dict_channels = midi_file.better_tracks[track_number].channels
-        channel_number = list(dict_channels.keys())[0]
-        channel_events = dict_channels[channel_number]
-        print("Channel events:", channel_events)
-        return MidiRoll.from_channel_events(channel_events)
+        track = midi_file.better_tracks[track_number]
+        print("Track {}: {}".format(track_number, track.name))
+        return track.get_first_roll()
 
     roll = roll_2(4)
     roll.display(title="Roll 2")
