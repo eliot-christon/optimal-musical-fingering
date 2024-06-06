@@ -1,2 +1,5 @@
 *__pycache__*
 *.pyc
+*.npy
+
+!src/genetic_optim/saved/fitnesses.npy
