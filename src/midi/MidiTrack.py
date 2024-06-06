@@ -45,6 +45,11 @@ class MidiTrack(mido.MidiTrack):
     
     def __len__(self) -> int:
         return len(self.notes) + len(self.changes) + len(self.meta_data)
+
+    def get_first_roll(self):
+        """Get the first roll of the track"""
+        first_key = list(self.rolls.keys())[0]
+        return self.rolls[first_key]
     
     def display_roll(self):
         """Display the roll of the track"""
@@ -53,7 +58,7 @@ class MidiTrack(mido.MidiTrack):
     
 if __name__ == "__main__":
     # Load the midi file
-    midi_file = mido.MidiFile('AUD_NK0155.mid')
+    midi_file = mido.MidiFile('src/midi/AUD_NK0155.mid')
     track_num = 6
     track = MidiTrack(midi_file.tracks[track_num])
     

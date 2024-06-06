@@ -13,8 +13,6 @@ class MidiObject(mido.MidiFile):
     def __init__(self, path:str, max_channels:int=16):
         mido.MidiFile.__init__(self, path)
         self.max_channels = max_channels
-        self.types = {"notes": ["note_on", "note_off"],
-                      "changes": ["program_change", "control_change"]}
         self.better_tracks = [MidiTrack(track) for track in self.tracks]
             
     def __str__(self) -> str:
