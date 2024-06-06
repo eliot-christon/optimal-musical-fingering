@@ -13,12 +13,11 @@ from ..MusicPiece import MusicPiece
 from .utils import genome2positions, positions2genome
 from .Individual import Individual
 
-def fitness_function(genome:List[int], music_piece:MusicPiece, base_positions:list = None, reference_cost:float = 1000.) -> float:
-    """Fitness function for the genetic optimization"""
+def cost_function(genome:List[int], music_piece:MusicPiece, base_positions:list = None) -> float:
+    """Cost function for the genetic optimization"""
     if base_positions is None:
         base_positions = get_basic_positions_from_midiroll(music_piece.track.get_first_roll())
-    positions = genome2positions(genome, base_positions)
-    return reference_cost - music_piece.compute_cost(positions)
+    return music_piece.compute_cost(genome2positions(genome, base_positions))
 
 
 def main(music_piece:MusicPiece,
@@ -35,12 +34,13 @@ def main(music_piece:MusicPiece,
 
     # Get the basic length of the genome
     base_positions = get_basic_positions_from_midiroll(music_piece.track.get_first_roll())
-    reference_cost = music_piece.compute_cost(base_positions)
     genome_length = len(positions2genome(base_positions))
     genome_values = list(music_piece.instrument.fingers.keys())
 
     # Initialize the population
     population = [Individual([random.choice(genome_values) for _ in range(genome_length)]) for _ in range(num_population)]
+
+    best_individual = Individual(genes=[0]*genome_length, fitness=-np.inf)
 
     if save:
         fitnesses = np.zeros((num_generations, num_population))
@@ -49,13 +49,17 @@ def main(music_piece:MusicPiece,
     for generation in tqdm(range(num_generations)):
         # Compute the fitness of the population
         for individual in population:
-            individual.compute_fitness(lambda x: fitness_function(x, music_piece, base_positions, reference_cost))
+            individual.compute_fitness(lambda x: cost_function(x, music_piece, base_positions))
 
         # Sort the population by fitness
         population.sort(key=lambda x: x.fitness, reverse=True)
         
         if save:
             fitnesses[generation] = [individual.fitness for individual in population]
+
+        # Update the best individual
+        if population[0].fitness > best_individual.fitness:
+            best_individual = population[0]
 
         # Crossover
         new_population = list[Individual]()
@@ -80,8 +84,7 @@ def main(music_piece:MusicPiece,
 
 
     # Return the best individual
-    return population[0]
-
+    return best_individual
 
 if __name__ == "__main__":
 
@@ -96,5 +99,23 @@ if __name__ == "__main__":
     
     piece = MusicPiece("piece", "A piece of music", piano, track)
     
-    best_individual = main(piece, num_generations=100, num_population=1000, the_seed=4, save=True)
+    best_individual = main(piece, 
+                           the_seed=4, 
+                           save=True, 
+                           num_generations=100, 
+                           num_population=700,
+                           mutation_rate=0.05,
+                           crossover_rate=0.7)
     print(best_individual)
+
+    # print positions
+    positions = genome2positions(best_individual.genes, get_basic_positions_from_midiroll(piece.track.get_first_roll()))
+    for i in range(len(positions)-1):
+        pos = positions[i]
+        next_pos = positions[i+1]
+        print(pos, "cost:", piano.position_cost(pos), "transition cost:", piano.transition_cost(pos, next_pos))
+    print(positions[-1], "cost:", piano.position_cost(positions[-1]))
+    
+    print("Total cost:", -best_individual.fitness)
+
+    print(len(positions), "positions")

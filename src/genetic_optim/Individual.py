@@ -44,4 +44,8 @@ class Individual:
 
     def compute_fitness(self, cost_function:Callable[[List[int]], float]) -> None:
         """Computes the fitness of the individual"""
-        self.fitness = cost_function(self.genes)
+        self.fitness = -cost_function(self.genes)
+    
+    def copy(self) -> "Individual":
+        """Returns a copy of the individual"""
+        return Individual(self.genes.copy(), self.fitness, self.mutation_rate, self.crossover_rate)
