@@ -29,9 +29,10 @@ class Position:
     def __len__(self) -> int:
         return len(self.notes)
 
-    def sort_by_finger(self):
+    def sort_by_finger(self) -> "Position":
         """Sorts the notes and fingers by finger"""
-        self.notes, self.fingers = map(list, zip(*sorted(zip(self.notes, self.fingers), key=lambda x: x[1])))
+        notes, fingers = map(list, zip(*sorted(zip(self.notes, self.fingers), key=lambda x: x[1])))
+        return Position(notes, fingers, self.id)
     
     def get_full_position(self, num_fingers:int=10) ->  "Position":
         """Returns the full position (all fingers)
