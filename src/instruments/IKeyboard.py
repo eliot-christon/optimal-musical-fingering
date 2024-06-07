@@ -94,9 +94,9 @@ class IKeyboard(Instrument):
 
         for i in range(len(position)):
             if position.fingers[i] < 5:
-                left_hand.append(position.notes[i] - position.fingers[i])
+                left_hand.append(position.notes[i] - self.ok_distances_matrix[0][position.fingers[i]])
             else:
-                right_hand.append(position.notes[i] - position.fingers[i] + 5)
+                right_hand.append(position.notes[i] - self.ok_distances_matrix[5][position.fingers[i]])
         
         if len(left_hand) == 0:
             left_hand_placement = -1
