@@ -11,10 +11,11 @@ class MidiRoll:
     """Class reprensenting a midi roll for one channel.
     A midi roll is a matrix where the rows are the notes and the columns are the time steps."""
 
-    def __init__(self):
-        self.notes = np.array([], dtype="bool")
-        self.lowest_note = 0
-        self.highest_note = 127
+    def __init__(self, notes:np.ndarray = None, lowest_note:int = 0, highest_note:int = 127, first_tick:int = 0):
+        self.notes = notes
+        self.lowest_note = lowest_note
+        self.highest_note = highest_note
+        self.first_tick = first_tick
 
     @classmethod
     def from_channel_events(cls, channel_events: List[mido.messages.Message]):
@@ -62,14 +63,89 @@ class MidiRoll:
 
     def display(self, title:str=""):
         """Display the midi roll"""
-        plt.matshow(self.notes, aspect='auto', cmap='Grays')
-        # y labels
-        plt.yticks(np.arange(self.highest_note - self.lowest_note + 1), np.arange(self.lowest_note, self.highest_note + 1))
-        # invert y axis
-        plt.gca().invert_yaxis()
-        plt.title(title, fontsize=15)
-        plt.title(title, fontsize=15)
+
+        fig, ax = plt.subplots(figsize=(15, 5))
+
+        # Display the notes matrix as an image with grayscale color map
+        cax = ax.matshow(self.notes, aspect='auto', cmap='Grays')
+
+        # Set the y-axis ticks and labels
+        yticks = np.arange(self.highest_note - self.lowest_note + 1)
+        ytick_labels = np.arange(self.lowest_note, self.highest_note + 1)
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(ytick_labels)
+        ax.set_ylabel("Notes")
+
+        # Set the x-axis below the image
+        ax.xaxis.set_ticks_position('bottom')
+        ax.set_xlabel("Time steps")
+
+        # Invert the y-axis
+        ax.invert_yaxis()
+
+        # Set the title
+        ax.set_title(title, fontsize=25)
+
+        # Show the plot
         plt.show()
+    
+    def divide_in_clusters(self, ticks_threshold:int) -> "List[MidiRoll]":
+        """Divide the roll in serveral clusters.
+        A cluster is a group of notes that are played together, means that the last note of the cluster should be far from the first note of the next cluster.
+        The distance between two notes is the time between the two notes. If the time is greater than a threshold, the notes are in different clusters."""
+        clusters = []
+        cluster = []
+        notes_transposed = self.notes.T # so the first dimension is the time steps
+        for i in range(len(notes_transposed)-ticks_threshold):
+            if notes_transposed[i: i + ticks_threshold].sum() == 0:
+                if len(cluster) > 0:
+                    clusters.append(MidiRoll(notes=np.array(cluster).T, lowest_note=self.lowest_note, highest_note=self.highest_note, first_tick=self.first_tick + i))
+                    cluster = []
+            else:
+                cluster.append(notes_transposed[i])
+        if len(cluster) > 0:
+            clusters.append(MidiRoll(notes=np.array(cluster).T, lowest_note=self.lowest_note, highest_note=self.highest_note, first_tick=self.first_tick + i))
+        return clusters
+
+
+def display_roll_cluster(cluster:List[MidiRoll]) -> None:
+    """Display a list of roll clusters in the same figure with different colors"""
+    fig, ax = plt.subplots(figsize=(15, 5))
+
+    total_ticks = max([roll.first_tick + roll.notes.shape[1] for roll in cluster])
+    lowest_note = min([roll.lowest_note for roll in cluster])
+    highest_note = max([roll.highest_note for roll in cluster])
+
+    all_notes = np.zeros((highest_note - lowest_note + 1, total_ticks), dtype="int8")
+    # build the notes matrix
+    values = np.arange(4, 4 + len(cluster))
+    np.random.shuffle(values)
+    for i, roll in enumerate(cluster):
+        notes = np.where(roll.notes != 0, values[i], 0)
+        all_notes[roll.lowest_note - lowest_note:roll.highest_note - lowest_note + 1, roll.first_tick:roll.first_tick + roll.notes.shape[1]] = notes
+    
+    # Display the notes matrix as an image with zero values in black and the other values in colors
+    cax = ax.matshow(all_notes, aspect='auto', cmap='inferno')
+    
+    # Set the y-axis ticks and labels
+    yticks = np.arange(cluster[0].highest_note - cluster[0].lowest_note + 1)
+    ytick_labels = np.arange(cluster[0].lowest_note, cluster[0].highest_note + 1)
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(ytick_labels)
+    ax.set_ylabel("Notes")
+
+    # Set the x-axis below the image
+    ax.xaxis.set_ticks_position('bottom')
+    ax.set_xlabel("Time steps")
+
+    # Invert the y-axis
+    ax.invert_yaxis()
+  
+    # Set the title
+    ax.set_title("Roll clusters", fontsize=25)
+
+    # Show the plot
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -96,4 +172,7 @@ if __name__ == "__main__":
 
     roll = roll_2(6)
     roll.display(title="Roll 2")
+
+    clusters = roll.divide_in_clusters(500)
+    display_roll_cluster(clusters)
 
