@@ -27,6 +27,7 @@ def main(music_piece:MusicPiece,
          mutation_rate:float=0.1,
          crossover_rate:float=0.7,
          the_seed:int=4,
+         K_best:int=100,
          save:bool=False):
     """Main function for the genetic optimization of fingering music pieces"""
 
@@ -70,8 +71,20 @@ def main(music_piece:MusicPiece,
             
         # Crossover
         new_population = list[Individual]()
-        for i in range(num_population//2):
-            new_population += population[i].double_point_crossover(population[i+1])
+
+        while len(new_population) < num_population // 3:
+            parent1 = random.choice(population[:K_best])
+            parent2 = random.choice(population)
+            child1, child2 = parent1.single_point_crossover(parent2)
+            new_population.append(child1)
+            new_population.append(child2)
+
+        while len(new_population) < num_population:
+            parent1 = random.choice(population[:K_best])
+            parent2 = random.choice(population[:K_best])
+            child1, child2 = parent1.double_point_crossover(parent2)
+            new_population.append(child1)
+            new_population.append(child2)
 
         # Mutate
         for individual in new_population:
@@ -114,10 +127,11 @@ if __name__ == "__main__":
                            midi_roll=midi_roll,
                            the_seed=4, 
                            save=True, 
-                           num_generations=100, 
-                           num_population=700,
-                           mutation_rate=0.2,
-                           crossover_rate=0.7)
+                           num_generations=150, 
+                           num_population=1000,
+                           mutation_rate=0.1,
+                           crossover_rate=0.7,
+                           K_best=80)
     print(best_individual)
 
     # print positions
@@ -125,7 +139,7 @@ if __name__ == "__main__":
     for i in range(len(positions)-1):
         pos = positions[i]
         next_pos = positions[i+1]
-        print(pos, "cost:", piano.position_cost(pos), "transition cost:", piano.transition_cost(pos, next_pos))
+        print(pos, "cost:", piano.position_cost(pos, display=True), "transition cost:", piano.transition_cost(pos, next_pos, display=True))
     print(positions[-1], "cost:", piano.position_cost(positions[-1]))
     
     print("Total cost:", -best_individual.fitness)

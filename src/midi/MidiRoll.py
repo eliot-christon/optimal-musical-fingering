@@ -170,7 +170,7 @@ if __name__ == "__main__":
         print("Track {}: {}".format(track_number, track.name))
         return track.get_first_roll()
 
-    roll = roll_2(6)
+    roll = roll_2(5)
     roll.display(title="Roll 2")
 
     clusters = roll.divide_in_clusters(500)

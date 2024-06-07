@@ -14,26 +14,32 @@ class IKeyboard(Instrument):
                  name:str = "keyboard", 
                  description:str = "A keyboard instrument", 
                  range:Tuple[str, str] = ("A0", "B8"), # (min, max), 0 is the lowest note (C0), 127 is the highest note (G10)
+                 hands_separation:int = 5,
                  fingers:Dict[int, str] = {0: "left pinky", 1: "left ring", 2: "left middle", 3: "left index", 4: "left thumb", 5: "right thumb", 6: "right index", 7: "right middle", 8: "right ring", 9: "right pinky"}):
         super().__init__(name, "keyboard", description, range, fingers)
 
+        self.hands_separation = hands_separation
+
         self.overlapping_penalty_factor = 200
         self.same_finger_penalty_factor = 500
-        self.two_hands_penalty_factor   = 50
+        self.two_hands_penalty_factor   = 90
+        self.crossing_hands_penalty_factor = 120
 
         self.ok_distances_matrix = [
            #   0   1   2   3   4   5   6   7   8   9
-            [  0,  2,  4,  6,  9,200,200,200,200,200], # 0
-            [ -1,  0,  2,  4,  7,200,200,200,200,200], # 1
-            [ -1, -1,  0,  2,  5,200,200,200,200,200], # 2
-            [ -1, -1, -1,  0,  3,200,200,200,200,200], # 3
+            [  0,  2,  4,  6, 10,200,200,200,200,200], # 0
+            [ -1,  0,  2,  4,  8,200,200,200,200,200], # 1
+            [ -1, -1,  0,  2,  6,200,200,200,200,200], # 2
+            [ -1, -1, -1,  0,  4,200,200,200,200,200], # 3
             [ -1, -1, -1, -1,  0,200,200,200,200,200], # 4
-            [100,100,100,100,100,  0,  3,  5,  7,  9], # 5
+            [100,100,100,100,100,  0,  4,  6,  8, 10], # 5
             [100,100,100,100,100, -1,  0,  2,  4,  6], # 6
             [100,100,100,100,100, -1, -1,  0,  2,  4], # 7
             [100,100,100,100,100, -1, -1, -1,  0,  2], # 8
             [100,100,100,100,100, -1, -1, -1, -1,  0]  # 9
         ]
+
+        self.hand_amplitude = self.ok_distances_matrix[0][self.hands_separation - 1]
 
     def __str__(self) -> str:
         return super().__str__()
@@ -46,9 +52,9 @@ class IKeyboard(Instrument):
     
     def same_hand(self, finger_i:int, finger_j:int) -> bool:
         """Checks if two fingers are on the same hand"""
-        return (finger_i < 5 and finger_j < 5) or (finger_i >= 5 and finger_j >= 5)
+        return (finger_i < self.hands_separation and finger_j < self.hands_separation) or (finger_i >= self.hands_separation and finger_j >= self.hands_separation)
     
-    def position_cost(self, in_position:Position) -> float:
+    def position_cost(self, in_position:Position, display:bool=False) -> float:
         """Computes the cost of a position.
         In a keyboard instrument, the cost is for each hand
             . 0 when two fingers are below the ok distance (non overlapping <=> non negative distance)
@@ -57,6 +63,7 @@ class IKeyboard(Instrument):
         Args:
             position (Position): the position to evaluate
         """
+        if display: print()
         
         position = in_position.sort_by_finger()
 
@@ -72,18 +79,29 @@ class IKeyboard(Instrument):
                 if self.same_hand(finger_i, finger_j):
                     if distance < 0:
                         cost += self.overlapping_penalty_factor
+                        if display: print("Overlapping fingers: {} and {}".format(finger_i, finger_j))
                 if distance > ok_distance:
-                    cost += (abs(distance) - ok_distance)**2 + 1
+                    add = abs(distance - ok_distance)**2.5 + 1
+                    cost += add
+                    if display: print(f"Fingers {finger_i} and {finger_j} too far: distance = {distance}, ok distance = {ok_distance}, cost = {add}")
         
         # if two times same finger in position
         for i in range(len(position)-1):
             if position.fingers[i] == position.fingers[i+1]:
                 cost += self.same_finger_penalty_factor
+                if display: print("Same finger used twice: {}".format(position.fingers[i]))
         
-        # if two hands used and less than 4 notes and delta between max and min note is less than 9
-        if len(position) < 4 and (min(position.notes) - max(position.notes)) < 9:
-            if min(position.fingers) < 5 and max(position.fingers) >= 5:
+        # if two hands used and less than 6 notes and delta between max and min note is less than hand amplitude
+        if len(position) <= self.hands_separation and (max(position.notes) - min(position.notes)) < self.hand_amplitude:
+            if min(position.fingers) < self.hands_separation and max(position.fingers) >= self.hands_separation:
                 cost += self.two_hands_penalty_factor
+                if display: print(f"Two hands penalty, min note: {min(position.notes)}, max note: {max(position.notes)}, hand amplitude: {self.hand_amplitude}")
+        
+        # if crossing hands
+        hand_placement = self.hand_placements(position)
+        if hand_placement[0] != -1 and hand_placement[1] != -1 and hand_placement[0] > hand_placement[1]:
+            cost += self.crossing_hands_penalty_factor
+            if display: print("Crossing hands")
         
         return cost
     
@@ -93,10 +111,10 @@ class IKeyboard(Instrument):
         right_hand = []
 
         for i in range(len(position)):
-            if position.fingers[i] < 5:
+            if position.fingers[i] < self.hands_separation:
                 left_hand.append(position.notes[i] - self.ok_distances_matrix[0][position.fingers[i]])
             else:
-                right_hand.append(position.notes[i] - self.ok_distances_matrix[5][position.fingers[i]])
+                right_hand.append(position.notes[i] - self.ok_distances_matrix[self.hands_separation][position.fingers[i]])
         
         if len(left_hand) == 0:
             left_hand_placement = -1
@@ -138,10 +156,10 @@ class IKeyboard(Instrument):
             cost +=add
             if display and add > 0: print("Right hand: {} -> {}, cost: {}".format(hand_pos_1[1], hand_pos_2[1], add))
         
-        # if different hands used for near notes (near notes are notes with a distance less than 9)
+        # if different hands used for near notes (near notes are notes with a distance less than self.hand_amplitude)
         #  first check if different hands used, only right to only left or only left to only right
-        if (max(position_1.fingers) < 5 and min(position_2.fingers) >= 5) or (max(position_2.fingers) < 5 and min(position_1.fingers) >= 5):
-            if abs(min(position_1.notes) - max(position_2.notes)) < 9:
+        if (max(position_1.fingers) < self.hands_separation and min(position_2.fingers) >= self.hands_separation) or (max(position_2.fingers) < self.hands_separation and min(position_1.fingers) >= self.hands_separation):
+            if abs(max(position_1.notes) - min(position_2.notes)) < self.hand_amplitude:
                 cost += self.two_hands_penalty_factor
                 if display: print("Two hands penalty")
         
