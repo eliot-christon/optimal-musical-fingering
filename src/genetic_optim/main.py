@@ -6,10 +6,10 @@ import random
 from typing import List
 from tqdm import tqdm
 import numpy as np
-import os
 
 from ..functions_list_positions import get_basic_positions_from_midiroll
 from ..MusicPiece import MusicPiece
+from ..midi.MidiRoll import MidiRoll
 from .utils import genome2positions, positions2genome
 from .Individual import Individual
 
@@ -21,6 +21,7 @@ def cost_function(genome:List[int], music_piece:MusicPiece, base_positions:list 
 
 
 def main(music_piece:MusicPiece,
+         midi_roll:MidiRoll = None,
          num_generations:int=100,
          num_population:int=100,
          mutation_rate:float=0.1,
@@ -33,14 +34,16 @@ def main(music_piece:MusicPiece,
     random.seed(the_seed)
 
     # Get the basic length of the genome
-    base_positions = get_basic_positions_from_midiroll(music_piece.track.get_first_roll())
+    if midi_roll is None:
+        midi_roll = music_piece.track.get_first_roll()
+    base_positions = get_basic_positions_from_midiroll(midi_roll)
     genome_length = len(positions2genome(base_positions))
     genome_values = list(music_piece.instrument.fingers.keys())
 
     # Initialize the population
     population = [Individual([random.choice(genome_values) for _ in range(genome_length)],
                                 mutation_rate=mutation_rate,
-                                crossover_rate=crossover_rate) for _ in range(num_population)]
+                                single_point_crossover_rate=crossover_rate) for _ in range(num_population)]
 
     best_individual = Individual(genes=[0]*genome_length, fitness=-np.inf)
 
@@ -64,11 +67,11 @@ def main(music_piece:MusicPiece,
         if population[0].fitness > best_individual.fitness:
             best_individual = population[0].copy()
             pbar.set_description(f"Best fitness: {round(best_individual.fitness)}")
-
+            
         # Crossover
         new_population = list[Individual]()
         for i in range(num_population//2):
-            new_population += population[i].single_crossover(population[i+1])
+            new_population += population[i].double_point_crossover(population[i+1])
 
         # Mutate
         for individual in new_population:
@@ -97,23 +100,28 @@ if __name__ == "__main__":
 
     piano = IKeyboard("piano")
     midi_file = MidiObject('src/midi/AUD_NK0155.mid')
-    track = midi_file.better_tracks[6]
+    track = midi_file.better_tracks[4]
 
-    print("Track {}: {}".format(6, track.name))
+    print("Track {}: {}".format(4, track.name))
     
     piece = MusicPiece("piece", "A piece of music", piano, track)
     
+    midi_roll = track.get_first_roll()
+    clusters = midi_roll.divide_in_clusters(500)
+    midi_roll = clusters[-1]
+
     best_individual = main(piece, 
+                           midi_roll=midi_roll,
                            the_seed=4, 
                            save=True, 
                            num_generations=100, 
                            num_population=700,
-                           mutation_rate=0.05,
+                           mutation_rate=0.2,
                            crossover_rate=0.7)
     print(best_individual)
 
     # print positions
-    positions = genome2positions(best_individual.genes, get_basic_positions_from_midiroll(piece.track.get_first_roll()))
+    positions = genome2positions(best_individual.genes, get_basic_positions_from_midiroll(midi_roll))
     for i in range(len(positions)-1):
         pos = positions[i]
         next_pos = positions[i+1]

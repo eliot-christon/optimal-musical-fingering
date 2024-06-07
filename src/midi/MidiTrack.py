@@ -17,11 +17,10 @@ class MidiTrack(mido.MidiTrack):
         self.changes = []
         self.meta_data = []
         self.channels = dict()
-
-        self.__divide_events()
+        self.__divide_per_channel_events()
         self.rolls = {num : MidiRoll.from_channel_events(channel) for num, channel in self.channels.items()}
 
-    def __divide_events(self):
+    def __divide_per_channel_events(self):
         """Divide the events in 3 categories: meta data, notes and changes"""
 
         for msg in self:
