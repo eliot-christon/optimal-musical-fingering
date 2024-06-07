@@ -48,7 +48,7 @@ class IKeyboard(Instrument):
         """Checks if two fingers are on the same hand"""
         return (finger_i < 5 and finger_j < 5) or (finger_i >= 5 and finger_j >= 5)
     
-    def position_cost(self, position:Position) -> float:
+    def position_cost(self, in_position:Position) -> float:
         """Computes the cost of a position.
         In a keyboard instrument, the cost is for each hand
             . 0 when two fingers are below the ok distance (non overlapping <=> non negative distance)
@@ -58,7 +58,7 @@ class IKeyboard(Instrument):
             position (Position): the position to evaluate
         """
         
-        position.sort_by_finger()
+        position = in_position.sort_by_finger()
 
         cost = 0
 
@@ -73,7 +73,7 @@ class IKeyboard(Instrument):
                     if distance < 0:
                         cost += self.overlapping_penalty_factor
                 if distance > ok_distance:
-                    cost += (abs(distance) - ok_distance)**2
+                    cost += (abs(distance) - ok_distance)**2 + 1
         
         # if two times same finger in position
         for i in range(len(position)-1):
@@ -94,9 +94,9 @@ class IKeyboard(Instrument):
 
         for i in range(len(position)):
             if position.fingers[i] < 5:
-                left_hand.append(position.notes[i])
+                left_hand.append(position.notes[i] - position.fingers[i])
             else:
-                right_hand.append(position.notes[i])
+                right_hand.append(position.notes[i] - position.fingers[i] + 5)
         
         if len(left_hand) == 0:
             left_hand_placement = -1
@@ -110,9 +110,10 @@ class IKeyboard(Instrument):
 
         return left_hand_placement, right_hand_placement
     
-    def transition_cost(self, position_1:Position, position_2:Position) -> float:
+    def transition_cost(self, position_1:Position, position_2:Position, display:bool=False) -> float:
         """Computes the cost of a transition between two positions.
         The transition cost is the distance between the hands positions"""
+        if display: print()
         pos_1_full = position_1.get_full_position(len(self.fingers))
         pos_2_full = position_2.get_full_position(len(self.fingers))
 
@@ -120,18 +121,38 @@ class IKeyboard(Instrument):
 
         for i in range(len(pos_1_full)):
             if pos_1_full.notes[i] != -1 and pos_2_full.notes[i] != -1:
-                cost += abs(pos_2_full.notes[i] - pos_1_full.notes[i])
+                add = abs(pos_2_full.notes[i] - pos_1_full.notes[i])
+                cost += add
+                if display and add > 0: print("Finger {}: {} -> {}, cost: {}".format(i, pos_1_full.notes[i], pos_2_full.notes[i], add))
         
         hand_pos_1 = self.hand_placements(position_1)
         hand_pos_2 = self.hand_placements(position_2)
 
         if hand_pos_1[0] != -1 and hand_pos_2[0] != -1:
-            cost += abs(hand_pos_2[0] - hand_pos_1[0])
+            add = abs(hand_pos_2[0] - hand_pos_1[0]) * 2
+            cost += add
+            if display and add > 0: print("Left hand: {} -> {}, cost: {}".format(hand_pos_1[0], hand_pos_2[0], add))
+
         if hand_pos_1[1] != -1 and hand_pos_2[1] != -1:
-            cost += abs(hand_pos_2[1] - hand_pos_1[1])
+            add = abs(hand_pos_2[1] - hand_pos_1[1]) * 2
+            cost +=add
+            if display and add > 0: print("Right hand: {} -> {}, cost: {}".format(hand_pos_1[1], hand_pos_2[1], add))
+        
+        # if different hands used for near notes (near notes are notes with a distance less than 9)
+        #  first check if different hands used, only right to only left or only left to only right
+        if (max(position_1.fingers) < 5 and min(position_2.fingers) >= 5) or (max(position_2.fingers) < 5 and min(position_1.fingers) >= 5):
+            if abs(min(position_1.notes) - max(position_2.notes)) < 9:
+                cost += self.two_hands_penalty_factor
+                if display: print("Two hands penalty")
+        
+        # less cost if same finger on same note again
+        for i in range(len(self.fingers)):
+            if pos_1_full.notes[i] == pos_2_full.notes[i] and pos_1_full.fingers[i] == pos_2_full.fingers[i] and pos_1_full.notes[i] != -1:
+                cost = max(0, cost - 2)
+                if display: print("Same finger on same note bonus -2")
 
         return cost
-                
+
 
 
 
