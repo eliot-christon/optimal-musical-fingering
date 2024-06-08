@@ -16,7 +16,7 @@ class INeck(Instrument):
                  name:str = " My neck instrument", 
                  description:str = "A neck instrument", 
                  number_of_frets:int = 12,
-                 open_strings:List[str] = ["E2", "A2", "D3", "G3", "B3", "E4"], # the midi notes of the open strings
+                 open_strings:List[str] = ["E4", "B3", "G3", "D3", "A2", "E2"], # the midi notes of the open strings
                  fingers:Dict[int, str] = {0: "0", 1: "1", 2: "2", 3: "3", 4: "4"}, # 0 is when the string is played without a finger
                ): 
         self.open_strings = [note2num(note) for note in open_strings]
@@ -49,6 +49,10 @@ class INeck(Instrument):
 
     def __eq__(self, other) -> bool:
         return super().__eq__(other)
+    
+    def get_notes(self, position:NPosition) -> List[str]:
+        """Returns the notes of a position"""
+        return [num2note(self.open_strings[position.strings[i] - 1] + position.frets[i]) for i in range(len(position))]
 
     def is_valid_position(self, in_position:NPosition, display:bool=False) -> bool:
         """Checks if a position is valid.
@@ -195,38 +199,24 @@ class INeck(Instrument):
 class Guitar(INeck):
     """Class representing a guitar instrument"""
     def __init__(self):
-        super().__init__("guitar", "Basic guitar", number_of_frets=12, open_strings=["E2", "A2", "D3", "G3", "B3", "E4"])
+        super().__init__("guitar", "Basic guitar", number_of_frets=12, open_strings=["E4", "B3", "G3", "D3", "A2", "E2"])
 
 
-class UkuLele(INeck):
+class Ukulele(INeck):
     """Class representing a ukulele instrument"""
     def __init__(self):
-        super().__init__("ukulele", "Basic ukulele", number_of_frets=12, open_strings=["G4", "C4", "E4", "A4"])
+        super().__init__("ukulele", "Basic ukulele", number_of_frets=12, open_strings=["A4", "E4", "C4", "G4"])
 
 
 if __name__ == "__main__":
     guitar = Guitar()
 
     pos1 = NPosition([300, 103, 201], [0, 3, 1])
-    print(pos1)
-    print(guitar.position_cost(pos1, display=True))
-
     Fmaj7 = NPosition.from_strings_frets(fingers=[1, 3, 2, 4], strings=[6, 4, 3, 2], frets=[1, 3, 2, 3])
-    print(Fmaj7)
-    print(guitar.position_cost(Fmaj7, display=True))
-    
     Amaj7 = NPosition.from_strings_frets(fingers=[0, 1, 2, 3, 0], strings=[5, 4, 3, 2, 1], frets=[0, 2, 2, 2, 0])
-    print(Amaj7)
-    print(guitar.position_cost(Amaj7, display=True))
-    
     Dmin7 = NPosition.from_strings_frets(fingers=[0, 2, 3, 1], strings=[4, 3, 2, 1], frets=[0, 2, 3, 1])
-    print(Dmin7)
-    print(guitar.position_cost(Dmin7, display=True))
     
-    # Transition cost
-    print("\nTransition cost between Fmaj7 and Amaj7")
-    print(guitar.transition_cost(Fmaj7, Amaj7, display=True))
-    print("\nTransition cost between Amaj7 and Dmin7")
-    print(guitar.transition_cost(Amaj7, Dmin7, display=True))
-    print("\nTransition cost between Dmin7 and Fmaj7")
-    print(guitar.transition_cost(Dmin7, Fmaj7, display=True))
+    for position in [Fmaj7, Amaj7, Dmin7]:
+        print(position)
+        print("Notes:", guitar.get_notes(position))
+        print(guitar.position_cost(position))

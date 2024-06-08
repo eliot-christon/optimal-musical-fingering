@@ -2,7 +2,7 @@ __author__ = "Eliot Christon"
 __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
-from typing import List
+from typing import List, Tuple
 
 from .utils.note2num import note2num
 from .utils.roman_numerals import convert_to_roman
@@ -76,9 +76,8 @@ class NPosition(Position):
         return cls(position.placements, position.fingers, position.id)
     
     def __str__(self) -> str:
-        strings, frets = self.convertPlacementsToStringsFrets(self.placements)
-        roman_frets = [convert_to_roman(fret) for fret in frets]
-        return f"Strings: {strings}, Frets: {roman_frets}, Fingers: {self.fingers}, ID: {self.id}"
+        roman_frets = [convert_to_roman(fret) for fret in self.frets]
+        return f"Strings: {self.strings}, Frets: {roman_frets}, Fingers: {self.fingers}, ID: {self.id}"
     
     def __repr__(self) -> str:
         return f"NPosition({self.placements}, {self.fingers}, {self.id})"
@@ -96,12 +95,6 @@ class NPosition(Position):
     def convertStringsFretsToPlacements(self, strings:List[int], frets:List[int]) -> List[int]:
         """Converts a list of strings and frets to a list of placements. this assumes that threr is less than 100 frets on one string."""
         return [string*100 + fret for string, fret in zip(strings, frets)]
-    
-    def convertPlacementsToStringsFrets(self, placement:List[int]) -> List[int]:
-        """Converts a list of placements to a list of strings and frets."""
-        strings = [note//100 for note in placement]
-        frets = [note%100 for note in placement]
-        return strings, frets
     
     @property
     def strings(self) -> List[int]:
