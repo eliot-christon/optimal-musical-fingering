@@ -4,8 +4,10 @@ __github__ = "eliot-christon"
 
 def convert_to_roman(num:int) -> str:
     """Convert a number to a roman numeral"""
-    if num < 1 or num > 3999:
+    if num < 0 or num > 3999:
         raise ValueError("The number {} is not in the range of a roman numeral (1-3999)".format(num))
+    elif num == 0:
+        return "-"
     roman_numerals = [
         (1000, "M"), (900, "CM"), (500, "D"), (400, "CD"),
         (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),

@@ -73,7 +73,7 @@ class IKeyboard(Instrument):
             for j in range(i+1, len(position)):
                 finger_i = position.fingers[i]
                 finger_j = position.fingers[j]
-                distance = position.placement[j] - position.placement[i]
+                distance = position.placements[j] - position.placements[i]
                 ok_distance = self.ok_distances_matrix[finger_i][finger_j]
 
                 if self.same_hand(finger_i, finger_j):
@@ -92,10 +92,10 @@ class IKeyboard(Instrument):
                 if display: print("Same finger used twice: {}".format(position.fingers[i]))
         
         # if two hands used and less than 6 notes and delta between max and min note is less than hand amplitude
-        if len(position) <= self.hands_separation and (max(position.placement) - min(position.placement)) < self.hand_amplitude:
+        if len(position) <= self.hands_separation and (max(position.placements) - min(position.placements)) < self.hand_amplitude:
             if min(position.fingers) < self.hands_separation and max(position.fingers) >= self.hands_separation:
                 cost += self.two_hands_penalty_factor
-                if display: print(f"Two hands penalty, min note: {min(position.placement)}, max note: {max(position.placement)}, hand amplitude: {self.hand_amplitude}")
+                if display: print(f"Two hands penalty, min note: {min(position.placements)}, max note: {max(position.placements)}, hand amplitude: {self.hand_amplitude}")
         
         # if crossing hands
         hand_placement = self.hand_placements(position)
@@ -112,9 +112,9 @@ class IKeyboard(Instrument):
 
         for i in range(len(position)):
             if position.fingers[i] < self.hands_separation:
-                left_hand.append(position.placement[i] - self.ok_distances_matrix[0][position.fingers[i]])
+                left_hand.append(position.placements[i] - self.ok_distances_matrix[0][position.fingers[i]])
             else:
-                right_hand.append(position.placement[i] - self.ok_distances_matrix[self.hands_separation][position.fingers[i]])
+                right_hand.append(position.placements[i] - self.ok_distances_matrix[self.hands_separation][position.fingers[i]])
         
         if len(left_hand) == 0:
             left_hand_placement = -1
@@ -138,10 +138,10 @@ class IKeyboard(Instrument):
         cost = 0
 
         for i in range(len(pos_1_full)):
-            if pos_1_full.placement[i] != -1 and pos_2_full.placement[i] != -1:
-                add = abs(pos_2_full.placement[i] - pos_1_full.placement[i])
+            if pos_1_full.placements[i] != -1 and pos_2_full.placements[i] != -1:
+                add = abs(pos_2_full.placements[i] - pos_1_full.placements[i])
                 cost += add
-                if display and add > 0: print("Finger {}: {} -> {}, cost: {}".format(i, pos_1_full.placement[i], pos_2_full.placement[i], add))
+                if display and add > 0: print("Finger {}: {} -> {}, cost: {}".format(i, pos_1_full.placements[i], pos_2_full.placements[i], add))
         
         hand_pos_1 = self.hand_placements(position_1)
         hand_pos_2 = self.hand_placements(position_2)
@@ -159,13 +159,13 @@ class IKeyboard(Instrument):
         # if different hands used for near notes (near notes are notes with a distance less than self.hand_amplitude)
         #  first check if different hands used, only right to only left or only left to only right
         if (max(position_1.fingers) < self.hands_separation and min(position_2.fingers) >= self.hands_separation) or (max(position_2.fingers) < self.hands_separation and min(position_1.fingers) >= self.hands_separation):
-            if abs(max(position_1.placement) - min(position_2.placement)) < self.hand_amplitude:
+            if abs(max(position_1.placements) - min(position_2.placements)) < self.hand_amplitude:
                 cost += self.two_hands_penalty_factor
                 if display: print("Two hands penalty")
         
         # less cost if same finger on same note again
         for i in range(len(self.fingers)):
-            if pos_1_full.placement[i] == pos_2_full.placement[i] and pos_1_full.fingers[i] == pos_2_full.fingers[i] and pos_1_full.placement[i] != -1:
+            if pos_1_full.placements[i] == pos_2_full.placements[i] and pos_1_full.fingers[i] == pos_2_full.fingers[i] and pos_1_full.placements[i] != -1:
                 cost = max(0, cost - 2)
                 if display: print("Same finger on same note bonus -2")
 
