@@ -35,4 +35,4 @@ assert note2num("Bb3")  == 46
 
 if __name__ == "__main__":
 
-    print(note2num("E5"))
+    print(note2num("A2"))

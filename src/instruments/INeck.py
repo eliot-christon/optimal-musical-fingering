@@ -2,10 +2,12 @@ __author__ = "Eliot Christon"
 __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 
 from .Instrument import Instrument
 from ..Position import NPosition
+from ..utils.note2num import note2num
+from ..utils.num2note import num2note
 
 class INeck(Instrument):
     """Class representing a keyboard instrument"""
@@ -13,10 +15,18 @@ class INeck(Instrument):
     def __init__(self, 
                  name:str = " My neck instrument", 
                  description:str = "A neck instrument", 
-                 range:Tuple[str, str] = ("E2", "E5"), # (min, max), 0 is the lowest note (C0), 127 is the highest note (G10)
-                 fingers:Dict[int, str] = {0: "0", 1: "1", 2: "2", 3: "3", 4: "4"}): # 0 is when the string is played without a finger
+                 number_of_frets:int = 12,
+                 open_strings:List[str] = ["E2", "A2", "D3", "G3", "B3", "E4"], # the midi notes of the open strings
+                 fingers:Dict[int, str] = {0: "0", 1: "1", 2: "2", 3: "3", 4: "4"}, # 0 is when the string is played without a finger
+               ): 
+        self.open_strings = [note2num(note) for note in open_strings]
+        self.number_of_frets = number_of_frets
+        range = (num2note(min(self.open_strings)), num2note(max(self.open_strings) + number_of_frets))
         super().__init__(name, "Strings", description, range, fingers)
+        self.__basic_attributes()
         
+        
+    def __basic_attributes(self):
         self.string_gap_dificulty_factor = {
             (1, 2) : 2.0,
             (1, 3) : 1.0,
@@ -46,8 +56,13 @@ class INeck(Instrument):
             - two adjacent fingers must be within 1 or 0 fret of each other
             - the frets must be in increasing order
             - each finger must be on a different string
+            - a string doesn't exist
+            - a finger doesn't exist
+            - the note is not out of the range of the instrument
         """
         position = in_position.sort_by_finger()
+        
+        print("Checking position:", position)
         
         # Check if the frets are in increasing order
         if position.frets != sorted(position.frets):
@@ -59,8 +74,27 @@ class INeck(Instrument):
             if display: print("   Fingers are on the same string")
             return False
         
-        # Check if the adjacing fingers are within 1 or 0 fret of each other
-        for i in range(len(position.fingers)-1):
+        for i in range(len(position)):
+            
+            # Check if the note is out of the range of the instrument
+            if position.frets[i] < 0 or position.frets[i] > self.number_of_frets:
+                if display: print("   Fret is out of the range of the instrument")
+                return False
+            
+            # Check if a string doesn't exist
+            if position.strings[i] not in range(1, len(self.open_strings)+1):
+                if display: print("   String doesn't exist")
+                return False
+            
+            # Check if a finger doesn't exist
+            if position.fingers[i] not in self.fingers:
+                if display: print("   Finger doesn't exist")
+                return False
+            
+            if i+1 == len(position) or position.fingers[i] == 0 or position.fingers[i+1] == 0:
+                continue
+            
+            # Check if the adjacing fingers are within 1 or 0 fret of each other
             if abs(position.placements[i+1] - position.placements[i]) > 1 and abs(position.fingers[i+1] - position.fingers[i]) < 1:
                 if display: print("   Fingers are not within 1 or 0 fret of each other")
                 return False
@@ -72,6 +106,7 @@ class INeck(Instrument):
         Cost is
             if the position is not valid: self.invalid_position_cost_penalty
             the sum of the distances between the fingers strings minus 1, multiplied by a dificulty factor
+            the hand placement (the lower the better)
         
         Args:
             position (NPosition): the position to evaluate
@@ -102,6 +137,9 @@ class INeck(Instrument):
                     else:
                         if display: print("No dificulty factor for fingers {} and {}".format(finger_i, finger_j))
                         return self.invalid_position_cost_penalty
+        cost += self.hand_placements(position)
+        if display: print("Hand placement cost: {}".format(self.hand_placements(position)))
+        
         return cost
     
     def hand_placements(self, position:NPosition) -> float:
@@ -109,7 +147,7 @@ class INeck(Instrument):
         left_hand = []
         for finger, fret in zip(position.fingers, position.frets):
             if finger > 0:
-                left_hand.append(fret + finger - 1)
+                left_hand.append(fret - finger + 1)
         if len(left_hand) == 0:
             return 1
         return sum(left_hand) / len(left_hand)
@@ -134,11 +172,11 @@ class INeck(Instrument):
                     cost += add
                     if display and add > 0: print("Finger {}: {} -> {}, cost: {}".format(position_1.fingers[i], position_1.strings[i], position_2.strings[j], add))
                 
-                if position_1.strings[i] == position_2.strings[j] and position_1.frets[i] == position_2.frets[j]:
+                if position_1.strings[i] == position_2.strings[j] and position_1.frets[i] == position_2.frets[j] and position_1.fingers[i] == position_2.fingers[j]:
                     cost -= self.same_finger_same_string_same_fret_bonus
                     if display: print("Same finger on same string and same fret")
                 
-            if position_2.fingers[j] not in position_1.fingers:
+            if position_2.fingers[j] not in position_1.fingers and position_2.fingers[j] != 0:
                 add = self.new_finger_cost
                 cost += add
                 if display: print("New finger {}, cost: {}".format(position_2.fingers[j], add))
@@ -157,20 +195,38 @@ class INeck(Instrument):
 class Guitar(INeck):
     """Class representing a guitar instrument"""
     def __init__(self):
-        super().__init__("guitar", "Basic guitar", ("E2", "E5"))
+        super().__init__("guitar", "Basic guitar", number_of_frets=12, open_strings=["E2", "A2", "D3", "G3", "B3", "E4"])
 
 
 class UkuLele(INeck):
     """Class representing a ukulele instrument"""
     def __init__(self):
-        super().__init__("ukulele", "Basic ukulele", ("G4", "A5"))
+        super().__init__("ukulele", "Basic ukulele", number_of_frets=12, open_strings=["G4", "C4", "E4", "A4"])
 
 
 if __name__ == "__main__":
-    guitar = INeck("guitar", "A guitar", ("A0", "B8"))
+    guitar = Guitar()
 
     pos1 = NPosition([300, 103, 201], [0, 3, 1])
     print(pos1)
     print(guitar.position_cost(pos1, display=True))
 
-    pos2 = NPosition.from_strings_frets([0, 3, 1], [0, 1, 3], [0, 1, 3])
+    Fmaj7 = NPosition.from_strings_frets(fingers=[1, 3, 2, 4], strings=[6, 4, 3, 2], frets=[1, 3, 2, 3])
+    print(Fmaj7)
+    print(guitar.position_cost(Fmaj7, display=True))
+    
+    Amaj7 = NPosition.from_strings_frets(fingers=[0, 1, 2, 3, 0], strings=[5, 4, 3, 2, 1], frets=[0, 2, 2, 2, 0])
+    print(Amaj7)
+    print(guitar.position_cost(Amaj7, display=True))
+    
+    Dmin7 = NPosition.from_strings_frets(fingers=[0, 2, 3, 1], strings=[4, 3, 2, 1], frets=[0, 2, 3, 1])
+    print(Dmin7)
+    print(guitar.position_cost(Dmin7, display=True))
+    
+    # Transition cost
+    print("\nTransition cost between Fmaj7 and Amaj7")
+    print(guitar.transition_cost(Fmaj7, Amaj7, display=True))
+    print("\nTransition cost between Amaj7 and Dmin7")
+    print(guitar.transition_cost(Amaj7, Dmin7, display=True))
+    print("\nTransition cost between Dmin7 and Fmaj7")
+    print(guitar.transition_cost(Dmin7, Fmaj7, display=True))

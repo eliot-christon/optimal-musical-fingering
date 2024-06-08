@@ -54,6 +54,7 @@ class IKeyboard(Instrument):
         """Checks if two fingers are on the same hand"""
         return (finger_i < self.hands_separation and finger_j < self.hands_separation) or (finger_i >= self.hands_separation and finger_j >= self.hands_separation)
     
+    
     def position_cost(self, in_position:Position, display:bool=False) -> float:
         """Computes the cost of a position.
         In a keyboard instrument, the cost is for each hand
