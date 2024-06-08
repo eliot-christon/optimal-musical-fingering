@@ -18,7 +18,7 @@ def get_basic_positions_from_midiroll(roll:MidiRoll) -> List[Position]:
     for i in range(roll.notes.shape[1]):
         notes = np.where(roll.notes[:, i] != 0)[0]
         fingers = list(range(len(notes)))
-        if len(notes) == 0 or (len(notes) == len(last_pos.notes) and all(notes == last_pos.notes)):
+        if len(notes) == 0 or (len(notes) == len(last_pos.placement) and all(notes == last_pos.placement)):
             continue
         positions = np.append(positions, Position(notes, fingers, i))
         last_pos = positions[-1]
