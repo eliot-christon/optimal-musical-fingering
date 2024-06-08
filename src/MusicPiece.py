@@ -15,17 +15,17 @@ class MusicPiece:
                  name:str = "music piece", 
                  description:str = "A music piece", 
                  instrument:Instrument = None,
-                 track:MidiTrack = None):
+                 positions:Position = None):
         self.name       = name
         self.description= description
         self.instrument = instrument
-        self.track      = track
+        self.positions  = positions
 
     def __str__(self) -> str:
         return f"MusicPiece {self.name} [{self.instrument.name}]: {self.description} with {len(self.positions)} positions"
     
     def __repr__(self) -> str:
-        return f"MusicPiece({self.name}, {self.description}, {self.instrument}, {self.track})"
+        return f"MusicPiece({self.name}, {self.description}, {self.instrument}, {self.positions})"
         
     def compute_cost(self, positions:List[Position]) -> float:
         """Computes the cost of a list of positions"""
@@ -49,6 +49,6 @@ if __name__ == "__main__":
     
     positions = get_basic_positions_from_midiroll(track.get_first_roll())
     
-    piece = MusicPiece("piece", "A piece of music", piano, track)
+    piece = MusicPiece("piece", "A piece of music", piano, positions)
     
     print(piece.compute_cost(positions))

@@ -7,7 +7,6 @@ from typing import List
 from tqdm import tqdm
 import numpy as np
 
-from ..functions_list_positions import get_basic_positions_from_midiroll
 from ..MusicPiece import MusicPiece
 from ..midi.MidiRoll import MidiRoll
 from .utils import genome2positions, positions2genome
@@ -16,12 +15,11 @@ from .Individual import Individual
 def cost_function(genome:List[int], music_piece:MusicPiece, base_positions:list = None) -> float:
     """Cost function for the genetic optimization"""
     if base_positions is None:
-        base_positions = get_basic_positions_from_midiroll(music_piece.track.get_first_roll())
+        base_positions = music_piece.positions
     return music_piece.compute_cost(genome2positions(genome, base_positions))
 
 
 def main(music_piece:MusicPiece,
-         midi_roll:MidiRoll = None,
          num_generations:int=100,
          num_population:int=100,
          mutation_rate:float=0.1,
@@ -35,9 +33,7 @@ def main(music_piece:MusicPiece,
     random.seed(the_seed)
 
     # Get the basic length of the genome
-    if midi_roll is None:
-        midi_roll = music_piece.track.get_first_roll()
-    base_positions = get_basic_positions_from_midiroll(midi_roll)
+    base_positions = music_piece.positions
     genome_length = len(positions2genome(base_positions))
     genome_values = list(music_piece.instrument.fingers.keys())
 
@@ -107,41 +103,86 @@ def main(music_piece:MusicPiece,
     return best_individual
 
 if __name__ == "__main__":
-
-    from ..instruments.IKeyboard import IKeyboard
-    from ..midi.MidiObject import MidiObject
-
-    piano = IKeyboard("piano")
-    midi_file = MidiObject('src/midi/AUD_NK0155.mid')
-    track = midi_file.better_tracks[4]
-
-    print("Track {}: {}".format(4, track.name))
     
-    piece = MusicPiece("piece", "A piece of music", piano, track)
+    def scenario1():
+
+        from ..instruments.IKeyboard import IKeyboard
+        from ..midi.MidiObject import MidiObject
+        from ..functions_list_positions import get_basic_positions_from_midiroll
+
+        piano = IKeyboard("piano")
+        midi_file = MidiObject('src/midi/AUD_NK0155.mid')
+        track = midi_file.better_tracks[4]
+
+        print("Track {}: {}".format(4, track.name))
+        
+        midi_roll = track.get_first_roll()
+        clusters = midi_roll.divide_in_clusters(500)
+        midi_roll = clusters[-1]
+        
+        base_positions = get_basic_positions_from_midiroll(midi_roll)
+        piece = MusicPiece("piece", "A piece of music", piano, base_positions)
+
+        best_individual = main(piece, 
+                            the_seed=4, 
+                            save=True, 
+                            num_generations=100, 
+                            num_population=1000,
+                            mutation_rate=0.1,
+                            crossover_rate=0.7,
+                            K_best=80)
+        print(best_individual)
+
+        # print positions
+        positions = genome2positions(best_individual.genes, get_basic_positions_from_midiroll(midi_roll))
+        for i in range(len(positions)-1):
+            pos = positions[i]
+            next_pos = positions[i+1]
+            print(pos, "cost:", piano.position_cost(pos, display=True), "transition cost:", piano.transition_cost(pos, next_pos, display=True))
+        print(positions[-1], "cost:", piano.position_cost(positions[-1]))
+        
+        print("Total cost:", -best_individual.fitness)
+
+        print(len(positions), "positions")
+        
+    def scenario2():
+        from ..instruments.INeck import Guitar
+        from ..Position import NPosition
+        
+        
+        Fmaj7 = NPosition.from_strings_frets(fingers=[1, 3, 2, 4], strings=[6, 4, 3, 2], frets=[1, 3, 2, 3])
+        Amaj7 = NPosition.from_strings_frets(fingers=[0, 1, 2, 3, 0], strings=[5, 4, 3, 2, 1], frets=[0, 2, 2, 2, 0])
+        Dmin7 = NPosition.from_strings_frets(fingers=[0, 2, 3, 1], strings=[4, 3, 2, 1], frets=[0, 2, 3, 1])
+        
+        base_positions = [Fmaj7, Amaj7, Dmin7]
+        
+        instrument = Guitar()
+        
+        piece = MusicPiece("piece", "A piece of music", instrument, base_positions)
+        
+        best_individual = main(piece, 
+                            the_seed=4, 
+                            save=True, 
+                            num_generations=100, 
+                            num_population=1000,
+                            mutation_rate=0.1,
+                            crossover_rate=0.7,
+                            K_best=80)
+        
+        # print positions
+        positions = genome2positions(best_individual.genes, base_positions)
+        for i in range(len(positions)-1):
+            pos = positions[i]
+            next_pos = positions[i+1]
+            print(pos, "cost:", instrument.position_cost(pos, display=True), "transition cost:", instrument.transition_cost(pos, next_pos, display=True))
+        print(positions[-1], "cost:", instrument.position_cost(positions[-1]))
+        
+        print("Total cost:", -best_individual.fitness)
+
+        print(len(positions), "positions")
+        
     
-    midi_roll = track.get_first_roll()
-    clusters = midi_roll.divide_in_clusters(500)
-    midi_roll = clusters[-1]
-
-    best_individual = main(piece, 
-                           midi_roll=midi_roll,
-                           the_seed=4, 
-                           save=True, 
-                           num_generations=150, 
-                           num_population=1000,
-                           mutation_rate=0.1,
-                           crossover_rate=0.7,
-                           K_best=80)
-    print(best_individual)
-
-    # print positions
-    positions = genome2positions(best_individual.genes, get_basic_positions_from_midiroll(midi_roll))
-    for i in range(len(positions)-1):
-        pos = positions[i]
-        next_pos = positions[i+1]
-        print(pos, "cost:", piano.position_cost(pos, display=True), "transition cost:", piano.transition_cost(pos, next_pos, display=True))
-    print(positions[-1], "cost:", piano.position_cost(positions[-1]))
     
-    print("Total cost:", -best_individual.fitness)
-
-    print(len(positions), "positions")
+    
+    # RUN SCENARIO
+    scenario2()

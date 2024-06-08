@@ -36,7 +36,7 @@ class INeck(Instrument):
             (3, 4) : 2.5,
         }
         
-        self.invalid_position_cost_penalty = 500
+        self.invalid_position_cost_penalty = 1000
         self.hand_deplacement_penalty_factor = 3.0
         self.same_finger_same_string_same_fret_bonus = 2
         self.new_finger_cost = 2
@@ -52,6 +52,8 @@ class INeck(Instrument):
     
     def get_notes(self, position:NPosition) -> List[str]:
         """Returns the notes of a position"""
+        if not self.is_valid_position(position):
+            return [None] * len(position)
         return [num2note(self.open_strings[position.strings[i] - 1] + position.frets[i]) for i in range(len(position))]
 
     def is_valid_position(self, in_position:NPosition, display:bool=False) -> bool:
@@ -65,9 +67,7 @@ class INeck(Instrument):
             - the note is not out of the range of the instrument
         """
         position = in_position.sort_by_finger()
-        
-        print("Checking position:", position)
-        
+                
         # Check if the frets are in increasing order
         if position.frets != sorted(position.frets):
             if display: print("   Frets are not in increasing order")
@@ -209,7 +209,7 @@ class Ukulele(INeck):
 
 
 if __name__ == "__main__":
-    guitar = Guitar()
+    guitar = Ukulele()
 
     pos1 = NPosition([300, 103, 201], [0, 3, 1])
     Fmaj7 = NPosition.from_strings_frets(fingers=[1, 3, 2, 4], strings=[6, 4, 3, 2], frets=[1, 3, 2, 3])
