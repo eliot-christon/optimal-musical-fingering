@@ -12,8 +12,8 @@ class Position:
     """Class representing a position on an instrument"""
 
     def __init__(self, placements:List[int], fingers:List[int], id:int=None):
-        self.placements = placements
-        self.fingers = fingers
+        self.placements = list(placements)
+        self.fingers = list(fingers)
         self.id = id
 
     @classmethod
@@ -62,13 +62,13 @@ class NPosition(Position):
     """Class representing a position on a neck instrument. The position now gets a number of strings and frets"""
     
     def __init__(self, placements:List[int], fingers:List[int], id:int=None):
-        super().__init__(placements, fingers, id)
+        super().__init__(list(placements), list(fingers), id)
     
     @classmethod
     def from_strings_frets(cls, fingers:List[int], strings:List[int], frets:List[int], id:int=None):
         """Alternative constructor"""
-        placements = cls.convertStringsFretsToPlacements(None, strings=strings, frets=frets)
-        return cls(placements, fingers, id)
+        placements = cls.convertStringsFretsToPlacements(None, strings=list(strings), frets=list(frets))
+        return cls(placements, list(fingers), id)
     
     @classmethod
     def from_position(cls, position:Position):
@@ -82,9 +82,14 @@ class NPosition(Position):
     def __repr__(self) -> str:
         return f"NPosition({self.placements}, {self.fingers}, {self.id})"
         
+    def sort_by_string(self, reverse=True) -> "NPosition":
+        """Sorts the placements and fingers by string"""
+        sorted_placements, sorted_fingers = map(list, zip(*sorted(zip(self.placements, self.fingers), key=lambda x: x[0], reverse=reverse)))
+        return NPosition(sorted_placements, sorted_fingers, self.id)
+    
     def sort_by_fret(self) -> "NPosition":
         """Sorts the placements and fingers by fret"""
-        sorted_placements, sorted_fingers = [(placement, fingers) for (_, placement, fingers) in sorted(zip(self.frets, self.placements, self.fingers))]
+        sorted_placements, sorted_fingers = map(list, zip(*sorted(zip(self.placements, self.fingers), key=lambda x: x[0]%100)))
         return NPosition(sorted_placements, sorted_fingers, self.id)
         
     def sort_by_finger(self) -> "NPosition":
@@ -106,18 +111,26 @@ class NPosition(Position):
         """Returns the frets of the position"""
         return [note%100 for note in self.placements]
     
+    def add_note(self, string:int, fret:int, finger:int):
+        """Adds a note to the position"""
+        self.placements.append(string*100 + fret)
+        self.fingers.append(finger)
+    
     def get_full_position(self, num_strings:int=6) ->  "NPosition":
         """Returns the full position (all strings)
         quiet placements are represented by -1 (0 is playing the open string)
         """
         new_placements = []
-        new_strings = [i for i in range(num_strings)]
         for i in range(num_strings):
             if i in self.strings:
                 new_placements.append(self.placements[self.strings.index(i)])
             else:
                 new_placements.append(-1)
         return NPosition(new_placements, self.fingers)
+    
+    def copy(self):
+        """Returns a copy of the position"""
+        return NPosition(self.placements.copy(), self.fingers.copy(), self.id)
         
     
 
@@ -125,5 +138,11 @@ class NPosition(Position):
 if __name__ == "__main__":
     pos = Position([60, 62, 64, 65, 67, 69, 71, 72], [0, 1, 2, 3, 4, 6, 5, 7])
     print(pos)
-    pos.sort_by_finger()
+    pos = pos.sort_by_finger()
     print(pos)
+    
+    npos = NPosition.from_strings_frets(frets=[1, 2, 0], fingers=[2, 1, 0], strings=[0, 2, 1])
+    print(npos)
+    npos = npos.sort_by_fret()
+    print(npos)
+    

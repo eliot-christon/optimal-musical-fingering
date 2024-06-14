@@ -40,6 +40,7 @@ class INeck(Instrument):
         self.hand_deplacement_penalty_factor = 3.0
         self.same_finger_same_string_same_fret_bonus = 2
         self.new_finger_cost = 2
+        self.in_between_strings_cost = 15
 
     def __str__(self) -> str:
         return super().__str__()
@@ -60,6 +61,7 @@ class INeck(Instrument):
         """Checks if a position is valid.
         A valid position is a position where:
             - two adjacent fingers must be within 1 or 0 fret of each other
+            - max and min fret must be within the range of the left hand (here 4 frets)
             - the frets must be in increasing order
             - each finger must be on a different string
             - a string doesn't exist
@@ -77,6 +79,17 @@ class INeck(Instrument):
         if len(set(position.strings)) != len(position.strings):
             if display: print("   Fingers are on the same string")
             return False
+        
+        # Check if the max and min fret are within the range of the left hand (do not count the open strings <=> fret = 0)
+        try:
+            min_fret = min([fret for fret in position.frets if fret > 0])
+            max_fret = max([fret for fret in position.frets if fret > 0])
+    
+            if max_fret is not None and min_fret is not None and max_fret - min_fret > 4:
+                if display: print("   Max and min fret are not within the range of the left hand")
+                return False
+        except:
+            pass
         
         for i in range(len(position)):
             
@@ -99,11 +112,64 @@ class INeck(Instrument):
                 continue
             
             # Check if the adjacing fingers are within 1 or 0 fret of each other
-            if abs(position.placements[i+1] - position.placements[i]) > 1 and abs(position.fingers[i+1] - position.fingers[i]) < 1:
+            if abs(position.frets[i+1] - position.frets[i]) > 1 and abs(position.fingers[i+1] - position.fingers[i]) < 1:
                 if display: print("   Fingers are not within 1 or 0 fret of each other")
                 return False
         return True
+    
+    def default_fingering(self, in_position:NPosition) -> NPosition:
+        """Returns the default fingering of a position.
+        - place the 0 finger if the string is open (fret = 0)
+        - sort the other placements by increasing fret
+        - barring
+            - if two placements are on the same fret and no other lower fret placements on lower strings, place the same finger
+        - assign fingers in increasing order
+        """
+        position = in_position.copy()
+            
+        # Sort the other placements by increasing fret
+        position = position.sort_by_fret()
         
+        print()
+
+        # Barring
+        current_finger = 1
+        if max(position.frets) == 0:
+            current_finger = 0
+        else:
+            current_fret = min([fret for fret in position.frets if fret > 0] + [self.number_of_frets * 2])
+            
+        barring = False
+        barring_fret = 0
+        for i in range(len(position)):
+            # Place the 0 finger if the string is open (fret = 0)
+            if position.frets[i] == 0:
+                position.fingers[i] = 0
+                continue
+            
+            # Assign fingers in increasing order
+            current_finger += max(position.frets[i] - current_fret - 1, 0)
+            position.fingers[i] = current_finger
+            current_fret = position.frets[i]
+            # check if the next placement is on the same fret (only one barring possible)
+            if (i != len(position) -1) and (position.frets[i] == position.frets[i+1]) and (barring_fret == position.frets[i] or barring_fret == 0):
+                # check if no other lower fret placements on lower strings
+                barring = True
+                for j in range(i):
+                    if position.frets[j] < position.frets[i] and position.strings[j] < position.strings[i]:
+                        barring = False
+                        break
+            else:
+                barring = False
+            
+            if not barring:
+                current_finger += 1
+            else:
+                barring_fret = position.frets[i]
+        
+        return position # TODO DOES NOT WORK, MODIFIES THE STRINGS OF THE POSITION
+
+            
      
     def position_cost(self, position:NPosition, check_valid:bool=True, display:bool=False) -> float:
         """Computes the cost of a position.
@@ -111,6 +177,7 @@ class INeck(Instrument):
             if the position is not valid: self.invalid_position_cost_penalty
             the sum of the distances between the fingers strings minus 1, multiplied by a dificulty factor
             the hand placement (the lower the better)
+            the number of in between strings not played if > 1
         
         Args:
             position (NPosition): the position to evaluate
@@ -124,6 +191,15 @@ class INeck(Instrument):
             return self.invalid_position_cost_penalty
         
         cost = 0.
+        
+        # Compute the cost of the in between strings not played = number of gaps * self.in_between_strings_cost
+        gaps = 0
+        if len(position) > 3:
+            for i in range(1, len(position)-1):
+                if position.strings[i] != position.strings[i+1] + 1:
+                    gaps += 1
+        cost += gaps * self.in_between_strings_cost
+        if gaps > 0 and display: print("Gaps: {}, penalty: {}".format(gaps, gaps * self.in_between_strings_cost))
         
         # Compute the cost of the string gap
         for i in range(len(position)-1):
@@ -145,6 +221,38 @@ class INeck(Instrument):
         if display: print("Hand placement cost: {}".format(self.hand_placements(position)))
         
         return cost
+    
+    def possible_places_one_note(self, note:int) -> List[Tuple[int, int]]:
+        """Returns the possible places of a note on the neck. Returns a list of tuples (string, fret)."""
+        places = []
+        for string, open_note in enumerate(self.open_strings):
+            for fret in range(self.number_of_frets):
+                if open_note + fret == note:
+                    places.append((string+1, fret))
+        return places
+    
+    def possible_positions(self, notes:List[int]) -> List[NPosition]:
+        """Returns the possible positions of a list of notes on the neck."""
+        if len(notes) == 0:
+            return []
+        if len(notes) == 1:
+            return [NPosition([place[1] for place in self.possible_places_one_note(notes[0])], [0])]
+        
+        # Recursive function to compute the possible positions, finger is 0 
+        def compute_positions(notes:List[int], positions:List[NPosition], index:int) -> List[NPosition]:
+            """Recursive function to compute the possible positions. using the NPosition().add_note"""
+            if index == len(notes):
+                return positions
+            new_positions = []
+            for position in positions:
+                for place in self.possible_places_one_note(notes[index]):
+                    new_position = position.copy()
+                    new_position.add_note(place[0], place[1], 0)
+                    new_positions.append(new_position)
+            return compute_positions(notes, new_positions, index+1)
+        
+        res = compute_positions(notes, [NPosition([], [])], 0)
+        return [self.default_fingering(position) for position in res]
     
     def hand_placements(self, position:NPosition) -> float:
         """Computes the placement of the left hand within one position."""
@@ -209,7 +317,7 @@ class Ukulele(INeck):
 
 
 if __name__ == "__main__":
-    guitar = Ukulele()
+    guitar = Guitar()
 
     pos1 = NPosition([300, 103, 201], [0, 3, 1])
     Fmaj7 = NPosition.from_strings_frets(fingers=[1, 3, 2, 4], strings=[6, 4, 3, 2], frets=[1, 3, 2, 3])
@@ -220,3 +328,15 @@ if __name__ == "__main__":
         print(position)
         print("Notes:", guitar.get_notes(position))
         print(guitar.position_cost(position))
+        
+    note_num = note2num("C4")
+    print("Possible places for C4:", guitar.possible_places_one_note(note_num))
+    
+    notes = [note2num(note) for note in ['A2', 'F#3', 'C4', 'E4']]
+    positions = guitar.possible_positions(notes)
+    for position in guitar.possible_positions(notes):
+        if guitar.is_valid_position(position):
+            position = position.sort_by_string()
+            print("Valid position:", position)
+            print("Notes:", guitar.get_notes(position))
+            print(guitar.position_cost(position, display=True))
