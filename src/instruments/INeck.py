@@ -236,7 +236,6 @@ class INeck(Instrument):
         if len(notes) == 0:
             return []
         if len(notes) == 1:
-            print("Possible places for note:", self.possible_places_one_note(notes[0]))
             no_finger_pos = []
             for string, fret in self.possible_places_one_note(notes[0]):
                 no_finger_pos.append(NPosition.from_strings_frets([0], [string], [fret]))
@@ -259,7 +258,7 @@ class INeck(Instrument):
         # now shift all the positions while finger 4 isn't used
         res = []
         for position in default_finger_pos:
-            while (max(position.fingers) < 4) and (not position.is_barre()):
+            while (max(position.fingers) < 4 and max(position.fingers) > 0) and (not position.is_barre()):
                 res.append(position.copy())
                 position.shift(1)
             res.append(position)
@@ -343,7 +342,7 @@ if __name__ == "__main__":
     note_num = note2num("C4")
     print("Possible places for C4:", guitar.possible_places_one_note(note_num))
     
-    notes = [note2num(note) for note in ['C4']] # ['A2', 'F#3', 'C4', 'E4'], ['A2', 'G3', 'D4', 'E4']
+    notes = [note2num(note) for note in ['E4']] # ['A2', 'F#3', 'C4', 'E4'], ['A2', 'G3', 'D4', 'E4']
     print("Possible positions for notes:", notes)
     positions = guitar.possible_positions(notes)
     for position in positions:
