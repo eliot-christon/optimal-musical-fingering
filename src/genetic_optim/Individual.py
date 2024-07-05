@@ -43,11 +43,11 @@ class Individual:
     def set_fitness(self, fitness:float) -> None:
         self.__fitness = fitness
     
-    def mutate(self, values:List[int]) -> None:
+    def mutate(self, values:List[List[int]]) -> None:
         """Mutates the individual"""
         for i in range(len(self.__genes)):
             if np.random.rand() < self.__mutation_rate:
-                self.__genes[i] = np.random.choice(values)
+                self.__genes[i] = np.random.choice(values[i])
 
     def single_point_crossover(self, other:"Individual") -> Tuple["Individual", "Individual"]:
         """Crosses the individual with another one"""

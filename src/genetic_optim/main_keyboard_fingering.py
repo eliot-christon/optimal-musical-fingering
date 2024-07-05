@@ -64,7 +64,7 @@ if __name__ == "__main__":
                             num_population=1000,
                             mutation_rate=0.1,
                             crossover_rate=0.7,
-                            genome_values= list(piece.instrument.fingers.keys()),
+                            genome_values= [list(piece.instrument.fingers.keys()) for _ in range(len(base_positions))],
                             K_best=80)
         print(best_individual)
 

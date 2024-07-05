@@ -19,34 +19,23 @@ from ..instruments.Instrument import Instrument
 def positions2genome(positions:List[Position], all_possible_positions:List[List[Position]]) -> List[int]:
     """Converts a list of positions to a genome"""
     assert len(positions) == len(all_possible_positions)
-    # nb combinations in total is the product of the number of possible positions for each position
-    nb_combinations = np.prod([len(all_possible_positions[i]) for i in range(len(positions))])
-    # genome is a list of 0 and 1, the concatenation of the binary representation of the index of the combination. 2**len(g) > nb_combinations => len(g) > log2(nb_combinations)
-    genome_length = int(np.ceil(np.log2(nb_combinations)))
-    combination_number = 0
+    genome = []
     for i in range(len(positions)):
-        combination_number *= len(all_possible_positions[i])
-        combination_number += all_possible_positions[i].index(positions[i])
-    print(f"genome_length: {genome_length} => {2**genome_length} > {nb_combinations} combinations, combination_number: {combination_number}")
-    return [int(i) for i in bin(combination_number)[2:].zfill(genome_length)]
+        genome.append(all_possible_positions[i].index(positions[i]))
+    return genome
 
 
 def genome2positions(genome:List[int], all_possible_positions:List[List[Position]]) -> List[Position]:
     """Converts a genome to a list of positions"""
-    # genome is a list of 0 and 1, the concatenation of the binary representation of the index of the combination. 2**len(g) > nb_combinations => len(g) > log2(nb_combinations)
-    combination_number = int("".join([str(i) for i in genome]), 2)
     positions = []
-    for i in range(len(all_possible_positions)):
-        positions.append(all_possible_positions[i][combination_number % len(all_possible_positions[i])])
-        combination_number //= len(all_possible_positions[i])
+    for i in range(len(genome)):
+        positions.append(all_possible_positions[i][genome[i]])
     return positions
 
 
 def cost_function(genome:List[int], music_piece:MusicPiece, all_possible_positions:List[List[Position]] = None) -> float:
     """Cost function for the genetic optimization"""
     return music_piece.compute_cost(genome2positions(genome, all_possible_positions))
-
-
 
 
 
@@ -71,8 +60,8 @@ if __name__ == "__main__":
         base_notes = [
             Fmaj7,
             ['E4'],
-            # ['D4'],
-            # ['C4'],
+            ['D4'],
+            ['C4'],
             Amaj7,
             ['G#4'],
             ['F#4'],
@@ -102,7 +91,7 @@ if __name__ == "__main__":
                             num_population=1000,
                             mutation_rate=0.05,
                             crossover_rate=0.4,
-                            genome_values= [0, 1],
+                            genome_values=[list(range(len(all_possible_positions[i]))) for i in range(len(all_possible_positions))],
                             K_best=80
                             )
         print(best_individual)

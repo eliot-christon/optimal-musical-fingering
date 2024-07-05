@@ -22,7 +22,7 @@ def genetic_loop(music_piece:MusicPiece,
          crossover_rate:float=0.7,
          the_seed:int=4,
          K_best:int=100,
-         genome_values:List[int]=None,
+         genome_values:List[List[int]]=None,
          cost_function_kwargs:dict={},
          save:bool=False):
     """Genetic main loop function for the optimization of music pieces"""
@@ -31,7 +31,7 @@ def genetic_loop(music_piece:MusicPiece,
     random.seed(the_seed)
 
     # Initialize the population
-    population = [Individual([random.choice(genome_values) for _ in range(genome_length)],
+    population = [Individual([random.choice(genome_values[i]) for i in range(genome_length)],
                                 mutation_rate=mutation_rate,
                                 single_point_crossover_rate=crossover_rate) for _ in range(num_population)]
 
