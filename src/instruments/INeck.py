@@ -236,33 +236,44 @@ class INeck(Instrument):
         if len(notes) == 0:
             return []
         if len(notes) == 1:
-            return [NPosition([place[1] for place in self.possible_places_one_note(notes[0])], [0])]
-        
-        # Recursive function to compute the possible positions, finger is 0 
-        def compute_positions(notes:List[int], positions:List[NPosition], index:int) -> List[NPosition]:
-            """Recursive function to compute the possible positions. using the NPosition().add_note"""
-            if index == len(notes):
-                return positions
-            new_positions = []
-            for position in positions:
-                for place in self.possible_places_one_note(notes[index]):
-                    new_position = position.copy()
-                    new_position.add_note(place[0], place[1], 0)
-                    new_positions.append(new_position)
-            return compute_positions(notes, new_positions, index+1)
-        
-        res = compute_positions(notes, [NPosition([], [])], 0)
-        return [self.default_fingering(position) for position in res]
+            print("Possible places for note:", self.possible_places_one_note(notes[0]))
+            no_finger_pos = []
+            for string, fret in self.possible_places_one_note(notes[0]):
+                no_finger_pos.append(NPosition.from_strings_frets([0], [string], [fret]))
+        else:
+            # Recursive function to compute the possible positions, finger is 0 
+            def compute_positions(notes:List[int], positions:List[NPosition], index:int) -> List[NPosition]:
+                """Recursive function to compute the possible positions. using the NPosition().add_note"""
+                if index == len(notes):
+                    return positions
+                new_positions = []
+                for position in positions:
+                    for place in self.possible_places_one_note(notes[index]):
+                        new_position = position.copy()
+                        new_position.add_note(place[0], place[1], 0)
+                        new_positions.append(new_position)
+                return compute_positions(notes, new_positions, index+1)
+            
+            no_finger_pos = compute_positions(notes, [NPosition([], [])], 0)
+        default_finger_pos = [self.default_fingering(position) for position in no_finger_pos]
+        # now shift all the positions while finger 4 isn't used
+        res = []
+        for position in default_finger_pos:
+            while (max(position.fingers) < 4) and (not position.is_barre()):
+                res.append(position.copy())
+                position.shift(1)
+            res.append(position)
+        return res
     
     def hand_placements(self, position:NPosition) -> float:
         """Computes the placement of the left hand within one position."""
         left_hand = []
         for finger, fret in zip(position.fingers, position.frets):
             if finger > 0:
-                left_hand.append(fret - finger + 1)
+                left_hand.append(fret - finger)
         if len(left_hand) == 0:
             return 1
-        return sum(left_hand) / len(left_hand)
+        return abs(sum(left_hand) / len(left_hand))
         
     def transition_cost(self, position_1:NPosition, position_2:NPosition, display:bool=False) -> float:
         """Computes the cost of a transition between two positions.
@@ -332,11 +343,12 @@ if __name__ == "__main__":
     note_num = note2num("C4")
     print("Possible places for C4:", guitar.possible_places_one_note(note_num))
     
-    notes = [note2num(note) for note in ['A2', 'F#3', 'C4', 'E4']]
+    notes = [note2num(note) for note in ['C4']] # ['A2', 'F#3', 'C4', 'E4'], ['A2', 'G3', 'D4', 'E4']
+    print("Possible positions for notes:", notes)
     positions = guitar.possible_positions(notes)
-    for position in guitar.possible_positions(notes):
+    for position in positions:
         if guitar.is_valid_position(position):
             position = position.sort_by_string()
             print("Valid position:", position)
             print("Notes:", guitar.get_notes(position))
-            print(guitar.position_cost(position, display=True))
+            print(guitar.position_cost(position, display=False))
