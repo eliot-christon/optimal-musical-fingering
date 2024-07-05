@@ -57,20 +57,43 @@ if __name__ == "__main__":
         Dmin7 = ['D3', 'F3', 'C4', 'E4']
         Cmaj = ['C3', 'E3', 'G3']
 
+        # base_notes = [
+        #     Fmaj7,
+        #     ['E4'],
+        #     ['D4'],
+        #     ['C4'],
+        #     Amaj7,
+        #     ['G#4'],
+        #     ['F#4'],
+        #     ['F4'],
+        #     Dmin7,
+        #     ['C4'],
+        #     ['B3'],
+        #     ['A3'],
+        #     Cmaj]
+        
         base_notes = [
-            Fmaj7,
-            ['E4'],
-            ['D4'],
-            ['C4'],
-            Amaj7,
-            ['G#4'],
-            ['F#4'],
+            ['F3', 'A3'],
+            ['F4', 'A4'],
+            ['D4', 'F4'],
+            ['G3', 'A3'],
+            ['C4', 'E4'],
+            ['D4', 'F4'],
+            ['C4', 'E4'],
+            ['F3', 'Ab3'],
+            ['B3', 'D4'],
+            ['C4', 'E4'],
+            ['B3', 'D4'],
             ['F4'],
-            Dmin7,
-            ['C4'],
-            ['B3'],
-            ['A3'],
-            Cmaj]
+            ['D4'],
+            ['E3', 'G3'],
+            ['A3', 'C4'],
+            ['B3', 'D4'],
+            ['A3', 'C4']
+        ]
+
+
+
         base_notes = [[note2num(note) for note in notes] for notes in base_notes]
 
         all_possible_positions = []
