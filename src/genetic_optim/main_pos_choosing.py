@@ -89,8 +89,8 @@ if __name__ == "__main__":
                             save=True,
                             num_generations=100, 
                             num_population=1000,
-                            mutation_rate=0.05,
-                            crossover_rate=0.4,
+                            mutation_rate=0.1,
+                            crossover_rate=0.7,
                             genome_values=[list(range(len(all_possible_positions[i]))) for i in range(len(all_possible_positions))],
                             K_best=80
                             )
@@ -100,6 +100,14 @@ if __name__ == "__main__":
         positions = genome2positions(best_individual.genes, all_possible_positions)
         for i in range(len(positions)-1):
             pos = positions[i].sort_by_string()
+            print("_"*30)
             print(pos)
+            cost = guitar.position_cost(pos, display=True)
+            transition_cost = guitar.transition_cost(pos, positions[i+1], display=True)
+            print("cost:", cost, "transition cost:", transition_cost)
+        
+        print("Total cost:", -best_individual.fitness)
+
+        print(len(positions), "positions")
             
     scenario1()

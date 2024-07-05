@@ -37,7 +37,7 @@ class INeck(Instrument):
         }
         
         self.invalid_position_cost_penalty = 1000
-        self.hand_deplacement_penalty_factor = 3.0
+        self.hand_deplacement_penalty_factor = 10.0
         self.same_finger_same_string_same_fret_bonus = 2
         self.new_finger_cost = 2
         self.in_between_strings_cost = 15
@@ -129,9 +129,7 @@ class INeck(Instrument):
             
         # Sort the other placements by increasing fret
         position = position.sort_by_fret()
-        
-        print()
-
+    
         # Barring
         current_finger = 1
         if max(position.frets) == 0:
@@ -271,7 +269,7 @@ class INeck(Instrument):
             if finger > 0:
                 left_hand.append(fret - finger)
         if len(left_hand) == 0:
-            return 1
+            return -1
         return abs(sum(left_hand) / len(left_hand))
         
     def transition_cost(self, position_1:NPosition, position_2:NPosition, display:bool=False) -> float:
@@ -305,8 +303,11 @@ class INeck(Instrument):
         
         hand_pos_1 = self.hand_placements(position_1)
         hand_pos_2 = self.hand_placements(position_2)
-        
-        add = abs(hand_pos_2 - hand_pos_1) * self.hand_deplacement_penalty_factor
+
+        if hand_pos_1 == -1 or hand_pos_2 == -1:
+            add = 0
+        else:
+            add = abs(hand_pos_2 - hand_pos_1) * self.hand_deplacement_penalty_factor
         cost += add
         
         if display and add > 0: print("Left hand: {} -> {}, cost: {}".format(hand_pos_1, hand_pos_2, add))
