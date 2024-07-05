@@ -112,8 +112,8 @@ if __name__ == "__main__":
                             save=True,
                             num_generations=100, 
                             num_population=1000,
-                            mutation_rate=0.1,
-                            crossover_rate=0.7,
+                            mutation_rate=0.15,
+                            crossover_rate=0.6,
                             genome_values=[list(range(len(all_possible_positions[i]))) for i in range(len(all_possible_positions))],
                             K_best=80
                             )
