@@ -35,7 +35,7 @@ def getPosFromNotesAPI(notes: List[str], instrument: str):
     
     notesInt = [note2num(note) for note in notes]
 
-    return {"position": getPosFromNotes(notesInt, instrument)}
+    return getPosFromNotes(notesInt, instrument).to_json()
 
 
 if __name__ == "__main__":

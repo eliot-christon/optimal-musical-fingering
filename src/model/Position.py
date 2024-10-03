@@ -81,6 +81,10 @@ class NPosition(Position):
     
     def __repr__(self) -> str:
         return f"NPosition({self.placements}, {self.fingers}, {self.id})"
+    
+    def to_json(self) -> dict:
+        """Returns the position as a json"""
+        return {"strings": self.strings, "frets": self.frets, "fingers": self.fingers, "id": self.id}
         
     def sort_by_string(self, reverse=True) -> "NPosition":
         """Sorts the placements and fingers by string"""
