@@ -1,3 +1,13 @@
+/*
+Author: Eliot Christon
+email:  eliot.christon@gmail.com
+github: eliot-christon
+*/
+
+// Main JavaScript file for the UI
+// This file handles the dynamic generation of the instrument neck and API interactions
+
+
 const instrumentSelect = document.getElementById('instrument');
 const neckContainer = document.getElementById('neckContainer');
 

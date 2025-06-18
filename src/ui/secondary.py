@@ -3,7 +3,7 @@ __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 """
-This file contains the main UI of the application.
+This file contains the secondary UI of the application.
 I will use the tkinter library to create the UI.
 
 The UI will have the following components:
@@ -17,8 +17,7 @@ The position will be displayed as a red dot on the neck.
 """
 
 import tkinter as tk
-from tkinter import messagebox, ttk, StringVar, IntVar, END
-from typing import List
+from tkinter import messagebox, ttk, StringVar, END
 from requests import post, get
 
 URL = "http://localhost:8000/"
