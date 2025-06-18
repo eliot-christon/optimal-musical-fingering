@@ -23,9 +23,9 @@
     <!-- Combo box for selecting instrument -->
     <label for="instrument">Select Instrument:</label>
     <select id="instrument">
-        <option value="guitar">Guitar (6 strings)</option>
-        <option value="bass">Bass (4 strings)</option>
-        <option value="ukulele">Ukulele (4 strings)</option>
+        <option value="Guitar">Guitar (6 strings)</option>
+        <option value="Bass">Bass (4 strings)</option>
+        <option value="Ukulele">Ukulele (4 strings)</option>
     </select>
 
     <!-- Submit button -->
@@ -34,52 +34,7 @@
     <!-- Neck visualization -->
     <div class="neck-container" id="neckContainer"></div>
 
-    <script>
-        const instrumentSelect = document.getElementById('instrument');
-        const neckContainer = document.getElementById('neckContainer');
-
-        // Function to create the neck based on selected instrument
-        function drawNeck(stringsCount) {
-            neckContainer.innerHTML = ''; // Clear existing neck
-
-            // Create a container for the fretboard
-            const fretboard = document.createElement('div');
-            fretboard.classList.add('fretboard');
-            fretboard.style.gridTemplateColumns = `repeat(${stringsCount}, 1fr)`;
-
-            // Generate strings dynamically based on the number of strings
-            for (let i = 0; i < stringsCount; i++) {
-                const stringDiv = document.createElement('div');
-                stringDiv.classList.add('string');
-                fretboard.appendChild(stringDiv);
-            }
-
-            neckContainer.appendChild(fretboard);
-        }
-
-        // Event listener for instrument change to adjust neck visualization
-        instrumentSelect.addEventListener('change', function() {
-            const selectedInstrument = instrumentSelect.value;
-            if (selectedInstrument === 'guitar') {
-                drawNeck(6); // Guitar with 6 strings
-            } else if (selectedInstrument === 'bass') {
-                drawNeck(4); // Bass with 4 strings
-            } else if (selectedInstrument === 'ukulele') {
-                drawNeck(4); // Ukulele with 4 strings
-            }
-        });
-
-        // Draw the default neck on page load
-        drawNeck(6); // Guitar is default
-
-        // Handle submit button click (you can later add the API call here)
-        document.getElementById('submit').addEventListener('click', function() {
-            const notes = document.getElementById('notes').value;
-            const selectedInstrument = instrumentSelect.value;
-            alert(`Submitting notes: ${notes} for instrument: ${selectedInstrument}`);
-            // You can now use the notes and selected instrument to interact with your API
-        });
-    </script>
+    <script src="main.js"></script>
 
 </body>
 </html>
