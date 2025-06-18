@@ -81,6 +81,10 @@ class NPosition(Position):
     
     def __repr__(self) -> str:
         return f"NPosition({self.placements}, {self.fingers}, {self.id})"
+    
+    def to_json(self) -> dict:
+        """Returns the position as a json"""
+        return {"strings": self.strings, "frets": self.frets, "fingers": self.fingers, "id": self.id}
         
     def sort_by_string(self, reverse=True) -> "NPosition":
         """Sorts the placements and fingers by string"""
@@ -128,6 +132,27 @@ class NPosition(Position):
                 new_placements.append(-1)
         return NPosition(new_placements, self.fingers)
     
+    def shift(self, shift:int, max_finger:int=4) -> None:
+        """Shifts the position by a number of fingers.
+        Only non-quiet placements are shifted if max_finger doesn't occur in the position"""
+        if max_finger in self.fingers or max(self.fingers) + shift > max_finger:
+            return
+        # if finger > 0, shift finger
+        new_fingers = []
+        for i in range(len(self.placements)):
+            if self.fingers[i] > 0:
+                new_fingers.append(self.fingers[i] + shift)
+            else:
+                new_fingers.append(self.fingers[i])
+        self.fingers = new_fingers
+
+    def is_barre(self) -> bool:
+        """Returns True if the position is a barre.
+        is barre when same finger > 0 on multiple strings"""
+        non_quiet_fingers = [finger for finger in self.fingers if finger > 0]
+        return len(non_quiet_fingers) != len(set(non_quiet_fingers))
+
+
     def copy(self):
         """Returns a copy of the position"""
         return NPosition(self.placements.copy(), self.fingers.copy(), self.id)

@@ -67,7 +67,7 @@ class MidiRoll:
         fig, ax = plt.subplots(figsize=(15, 5))
 
         # Display the notes matrix as an image with grayscale color map
-        cax = ax.matshow(self.notes, aspect='auto', cmap='Grays')
+        cax = ax.matshow(self.notes, aspect='auto', cmap='Greys')
 
         # Set the y-axis ticks and labels
         yticks = np.arange(self.highest_note - self.lowest_note + 1)
@@ -169,6 +169,8 @@ if __name__ == "__main__":
         track = midi_file.better_tracks[track_number]
         print("Track {}: {}".format(track_number, track.name))
         return track.get_first_roll()
+
+
 
     roll = roll_2(5)
     roll.display(title="Roll 2")
