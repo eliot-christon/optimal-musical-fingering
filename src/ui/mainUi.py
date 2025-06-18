@@ -67,7 +67,7 @@ class MainUI:
             position = response.json()
             self.display_position(position)
         else:
-            messagebox.show
+            messagebox.showerror(str(response.status_code), response.text)
 
 
 if __name__ == "__main__":
