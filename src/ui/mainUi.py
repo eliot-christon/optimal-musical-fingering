@@ -62,9 +62,15 @@ class MainUI:
         else:
             messagebox.showerror("Error", "Instrument not found.")
             return
-        response = post(URL + "getPosFromNotes", json={"notes": notes, "instrument": instrument})
+
+        response = post(URL + "getPosFromNotes", json={
+            "notes": notes,
+            "instrument": instrument
+        }, headers={"Content-Type": "application/json"})
+        
         if response.status_code == 200:
             position = response.json()
+            print(position)
             self.display_position(position)
         else:
             messagebox.showerror(str(response.status_code), response.text)
