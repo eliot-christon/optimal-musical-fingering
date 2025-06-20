@@ -18,15 +18,38 @@ function drawNeck(stringsCount, fretsCount) {
     // Create a container for the fretboard
     const fretboard = document.createElement('div');
     fretboard.classList.add('fretboard');
-    fretboard.style.gridTemplateRows = `repeat(${stringsCount}, 1fr)`;
 
-    // Generate strings dynamically based on the number of strings
-    for (let i = 0; i < stringsCount; i++) {
-        const stringDiv = document.createElement('div');
-        stringDiv.classList.add('string');
-        fretboard.appendChild(stringDiv);
+    fretboard.style.setProperty('--strings-count', stringsCount);
+    fretboard.style.setProperty('--frets-count', fretsCount);
+
+    // Create grid frets * strings
+    for (let fret = 0; fret <= fretsCount; fret++) {
+        const fretLine = document.createElement('div');
+        fretLine.classList.add('fret');
+        fretLine.style.gridRow = `1 / span ${stringsCount}`;
+        fretLine.style.gridColumn = `${fret + 1}`;
+        // add marker if fret is 3, 5, 7, 9, or 12 in the middle of the fret
+        if ([2, 4, 6, 8, 11].includes(fret)) {
+            const marker = document.createElement('div');
+            marker.classList.add('fret-dot');
+            marker.style.gridRow = `5 / span 1`; // Center the marker vertically
+            marker.style.gridColumn = `${fret + 1}`;
+            fretLine.appendChild(marker);
+        }
+
+        fretboard.appendChild(fretLine);
     }
 
+    // Create strings
+    for (let string = 0; string < stringsCount; string++) {
+        const stringLine = document.createElement('div');
+        stringLine.classList.add('string');
+        stringLine.style.gridRow = `${string + 1}`;
+        stringLine.style.gridColumn = `1 / span ${fretsCount + 1}`;
+        fretboard.appendChild(stringLine);
+    }
+
+    // Append the fretboard to the neck container
     neckContainer.appendChild(fretboard);
 }
 

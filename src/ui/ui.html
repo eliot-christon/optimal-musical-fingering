@@ -7,8 +7,10 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         label { display: block; margin-top: 10px; }
-        .fretboard { display: grid; grid-template-rows: repeat(6, 1fr); margin-top: 20px; }
-        .string { height: 10px; border-bottom: 2px solid black; margin: 5px 0; }
+        .fretboard { display: grid; background-color: #FDF5DF; }
+        .fret { border-right: 3px solid #ccc; position: relative; }
+        .string { height: 10px; border-bottom: 2px solid black; margin: 5px 0; transform: translateY(-50%); }
+        .fret-dot { width: 10px; height: 10px; background-color: black; border: 1px solid white; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .neck-container { margin-top: 20px; }
     </style>
 </head>
