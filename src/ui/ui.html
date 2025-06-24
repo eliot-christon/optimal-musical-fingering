@@ -8,10 +8,12 @@
         body { font-family: Arial, sans-serif; margin: 20px; }
         label { display: block; margin-top: 10px; }
         .fretboard { display: grid; background-color: #FDF5DF; }
+        .nut { width: 10px; background-color: #D3D3D3; border-right: 2px solid black; }
         .fret { border-right: 3px solid #ccc; position: relative; }
         .string { height: 10px; border-bottom: 2px solid black; margin: 5px 0; transform: translateY(-50%); }
         .fret-dot { width: 10px; height: 10px; background-color: black; border: 1px solid white; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .neck-container { margin-top: 20px; }
+        .finger-dot { width: 10px; height: 10px; background-color: black; }
     </style>
 </head>
 <body>
@@ -26,6 +28,8 @@
     <label for="instrument">Select Instrument:</label>
     <select id="instrument">
         <option value="Guitar">Guitar (6 strings)</option>
+        <option value="Banjo">Banjo (5 strings)</option>
+        <option value="Mandolin">Mandolin (8 strings)</option>
         <option value="Bass">Bass (4 strings)</option>
         <option value="Ukulele">Ukulele (4 strings)</option>
     </select>

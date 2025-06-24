@@ -10,6 +10,7 @@ github: eliot-christon
 
 const instrumentSelect = document.getElementById('instrument');
 const neckContainer = document.getElementById('neckContainer');
+const fretboard = document.createElement('div');
 
 // Function to create the neck based on selected instrument
 function drawNeck(stringsCount, fretsCount) {
@@ -22,21 +23,29 @@ function drawNeck(stringsCount, fretsCount) {
     fretboard.style.setProperty('--strings-count', stringsCount);
     fretboard.style.setProperty('--frets-count', fretsCount);
 
+    // Add nut line for the first fret
+    const nutLine = document.createElement('div');
+    nutLine.classList.add('nut');
+    nutLine.style.gridRow = `1 / span ${stringsCount}`;
+    nutLine.style.gridColumn = `1`;
+
+
+    fretboard.appendChild(nutLine);
+
     // Create grid frets * strings
-    for (let fret = 0; fret <= fretsCount; fret++) {
+    for (let fret = 0; fret <= fretsCount-1; fret++) {
         const fretLine = document.createElement('div');
         fretLine.classList.add('fret');
         fretLine.style.gridRow = `1 / span ${stringsCount}`;
         fretLine.style.gridColumn = `${fret + 1}`;
         // add marker if fret is 3, 5, 7, 9, or 12 in the middle of the fret
-        if ([2, 4, 6, 8, 11].includes(fret)) {
+        if ([2, 4, 6, 8, 11, 14, 16, 18, 20, 23].includes(fret)) {
             const marker = document.createElement('div');
             marker.classList.add('fret-dot');
             marker.style.gridRow = `5 / span 1`; // Center the marker vertically
             marker.style.gridColumn = `${fret + 1}`;
             fretLine.appendChild(marker);
         }
-
         fretboard.appendChild(fretLine);
     }
 
@@ -45,7 +54,7 @@ function drawNeck(stringsCount, fretsCount) {
         const stringLine = document.createElement('div');
         stringLine.classList.add('string');
         stringLine.style.gridRow = `${string + 1}`;
-        stringLine.style.gridColumn = `1 / span ${fretsCount + 1}`;
+        stringLine.style.gridColumn = `1 / span ${fretsCount}`;
         fretboard.appendChild(stringLine);
     }
 
@@ -53,15 +62,24 @@ function drawNeck(stringsCount, fretsCount) {
     neckContainer.appendChild(fretboard);
 }
 
+
+function drawPosition(inputData) {
+    // TODO
+}
+
 // Event listener for instrument change to adjust neck visualization
 instrumentSelect.addEventListener('change', function() {
     const selectedInstrument = instrumentSelect.value;
     if (selectedInstrument === 'Guitar') {
-        drawNeck(6, 12); // Guitar with 6 strings
+        drawNeck(6, 12, ["E", "A", "D", "G", "B", "E"]); // Guitar with 6 strings
+    } else if (selectedInstrument === 'Mandolin') {
+        drawNeck(8, 12,  ["G", "D", "A", "E", "G", "D", "A", "E"]); // Mandolin with 8 strings
+    } else if (selectedInstrument === 'Banjo') {
+        drawNeck(5, 22, ["G", "D", "G", "B", "D"]); // Banjo with 5 strings
     } else if (selectedInstrument === 'Bass') {
-        drawNeck(4, 12); // Bass with 4 strings
+        drawNeck(4, 12, ["E", "A", "D", "G"]); // Bass with 4 strings
     } else if (selectedInstrument === 'Ukulele') {
-        drawNeck(4, 10); // Ukulele with 4 strings
+        drawNeck(4, 10, ["G", "C", "E", "A"]); // Ukulele with 4 strings
     }
 });
 
@@ -97,6 +115,9 @@ document.getElementById('submit').addEventListener('click', async function() {
 
         const data = await response.json();
         console.log(data);
+
+        drawPosition(data)
+
 
     } catch (error) {
         console.error('Error:', error);
