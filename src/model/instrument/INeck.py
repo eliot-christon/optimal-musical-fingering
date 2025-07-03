@@ -25,6 +25,15 @@ class INeck(Instrument):
         super().__init__(name, "Strings", description, range, fingers)
         self.__basic_attributes()
         
+    
+    def detail(self) -> dict:
+        return {
+            "strings"    : self.open_strings,
+            "frets"      : self.number_of_frets,
+            "range"      : self.range,
+            "description": self.description,
+        }
+        
         
     def __basic_attributes(self):
         self.string_gap_dificulty_factor = {

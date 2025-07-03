@@ -8,9 +8,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .getPosFromNotes import getPosFromNotes
+from ..model.instrument.INeck import Guitar, Ukulele, Bass, Banjo, Mandolin, INeck
+
+instrument_classes = {
+    "Guitar"  : Guitar,
+    "Ukulele" : Ukulele,
+    "Banjo"   : Banjo,
+    "Mandolin": Mandolin,
+    "Bass"    : Bass,
+}
 
 class NoteInput(BaseModel):
     notes: List[str]
+    instrument: str
+
+class InstrumentInput(BaseModel):
     instrument: str
 
 app = FastAPI()
@@ -28,6 +40,23 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/get_instrument_details")
+def getInstrumentDetails(input: InstrumentInput):
+    """
+    Args:
+        instrument (str): The instrument name
+
+    Returns:
+        dict: instrument details
+    """
+    instrument = INeck()
+    if input.instrument in instrument_classes.keys():
+        instrument = instrument_classes[input.instrument]()
+    else:
+        return {"error": "Instrument not found."}
+    return instrument.detail()
+
+
 @app.post("/getPosFromNotes")
 def getPosFromNotesAPI(input: NoteInput):
     """
@@ -41,21 +70,8 @@ def getPosFromNotesAPI(input: NoteInput):
         NPosition: The position to play the notes on the instrument.
     """
     
-    if input.instrument == "Guitar":
-        from ..model.instrument.INeck import Guitar
-        instrument = Guitar()
-    elif input.instrument == "Ukulele":
-        from ..model.instrument.INeck import Ukulele
-        instrument = Ukulele()
-    elif input.instrument == "Banjo":
-        from ..model.instrument.INeck import Banjo
-        instrument = Banjo()
-    elif input.instrument == "Mandolin":
-        from ..model.instrument.INeck import Mandolin
-        instrument = Mandolin()
-    elif input.instrument == "Bass":
-        from ..model.instrument.INeck import Bass
-        instrument = Bass()
+    if input.instrument in instrument_classes.keys():
+        instrument = instrument_classes[input.instrument]()
     else:
         return {"error": "Instrument not found."}
     
