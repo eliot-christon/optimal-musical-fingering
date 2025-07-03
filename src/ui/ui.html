@@ -5,15 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instrument Neck Visualizer</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        label { display: block; margin-top: 10px; }
-        .fretboard { display: grid; background-color: #FDF5DF; }
-        .nut { width: 10px; background-color: #D3D3D3; border-right: 2px solid black; }
-        .fret { border-right: 3px solid #ccc; position: relative; }
-        .string { height: 10px; border-bottom: 2px solid black; margin: 5px 0; transform: translateY(-50%); }
-        .fret-dot { width: 10px; height: 10px; background-color: black; border: 1px solid white; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .neck-container { margin-top: 20px; }
-        .finger-dot { width: 10px; height: 10px; background-color: black; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        .fretboard {
+            display: grid;
+            background-color: #FDF5DF;
+        }
+        .nut {
+            width: 10px;
+            background-color: #D3D3D3;
+            border-right: 2px solid black;
+        }
+        .fret {
+            border-right: 3px solid #ccc;
+            position: relative;
+        }
+        .string {
+            height: 10px;
+            border-bottom: 2px solid black;
+            margin: 5px 0;
+            transform: translateY(-50%);
+        }
+        .fret-dot {
+            width: 10px;
+            height: 10px;
+            background-color:black;
+            border: 1px solid white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .neck-container {
+            margin-top: 20px;
+        }
+        .finger-dot {
+            width: 10px;
+            height: 10px;
+            background-color:black;
+        }
+        .note-position {
+            background-color: red;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            margin: auto;
+
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 0.8em;
+            padding: 0.2em;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>

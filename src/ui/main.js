@@ -63,9 +63,33 @@ function drawNeck(stringsCount, fretsCount) {
 }
 
 
-function drawPosition(inputData) {
-    // TODO
+function drawPosition(data) {
+    // Search for active fretboard
+    const fretboard = document.querySelector('.fretboard');
+    if (!fretboard || !data?.frets || !data?.strings) return;
+
+    // Delete old markers
+    fretboard.querySelectorAll('.note-position').forEach(marker => marker.remove());
+
+    const { frets, strings, fingers } = data;
+
+    for (let i = 0; i < frets.length; i++) {
+        const fret = frets[i];
+        const string = strings[i];
+        const finger = fingers[i];
+
+        const noteMarker = document.createElement('div');
+        noteMarker.classList.add('note-position');
+        noteMarker.textContent = finger === 0 ? 'O' : finger; // "O" pour corde à vide
+
+        noteMarker.style.gridRow = `${string}`;
+        noteMarker.style.gridColumn = `${fret}`;
+
+        fretboard.appendChild(noteMarker);
+    }
 }
+
+
 
 // Event listener for instrument change to adjust neck visualization
 instrumentSelect.addEventListener('change', function() {
