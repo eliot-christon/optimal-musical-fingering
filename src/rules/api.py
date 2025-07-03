@@ -43,10 +43,23 @@ def getPosFromNotesAPI(input: NoteInput):
     
     if input.instrument == "Guitar":
         from ..model.instrument.INeck import Guitar
-        from ..model.utils.note2num import note2num
         instrument = Guitar()
+    elif input.instrument == "Ukulele":
+        from ..model.instrument.INeck import Ukulele
+        instrument = Ukulele()
+    elif input.instrument == "Banjo":
+        from ..model.instrument.INeck import Banjo
+        instrument = Banjo()
+    elif input.instrument == "Mandolin":
+        from ..model.instrument.INeck import Mandolin
+        instrument = Mandolin()
+    elif input.instrument == "Bass":
+        from ..model.instrument.INeck import Bass
+        instrument = Bass()
     else:
         return {"error": "Instrument not found."}
+    
+    from ..model.utils.note2num import note2num
     
     notesInt = [note2num(note) for note in input.notes]
 
