@@ -11,6 +11,7 @@ github: eliot-christon
 const instrumentSelect = document.getElementById('instrument');
 const neckContainer = document.getElementById('neckContainer');
 const fretboard = document.createElement('div');
+const apiUrl = "http://localhost:8000";
 
 // Function to create the neck based on selected instrument
 function drawNeck(stringsCount, fretsCount) {
@@ -90,29 +91,33 @@ function drawPosition(data) {
 }
 
 
-
 // Event listener for instrument change to adjust neck visualization
 instrumentSelect.addEventListener('change', function() {
     const selectedInstrument = instrumentSelect.value;
-    if (selectedInstrument === 'Guitar') {
-        drawNeck(6, 12, ["E", "A", "D", "G", "B", "E"]); // Guitar with 6 strings
-    } else if (selectedInstrument === 'Mandolin') {
-        drawNeck(8, 12,  ["G", "D", "A", "E", "G", "D", "A", "E"]); // Mandolin with 8 strings
-    } else if (selectedInstrument === 'Banjo') {
-        drawNeck(5, 22, ["G", "D", "G", "B", "D"]); // Banjo with 5 strings
-    } else if (selectedInstrument === 'Bass') {
-        drawNeck(4, 12, ["E", "A", "D", "G"]); // Bass with 4 strings
-    } else if (selectedInstrument === 'Ukulele') {
-        drawNeck(4, 10, ["G", "C", "E", "A"]); // Ukulele with 4 strings
-    }
+
+    fetch(`${apiUrl}/getInstrumentDetails?instrument_name=${selectedInstrument}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to fetch instrument details: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const frets = data.frets || 12;
+        const openStrings = data.strings || ["E4"];
+        alert(data.strings)
+        drawNeck(openStrings.length, frets, openStrings);
+    })
+    .catch(error => {
+        console.error('Error fetching instrument details:', error);
+    });
+
 });
 
 // Draw the default neck on page load
 drawNeck(6, 12); // Guitar is default
 
 // Handle submit button click
-// API call : post at url: "http://localhost:8000/getPosFromNotes"
-const apiUrl = "http://localhost:8000/getPosFromNotes";
 document.getElementById('submit').addEventListener('click', async function() {
     const notes = document.getElementById('notes').value;
     const selectedInstrument = instrumentSelect.value;
@@ -122,7 +127,7 @@ document.getElementById('submit').addEventListener('click', async function() {
     const notesArray = notes.split(' ').map(note => note.trim()).filter(note => note !== '');
 
     try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch(apiUrl + "/getPosFromNotes", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

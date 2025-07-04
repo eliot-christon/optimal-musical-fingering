@@ -28,7 +28,7 @@ class INeck(Instrument):
     
     def detail(self) -> dict:
         return {
-            "strings"    : self.open_strings,
+            "strings"    : [num2note(note) for note in self.open_strings],
             "frets"      : self.number_of_frets,
             "range"      : self.range,
             "description": self.description,

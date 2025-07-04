@@ -22,9 +22,6 @@ class NoteInput(BaseModel):
     notes: List[str]
     instrument: str
 
-class InstrumentInput(BaseModel):
-    instrument: str
-
 app = FastAPI()
 
 # Allow CORS for all origins
@@ -40,8 +37,8 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/get_instrument_details")
-def getInstrumentDetails(input: InstrumentInput):
+@app.get("/getInstrumentDetails")
+def getInstrumentDetails(instrument_name: str):
     """
     Args:
         instrument (str): The instrument name
@@ -50,8 +47,8 @@ def getInstrumentDetails(input: InstrumentInput):
         dict: instrument details
     """
     instrument = INeck()
-    if input.instrument in instrument_classes.keys():
-        instrument = instrument_classes[input.instrument]()
+    if instrument_name in instrument_classes.keys():
+        instrument = instrument_classes[instrument_name]()
     else:
         return {"error": "Instrument not found."}
     return instrument.detail()
@@ -85,12 +82,3 @@ def getPosFromNotesAPI(input: NoteInput):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="localhost", port=8000)
-    
-    # simulating a post request
-    import requests
-    response = requests.post("http://localhost:8000/getPosFromNotes", json={
-        "notes": ["C4", "E4", "G4"],
-        "instrument": "Guitar",
-    }, headers={"Content-Type": "application/json"})
-    
-    print(response.json())
