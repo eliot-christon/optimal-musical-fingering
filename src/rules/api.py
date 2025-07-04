@@ -8,14 +8,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .getPosFromNotes import getPosFromNotes
-from ..model.instrument.INeck import Guitar, Ukulele, Bass, Banjo, Mandolin, INeck
+from ..model.instrument.INeck import Guitar, Ukulele, Bass, Banjo, Mandolin, INeck, Guitarlele
 
 instrument_classes = {
-    "Guitar"  : Guitar,
-    "Ukulele" : Ukulele,
-    "Banjo"   : Banjo,
-    "Mandolin": Mandolin,
-    "Bass"    : Bass,
+    "Guitar"    : Guitar,
+    "Ukulele"   : Ukulele,
+    "Banjo"     : Banjo,
+    "Mandolin"  : Mandolin,
+    "Bass"      : Bass,
+    "Guitarlele": Guitarlele
 }
 
 class NoteInput(BaseModel):

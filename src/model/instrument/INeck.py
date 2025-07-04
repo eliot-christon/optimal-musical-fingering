@@ -329,7 +329,6 @@ class Guitar(INeck):
     def __init__(self):
         super().__init__("guitar", "Basic guitar", number_of_frets=12, open_strings=["E4", "B3", "G3", "D3", "A2", "E2"])
 
-
 class Ukulele(INeck):
     """Class representing a ukulele instrument"""
     def __init__(self):
@@ -349,6 +348,11 @@ class Mandolin(INeck):
     """Class representing a mandolin instrument"""
     def __init__(self):
         super().__init__("bass", "Basic mandolin", number_of_frets=18, open_strings=["E5", "E5", "A4", "A4", "D4", "D4", "G4", "G4"])
+
+class Guitarlele(INeck):
+    """Class representing a guitarlele instrument"""
+    def __init__(self):
+        super().__init__("guitarlele", "Basic guitarlele", number_of_frets=12, open_strings=["A4", "E4", "C4", "G3", "D3", "A2"])
 
 
 if __name__ == "__main__":
