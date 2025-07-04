@@ -16,6 +16,10 @@
         .fretboard {
             display: grid;
             background-color: #FDF5DF;
+            grid-template-rows: repeat(var(--strings-count), 1fr);
+            grid-template-columns: 35px repeat(calc(var(--frets-count) - 1), 1fr);
+            gap: 1px;
+            position: relative;
         }
         .nut {
             width: 10px;
@@ -67,6 +71,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        .string-label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 4px;
+            font-weight: bold;
         }
     </style>
 </head>

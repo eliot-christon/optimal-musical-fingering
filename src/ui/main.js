@@ -14,37 +14,44 @@ const fretboard = document.createElement('div');
 const apiUrl = "http://localhost:8000";
 
 // Function to create the neck based on selected instrument
-function drawNeck(stringsCount, fretsCount) {
+function drawNeck(stringsCount, fretsCount, openStrings = []) {
     neckContainer.innerHTML = ''; // Clear existing neck
 
-    // Create a container for the fretboard
     const fretboard = document.createElement('div');
     fretboard.classList.add('fretboard');
 
     fretboard.style.setProperty('--strings-count', stringsCount);
-    fretboard.style.setProperty('--frets-count', fretsCount);
+    fretboard.style.setProperty('--frets-count', fretsCount + 1); // +1 to leave room for labels
 
-    // Add nut line for the first fret
+    // Add open string labels (before nut)
+    for (let string = 0; string < stringsCount; string++) {
+        const stringLabel = document.createElement('div');
+        stringLabel.classList.add('string-label');
+        stringLabel.textContent = openStrings[string] || ''; // Use empty if undefined
+        stringLabel.style.gridRow = `${string + 1}`;
+        stringLabel.style.gridColumn = `1`; // Before nut
+
+        fretboard.appendChild(stringLabel);
+    }
+
+    // Add nut line (first fret)
     const nutLine = document.createElement('div');
     nutLine.classList.add('nut');
     nutLine.style.gridRow = `1 / span ${stringsCount}`;
-    nutLine.style.gridColumn = `1`;
-
-
+    nutLine.style.gridColumn = `2`; // After label column
     fretboard.appendChild(nutLine);
 
-    // Create grid frets * strings
-    for (let fret = 0; fret <= fretsCount-1; fret++) {
+    // Create fret lines
+    for (let fret = 0; fret < fretsCount; fret++) {
         const fretLine = document.createElement('div');
         fretLine.classList.add('fret');
         fretLine.style.gridRow = `1 / span ${stringsCount}`;
-        fretLine.style.gridColumn = `${fret + 1}`;
-        // add marker if fret is 3, 5, 7, 9, or 12 in the middle of the fret
+        fretLine.style.gridColumn = `${fret + 2}`; // +2 for label and nut
         if ([2, 4, 6, 8, 11, 14, 16, 18, 20, 23].includes(fret)) {
             const marker = document.createElement('div');
             marker.classList.add('fret-dot');
-            marker.style.gridRow = `5 / span 1`; // Center the marker vertically
-            marker.style.gridColumn = `${fret + 1}`;
+            marker.style.gridRow = `5 / span 1`;
+            marker.style.gridColumn = `${fret + 2}`;
             fretLine.appendChild(marker);
         }
         fretboard.appendChild(fretLine);
@@ -55,14 +62,12 @@ function drawNeck(stringsCount, fretsCount) {
         const stringLine = document.createElement('div');
         stringLine.classList.add('string');
         stringLine.style.gridRow = `${string + 1}`;
-        stringLine.style.gridColumn = `1 / span ${fretsCount}`;
+        stringLine.style.gridColumn = `2 / span ${fretsCount}`;
         fretboard.appendChild(stringLine);
     }
 
-    // Append the fretboard to the neck container
     neckContainer.appendChild(fretboard);
 }
-
 
 function drawPosition(data) {
     // Search for active fretboard
@@ -84,7 +89,7 @@ function drawPosition(data) {
         noteMarker.textContent = finger === 0 ? 'O' : finger; // "O" pour corde à vide
 
         noteMarker.style.gridRow = `${string}`;
-        noteMarker.style.gridColumn = `${fret}`;
+        noteMarker.style.gridColumn = `${fret + 1}`;
 
         fretboard.appendChild(noteMarker);
     }
@@ -105,7 +110,6 @@ instrumentSelect.addEventListener('change', function() {
     .then(data => {
         const frets = data.frets || 12;
         const openStrings = data.strings || ["E4"];
-        alert(data.strings)
         drawNeck(openStrings.length, frets, openStrings);
     })
     .catch(error => {
@@ -113,9 +117,6 @@ instrumentSelect.addEventListener('change', function() {
     });
 
 });
-
-// Draw the default neck on page load
-drawNeck(6, 12); // Guitar is default
 
 // Handle submit button click
 document.getElementById('submit').addEventListener('click', async function() {
