@@ -1,0 +1,52 @@
+"""
+This module contains the logic for determining the optimal finger positions
+for a given set of musical notes and a specific instrument.
+"""
+
+__author__ = "Eliot Christon"
+__email__  = "eliot.christon@gmail.com"
+__github__ = "eliot-christon"
+
+from typing import List
+
+from ..model.instrument.neck_instrument import NeckInstrument
+from ..model.position import NPosition
+
+def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> NPosition:
+    """
+    This function takes a list of notes and an instrument and returns a position.
+
+    Parameters:
+        notes (List[str]): A list of notes.
+        instrument (INeck): A neck instrument.
+
+    Returns:
+        NPosition: The position to play the notes on the instrument.
+    """
+
+    possible_positions = input_instrument.possible_positions(notes)
+    possible_positions = [pos for pos in possible_positions
+                          if input_instrument.is_valid_position(pos)]
+
+    if len(possible_positions) == 0:
+        return -1
+
+    best_position = possible_positions[0]
+
+    for position in possible_positions:
+        if input_instrument.position_cost(position) < input_instrument.position_cost(best_position):
+            best_position = position
+
+    return best_position
+
+
+
+if __name__ == "__main__":
+
+    from ..model.instrument.neck_instrument import Guitar
+    from ..model.utils.note2num import note2num
+
+    instrument = Guitar()
+    notesInt = [note2num(note) for note in ['A2', 'F#3', 'C4', 'E4']]
+
+    print(get_pos_from_notes(notesInt, instrument))

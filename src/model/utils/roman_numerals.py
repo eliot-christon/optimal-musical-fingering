@@ -1,3 +1,8 @@
+"""
+This module contains a function to convert numbers to Roman numerals.
+Romans numerals are a numeral system originating from ancient Rome,
+using combinations of letters from the Latin alphabet (I, V, X, L, C, D, M).
+"""
 __author__ = "Eliot Christon"
 __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
@@ -5,7 +10,7 @@ __github__ = "eliot-christon"
 def convert_to_roman(num:int) -> str:
     """Convert a number to a roman numeral"""
     if num < 0 or num > 3999:
-        raise ValueError("The number {} is not in the range of a roman numeral (1-3999)".format(num))
+        raise ValueError(f"The number {num} is not in the range of a roman numeral (1-3999)")
     elif num == 0:
         return "-"
     roman_numerals = [

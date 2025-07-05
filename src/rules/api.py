@@ -1,14 +1,19 @@
+"""
+This module provides an API for interacting with musical instruments and their finger positions.
+"""
 __author__ = "Eliot Christon"
 __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
-from pydantic import BaseModel
 from typing import List
+from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .getPosFromNotes import getPosFromNotes
-from ..model.instrument.INeck import Guitar, Ukulele, Bass, Banjo, Mandolin, INeck, Guitarlele
+from .get_pos_from_notes import get_pos_from_notes
+from ..model.instrument.neck_instrument import \
+    Guitar, Ukulele, Bass, Banjo, Mandolin, NeckInstrument, Guitarlele
+from ..model.utils.note2num import note2num
 
 instrument_classes = {
     "Guitar"    : Guitar,
@@ -20,6 +25,7 @@ instrument_classes = {
 }
 
 class NoteInput(BaseModel):
+    """This class represents the input for the getPosFromNotes API endpoint."""
     notes: List[str]
     instrument: str
 
@@ -36,10 +42,11 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    """Root endpoint for the API."""
+    return {"message": "Welcome to the Musical Instrument API!"}
 
 @app.get("/getInstrumentDetails")
-def getInstrumentDetails(instrument_name: str):
+def get_instrument_details(instrument_name: str):
     """
     Args:
         instrument (str): The instrument name
@@ -47,8 +54,8 @@ def getInstrumentDetails(instrument_name: str):
     Returns:
         dict: instrument details
     """
-    instrument = INeck()
-    if instrument_name in instrument_classes.keys():
+    instrument = NeckInstrument()
+    if instrument_name in instrument_classes:
         instrument = instrument_classes[instrument_name]()
     else:
         return {"error": "Instrument not found."}
@@ -56,7 +63,7 @@ def getInstrumentDetails(instrument_name: str):
 
 
 @app.post("/getPosFromNotes")
-def getPosFromNotesAPI(input: NoteInput):
+def get_pos_from_notes_api(note_input: NoteInput):
     """
     This function takes a list of notes and an instrument and returns a position.
 
@@ -67,17 +74,15 @@ def getPosFromNotesAPI(input: NoteInput):
     Returns:
         NPosition: The position to play the notes on the instrument.
     """
-    
-    if input.instrument in instrument_classes.keys():
-        instrument = instrument_classes[input.instrument]()
+
+    if note_input.instrument in instrument_classes:
+        instrument = instrument_classes[note_input.instrument]()
     else:
         return {"error": "Instrument not found."}
-    
-    from ..model.utils.note2num import note2num
-    
-    notesInt = [note2num(note) for note in input.notes]
 
-    return getPosFromNotes(notesInt, instrument).to_json()
+    notes_int = [note2num(note) for note in note_input.notes]
+
+    return get_pos_from_notes(notes_int, instrument).to_json()
 
 
 if __name__ == "__main__":

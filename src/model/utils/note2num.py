@@ -1,3 +1,6 @@
+"""
+This module provides a function to convert musical notes to their corresponding MIDI note numbers.
+"""
 __author__ = "Eliot Christon"
 __email__  = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
@@ -14,25 +17,12 @@ def note2num(note:str) -> int:
     else:
         alt = ""
         octave = int(note[1:])
-    
+
     num = notes[letter] + 12 * octave
     num += 1 * (alt == "#") - 1 * (alt == "b")
 
     if num < 0 or num > 127:
-        raise ValueError("The note {} is not in the range of a midi note number (0-127), number is {}".format(note, num))
+        raise ValueError(\
+            f"The note {note} is not in the range of a midi note number (0-127), number is {num}")
 
     return num
-
-
-assert note2num("C0")   == 0
-assert note2num("C#0")  == 1
-assert note2num("C1")   == 12
-assert note2num("G10")  == 127
-assert note2num("A5")   == 69
-assert note2num("C#4")  == 49
-assert note2num("Bb3")  == 46
-
-
-if __name__ == "__main__":
-
-    print(note2num("A2"))
