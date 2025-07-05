@@ -2,4 +2,3 @@
 *.pyc
 *.npy
 *venv
-!src/genetic_optim/saved/fitnesses.npy
