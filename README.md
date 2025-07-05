@@ -2,4 +2,4 @@
 Objective : Find the best fingering to play songs on neck instruments.
 
 
-![Visualization](img/Visualization.png)
+![Visualization](frontend/static/visualization.png)
