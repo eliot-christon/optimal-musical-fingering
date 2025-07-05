@@ -10,9 +10,9 @@ __github__ = "eliot-christon"
 from typing import List
 
 from ..model.instrument.neck_instrument import NeckInstrument
-from ..model.position import NPosition
+from ..model.neck_position import NeckPosition
 
-def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> NPosition:
+def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> NeckPosition:
     """
     This function takes a list of notes and an instrument and returns a position.
 
@@ -21,7 +21,7 @@ def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> NP
         instrument (INeck): A neck instrument.
 
     Returns:
-        NPosition: The position to play the notes on the instrument.
+        NeckPosition: The position to play the notes on the instrument.
     """
 
     possible_positions = input_instrument.possible_positions(notes)
