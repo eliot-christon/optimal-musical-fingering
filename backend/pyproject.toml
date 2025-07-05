@@ -1,0 +1,43 @@
+[project]
+name = "optimal-musical-fingering"
+version = "1.0.0"
+description = "The goal of this project is to provide a web service that can compute the optimal fingering for a given musical piece, taking into account the instrument."
+readme = "README.md"
+authors = [
+  { name = "Eliot CHRISTON", email = "eliot.christon@gmail.com" },
+]
+
+requires-python = ">=3.12"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "fastapi==0.115.14",
+  "pydantic==2.11.7",
+  "Requests==2.32.4",
+  "uvicorn==0.35.0"
+]
+urls.repository = "https://github.com/eliot-christon/optimal-musical-fingering"
+[project.optional-dependencies]
+dev = [
+  "pylint==3.3.7",
+]
+
+[tool.pylint]
+max-line-length = 100
+max-positional-arguments = 10
+max-args = 10
+max-nested-blocks = 10
+min-public-methods = 0
+max-attributes = 10
+max-locals = 20
+max-branches = 25
+disable = [
+  "missing-module-docstring",
+  "missing-function-docstring",
+  "missing-class-docstring",
+  "line-too-long",
+]
+unsafe-load-any-extension = true
