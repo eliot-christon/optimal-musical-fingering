@@ -35,8 +35,8 @@ class TestAPI(unittest.TestCase):
 
     def test_get_instrument_details(self):
         """Test the /getInstrumentDetails endpoint with a specific instrument."""
-        response = requests.get(f"{URL}/getInstrumentDetails", json={
-            "instrument": "Guitar",
+        response = requests.get(f"{URL}/getInstrumentDetails", params={
+            "instrument_name": "Guitar",
         }, headers={"Content-Type": "application/json"}, timeout=10)
         response = response.json()
         self.assertIn("strings", response)

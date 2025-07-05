@@ -11,9 +11,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .get_pos_from_notes import get_pos_from_notes
-from ..model.instrument.neck_instrument import \
+from ..instruments.neck_instrument import \
     Guitar, Ukulele, Bass, Banjo, Mandolin, NeckInstrument, Guitarlele
-from ..model.utils.note2num import note2num
+from ..utils.note2num import note2num
 
 instrument_classes = {
     "Guitar"    : Guitar,

@@ -10,7 +10,7 @@ __github__ = "eliot-christon"
 
 from typing import List
 
-from .utils.roman_numerals import convert_to_roman
+from ..utils.roman_numerals import convert_to_roman
 from .position import Position
 
 

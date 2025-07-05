@@ -9,7 +9,7 @@ __github__ = "eliot-christon"
 from typing import Tuple, Dict
 
 from ..utils.note2num import note2num
-from ..position import Position
+from ..positions.position import Position
 
 class Instrument:
     """Class representing an instrument"""

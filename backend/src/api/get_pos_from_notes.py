@@ -9,8 +9,8 @@ __github__ = "eliot-christon"
 
 from typing import List
 
-from ..model.instrument.neck_instrument import NeckInstrument
-from ..model.neck_position import NeckPosition
+from ..instruments.neck_instrument import NeckInstrument
+from ..positions.neck_position import NeckPosition
 
 def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> NeckPosition:
     """
@@ -38,15 +38,3 @@ def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> Ne
             best_position = position
 
     return best_position
-
-
-
-if __name__ == "__main__":
-
-    from ..model.instrument.neck_instrument import Guitar
-    from ..model.utils.note2num import note2num
-
-    instrument = Guitar()
-    notesInt = [note2num(note) for note in ['A2', 'F#3', 'C4', 'E4']]
-
-    print(get_pos_from_notes(notesInt, instrument))

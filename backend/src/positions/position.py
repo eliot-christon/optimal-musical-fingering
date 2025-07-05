@@ -10,7 +10,7 @@ __github__ = "eliot-christon"
 
 from typing import List
 
-from .utils.note2num import note2num
+from ..utils.note2num import note2num
 
 
 class Position:

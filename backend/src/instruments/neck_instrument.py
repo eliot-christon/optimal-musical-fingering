@@ -9,7 +9,7 @@ __github__ = "eliot-christon"
 from typing import Tuple, Dict, List
 
 from .instrument import Instrument
-from ..neck_position import NeckPosition
+from ..positions.neck_position import NeckPosition
 from ..utils.note2num import note2num
 from ..utils.num2note import num2note
 
