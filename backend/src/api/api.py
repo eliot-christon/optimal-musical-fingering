@@ -1,33 +1,44 @@
 """
 This module provides an API for interacting with musical instruments and their finger positions.
 """
+
 __author__ = "Eliot Christon"
-__email__  = "eliot.christon@gmail.com"
+__email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
-from typing import List
-from pydantic import BaseModel
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
-from .get_pos_from_notes import get_pos_from_notes
-from ..instruments.neck_instrument import \
-    Guitar, Ukulele, Bass, Banjo, Mandolin, NeckInstrument, Guitarlele
+from ..instruments.neck_instrument import (
+    Banjo,
+    Bass,
+    Guitar,
+    Guitarlele,
+    Mandolin,
+    NeckInstrument,
+    Ukulele,
+)
 from ..utils.note2num import note2num
+from .get_pos_from_notes import get_pos_from_notes
 
 instrument_classes = {
-    "Guitar"    : Guitar,
-    "Ukulele"   : Ukulele,
-    "Banjo"     : Banjo,
-    "Mandolin"  : Mandolin,
-    "Bass"      : Bass,
-    "Guitarlele": Guitarlele
+    "Guitar": Guitar,
+    "Ukulele": Ukulele,
+    "Banjo": Banjo,
+    "Mandolin": Mandolin,
+    "Bass": Bass,
+    "Guitarlele": Guitarlele,
 }
+
 
 class NoteInput(BaseModel):
     """This class represents the input for the getPosFromNotes API endpoint."""
-    notes: List[str]
+
+    notes: list[str]
     instrument: str
+
 
 app = FastAPI()
 
@@ -40,10 +51,12 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+
 @app.get("/")
 def read_root():
     """Root endpoint for the API."""
     return {"message": "Welcome to the Musical Instrument API!"}
+
 
 @app.get("/getInstrumentDetails")
 def get_instrument_details(instrument_name: str):
@@ -87,4 +100,5 @@ def get_pos_from_notes_api(note_input: NoteInput):
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="localhost", port=8000)

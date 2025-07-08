@@ -2,26 +2,28 @@
 This module contains the Instrument class,
 which represents a musical instrument and its properties.
 """
+
 __author__ = "Eliot Christon"
-__email__  = "eliot.christon@gmail.com"
+__email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
-from typing import Tuple, Dict
 
-from ..utils.note2num import note2num
 from ..positions.position import Position
+from ..utils.note2num import note2num
+
 
 class Instrument:
     """Class representing an instrument"""
 
-    def __init__(self,
-                 name:str,
-                 family:str,
-                 description:str,
-                 note_range:Tuple[str, str],
-                 # (min, max), 0 is the lowest note (C0), 127 is the highest note (G10)
-                 fingers:Dict[int, str] = None
-                 ):
+    def __init__(
+        self,
+        name: str,
+        family: str,
+        description: str,
+        note_range: tuple[str, str],
+        # (min, max), 0 is the lowest note (C0), 127 is the highest note (G10)
+        fingers: dict[int, str] = None,
+    ):
         self.name = name
         self.family = family
         self.description = description
@@ -37,7 +39,7 @@ class Instrument:
                 6: "right index",
                 7: "right middle",
                 8: "right ring",
-                9: "right pinky"
+                9: "right pinky",
             }
         else:
             self.fingers = fingers
@@ -56,7 +58,7 @@ class Instrument:
                 return False
         return True
 
-    def position_cost(self, position_1:Position) -> float:
+    def position_cost(self, position_1: Position) -> float:
         """Computes the cost of a position.
         In a keyboard instrument, the cost is for each hand
             . 0 when two fingers are below the ok distance
@@ -67,5 +69,5 @@ class Instrument:
             position (Position): the position to evaluate
         """
 
-    def transition_cost(self, position_1:Position, position_2:Position) -> float:
+    def transition_cost(self, position_1: Position, position_2: Position) -> float:
         """Computes the cost of a transition between two positions."""

@@ -1,29 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Instrument Neck Visualizer</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <h1>Instrument Neck Visualizer</h1>
 
     <!-- Text input for notes -->
     <label for="notes">Enter Notes (e.g. C D E):</label>
-    <input type="text" id="notes" placeholder="Type notes here">
+    <input type="text" id="notes" placeholder="Type notes here" />
 
     <!-- Combo box for selecting instrument -->
     <label for="instrument">Select Instrument:</label>
     <select id="instrument">
-        <option value=" "> </option>
-        <option value="Guitar">Guitar (6 strings)</option>
-        <option value="Bass">Bass (4 strings)</option>
-        <option value="Ukulele">Ukulele (4 strings)</option>
-        <option value="Guitarlele">Guitarlele (6 strings)</option>
-        <option value="Banjo">Banjo (5 strings)</option>
-        <option value="Mandolin">Mandolin (8 strings)</option>
+      <option value=" "></option>
+      <option value="Guitar">Guitar (6 strings)</option>
+      <option value="Bass">Bass (4 strings)</option>
+      <option value="Ukulele">Ukulele (4 strings)</option>
+      <option value="Guitarlele">Guitarlele (6 strings)</option>
+      <option value="Banjo">Banjo (5 strings)</option>
+      <option value="Mandolin">Mandolin (8 strings)</option>
     </select>
 
     <!-- Submit button -->
@@ -37,6 +36,5 @@
 
     <!-- Include the environment variables script -->
     <script type="module" src="./env.js"></script>
-
-</body>
+  </body>
 </html>
