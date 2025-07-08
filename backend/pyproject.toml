@@ -7,7 +7,7 @@ authors = [
   { name = "Eliot CHRISTON", email = "eliot.christon@gmail.com" },
 ]
 
-requires-python = ">=3.12"r eqsdwrtvbd
+requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.12",
