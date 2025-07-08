@@ -20,6 +20,7 @@ from src.instruments.neck_instrument import (
     NeckInstrument,
     Ukulele,
 )
+from src.positions.neck_position import NeckPosition
 from src.utils.note2num import note2num
 
 from .get_pos_from_notes import get_pos_from_notes
@@ -96,7 +97,10 @@ def get_pos_from_notes_api(note_input: NoteInput) -> dict:
 
     notes_int = [note2num(note) for note in note_input.notes]
 
-    return get_pos_from_notes(notes_int, instrument).to_json()
+    position = get_pos_from_notes(notes_int, instrument)
+    if not isinstance(position, NeckPosition):
+        return {"error": "No valid position found for the given notes."}
+    return position.to_json()
 
 
 if __name__ == "__main__":

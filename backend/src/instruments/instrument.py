@@ -8,6 +8,8 @@ __email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 
+from abc import abstractmethod
+
 from src.positions.position import Position
 from src.utils.note2num import note2num
 
@@ -63,6 +65,7 @@ class Instrument:
         """Returns a hash of the instrument based on its attributes."""
         return hash(tuple(sorted(self.__dict__.items())))
 
+    @abstractmethod
     def position_cost(self, position_1: Position) -> float:
         """Computes the cost of a position.
         In a keyboard instrument, the cost is for each hand
@@ -74,5 +77,6 @@ class Instrument:
             position (Position): the position to evaluate
         """
 
+    @abstractmethod
     def transition_cost(self, position_1: Position, position_2: Position) -> float:
         """Computes the cost of a transition between two positions."""

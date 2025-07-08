@@ -37,7 +37,7 @@ class NeckPosition(Position):
     ) -> "NeckPosition":
         """Alternative constructor"""
         placements = cls.convert_strings_frets_to_placements(
-            None, strings=list(strings), frets=list(frets)
+            strings=list(strings), frets=list(frets)
         )
         return cls(placements, list(fingers), pos_id)
 
@@ -103,9 +103,8 @@ class NeckPosition(Position):
         )
         return NeckPosition(placements, fingers, self.id)
 
-    def convert_strings_frets_to_placements(
-        self, strings: list[int], frets: list[int]
-    ) -> list[int]:
+    @staticmethod
+    def convert_strings_frets_to_placements(strings: list[int], frets: list[int]) -> list[int]:
         """Converts a list of strings and frets to a list of placements.
         This assumes that there is less than 100 frets on one string."""
         return [string * 100 + fret for string, fret in zip(strings, frets, strict=False)]
@@ -144,7 +143,7 @@ class NeckPosition(Position):
         if max_finger in self.fingers or max(self.fingers) + shift > max_finger:
             return
         # if finger > 0, shift finger
-        new_fingers = []
+        new_fingers: list[int] = []
         for i in range(len(self.placements)):
             if self.fingers[i] > 0:
                 new_fingers.append(self.fingers[i] + shift)

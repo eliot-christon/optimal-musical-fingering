@@ -12,7 +12,7 @@ from src.instruments.neck_instrument import NeckInstrument
 from src.positions.neck_position import NeckPosition
 
 
-def get_pos_from_notes(notes: list[str], input_instrument: NeckInstrument) -> NeckPosition:
+def get_pos_from_notes(notes: list[int], input_instrument: NeckInstrument) -> NeckPosition | int:
     """
     This function takes a list of notes and an instrument and returns a position.
 

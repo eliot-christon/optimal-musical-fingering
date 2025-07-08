@@ -149,7 +149,7 @@ hand amplitude: {self.hand_amplitude}"
 
         return cost
 
-    def hand_placements(self, position: Position) -> tuple[float, float]:
+    def hand_placements(self, position: Position) -> tuple[int, int]:
         """Computes the placement of the two hands within one position."""
         left_hand = []
         right_hand = []
@@ -165,9 +165,9 @@ hand amplitude: {self.hand_amplitude}"
                     - self.ok_distances_matrix[self.hands_separation][position.fingers[i]]
                 )
 
-        left_hand_placement = -1 if len(left_hand) == 0 else sum(left_hand) / len(left_hand)
+        left_hand_placement = -1 if len(left_hand) == 0 else sum(left_hand) // len(left_hand)
 
-        right_hand_placement = -1 if len(right_hand) == 0 else sum(right_hand) / len(right_hand)
+        right_hand_placement = -1 if len(right_hand) == 0 else sum(right_hand) // len(right_hand)
 
         return left_hand_placement, right_hand_placement
 

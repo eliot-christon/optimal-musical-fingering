@@ -61,12 +61,12 @@ class NeckInstrument(Instrument):
         }
 
         self.invalid_position_cost_penalty = 1000
-        self.hand_deplacement_penalty_factor = 10.0
+        self.hand_deplacement_penalty_factor = 10
         self.same_finger_same_string_same_fret_bonus = 2
         self.new_finger_cost = 2
         self.in_between_strings_cost = 15
 
-    def get_notes(self, neck_position: NeckPosition) -> list[str]:
+    def get_notes(self, neck_position: NeckPosition) -> list[str | None]:
         """Returns the notes of a position"""
         if not self.is_valid_position(neck_position):
             return [None] * len(neck_position)
@@ -209,7 +209,7 @@ class NeckInstrument(Instrument):
 
         return neck_position
 
-    def position_cost(
+    def position_cost(  # type: ignore[override]
         self, position_1: NeckPosition, *, check_valid: bool = True, display: bool = False
     ) -> float:
         """Computes the cost of a position.
@@ -229,7 +229,7 @@ class NeckInstrument(Instrument):
         if display:
             print()
 
-        if check_valid and not self.is_valid_position(position_1, display):
+        if check_valid and not self.is_valid_position(position_1, display=display):
             return self.invalid_position_cost_penalty
 
         cost = 0.0
@@ -254,7 +254,9 @@ class NeckInstrument(Instrument):
                     continue
                 if finger_i != finger_j:
                     gap = abs(position_1.strings[j] - position_1.strings[i])
-                    finger_pair = tuple(sorted([finger_i, finger_j]))
+                    finger_pair = (
+                        (finger_i, finger_j) if finger_i < finger_j else (finger_j, finger_i)
+                    )
                     if finger_pair in self.string_gap_dificulty_factor:
                         cost += self.string_gap_dificulty_factor[finger_pair] * gap
                         if display:
@@ -275,7 +277,7 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
     def possible_places_one_note(self, note: int) -> list[tuple[int, int]]:
         """Returns the possible places of a note on the neck.
         Returns a list of tuples (string, fret)."""
-        places = []
+        places: list[tuple[int, int]] = []
         places.extend(
             (string + 1, fret)
             for string, open_note in enumerate(self.open_strings)
@@ -322,7 +324,7 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
             res.append(current_position)
         return res
 
-    def hand_placements(self, neck_position: NeckPosition) -> float:
+    def hand_placements(self, neck_position: NeckPosition) -> int:
         """Computes the placement of the left hand within one position."""
         left_hand = []
         for finger, fret in zip(neck_position.fingers, neck_position.frets, strict=False):
@@ -330,9 +332,9 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
                 left_hand.append(fret - finger)
         if len(left_hand) == 0:
             return -1
-        return abs(sum(left_hand) / len(left_hand))
+        return abs(sum(left_hand) // len(left_hand))
 
-    def transition_cost(
+    def transition_cost(  # type: ignore[override]
         self, position_1: NeckPosition, position_2: NeckPosition, *, display: bool = False
     ) -> float:
         """Computes the cost of a transition between two positions.
