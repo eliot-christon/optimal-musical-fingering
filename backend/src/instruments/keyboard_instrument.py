@@ -8,7 +8,8 @@ __email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 
-from ..positions.position import Position
+from src.positions.position import Position
+
 from .instrument import Instrument
 
 
@@ -24,8 +25,9 @@ class KeyboardInstrument(Instrument):
         # 0 is the lowest note (C0),
         # 127 is the highest note (G10)
         hands_separation: int = 5,
-        fingers: dict[int, str] = None,
-    ):
+        fingers: dict[int, str] | None = None,
+    ) -> None:
+        """Initializes a KeyboardInstrument object."""
         if fingers is None:
             fingers = {
                 0: "left pinky",
@@ -70,7 +72,7 @@ class KeyboardInstrument(Instrument):
             finger_i >= self.hands_separation and finger_j >= self.hands_separation
         )
 
-    def position_cost(self, position_1: Position, display: bool = False) -> float:
+    def position_cost(self, position_1: Position, *, display: bool = False) -> float:
         """Computes the cost of a position.
         In a keyboard instrument, the cost is for each hand
             . 0 when two fingers are below the ok distance
@@ -94,11 +96,10 @@ class KeyboardInstrument(Instrument):
                 distance = position.placements[j] - position.placements[i]
                 ok_distance = self.ok_distances_matrix[finger_i][finger_j]
 
-                if self.same_hand(finger_i, finger_j):
-                    if distance < 0:
-                        cost += self.overlapping_penalty_factor
-                        if display:
-                            print(f"Overlapping fingers: {finger_i} and {finger_j}")
+                if self.same_hand(finger_i, finger_j) and distance < 0:
+                    cost += self.overlapping_penalty_factor
+                    if display:
+                        print(f"Overlapping fingers: {finger_i} and {finger_j}")
                 if distance > ok_distance:
                     add = abs(distance - ok_distance) ** 2.5 + 1
                     cost += add
@@ -122,19 +123,18 @@ distance = {distance}, ok distance = {ok_distance}, cost = {add}"
         if (
             len(position) <= self.hands_separation
             and (max(position.placements) - min(position.placements)) < self.hand_amplitude
+        ) and (
+            min(position.fingers) < self.hands_separation
+            and max(position.fingers) >= self.hands_separation
         ):
-            if (
-                min(position.fingers) < self.hands_separation
-                and max(position.fingers) >= self.hands_separation
-            ):
-                cost += self.two_hands_penalty_factor
-                if display:
-                    print(
-                        f"Two hands penalty, \
+            cost += self.two_hands_penalty_factor
+            if display:
+                print(
+                    f"Two hands penalty, \
 min note: {min(position.placements)}, \
 max note: {max(position.placements)}, \
 hand amplitude: {self.hand_amplitude}"
-                    )
+                )
 
         # if crossing hands
         hand_placement = self.hand_placements(position)
@@ -165,20 +165,14 @@ hand amplitude: {self.hand_amplitude}"
                     - self.ok_distances_matrix[self.hands_separation][position.fingers[i]]
                 )
 
-        if len(left_hand) == 0:
-            left_hand_placement = -1
-        else:
-            left_hand_placement = sum(left_hand) / len(left_hand)
+        left_hand_placement = -1 if len(left_hand) == 0 else sum(left_hand) / len(left_hand)
 
-        if len(right_hand) == 0:
-            right_hand_placement = -1
-        else:
-            right_hand_placement = sum(right_hand) / len(right_hand)
+        right_hand_placement = -1 if len(right_hand) == 0 else sum(right_hand) / len(right_hand)
 
         return left_hand_placement, right_hand_placement
 
     def transition_cost(
-        self, position_1: Position, position_2: Position, display: bool = False
+        self, position_1: Position, position_2: Position, *, display: bool = False
     ) -> float:
         """Computes the cost of a transition between two positions.
         The transition cost is the distance between the hands positions"""
@@ -218,16 +212,18 @@ hand amplitude: {self.hand_amplitude}"
         # (near notes are notes with a distance less than self.hand_amplitude)
         # first check if different hands used, only right to only left or only left to only right
         if (
-            max(position_1.fingers) < self.hands_separation
-            and min(position_2.fingers) >= self.hands_separation
-        ) or (
-            max(position_2.fingers) < self.hands_separation
-            and min(position_1.fingers) >= self.hands_separation
-        ):
-            if abs(max(position_1.placements) - min(position_2.placements)) < self.hand_amplitude:
-                cost += self.two_hands_penalty_factor
-                if display:
-                    print("Two hands penalty")
+            (
+                max(position_1.fingers) < self.hands_separation
+                and min(position_2.fingers) >= self.hands_separation
+            )
+            or (
+                max(position_2.fingers) < self.hands_separation
+                and min(position_1.fingers) >= self.hands_separation
+            )
+        ) and abs(max(position_1.placements) - min(position_2.placements)) < self.hand_amplitude:
+            cost += self.two_hands_penalty_factor
+            if display:
+                print("Two hands penalty")
 
         # less cost if same finger on same note again
         for i, (placement1, finger1, placement2, finger2) in enumerate(

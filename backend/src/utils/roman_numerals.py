@@ -8,13 +8,17 @@ __author__ = "Eliot Christon"
 __email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
+from .constants import MAX_ROMAN_NUMERAL, MIN_ROMAN_NUMERAL
+
 
 def convert_to_roman(num: int) -> str:
     """Convert a number to a roman numeral"""
-    if num < 0 or num > 3999:
-        raise ValueError(f"The number {num} is not in the range of a roman numeral (1-3999)")
     if num == 0:
         return "-"
+
+    if num < MIN_ROMAN_NUMERAL or num > MAX_ROMAN_NUMERAL:
+        raise ValueError(f"The number {num} is not in the range of a roman numeral (1-3999)")
+
     roman_numerals = [
         (1000, "M"),
         (900, "CM"),

@@ -8,9 +8,11 @@ __email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 
-from ..positions.neck_position import NeckPosition
-from ..utils.note2num import note2num
-from ..utils.num2note import num2note
+from src.positions.neck_position import NeckPosition
+from src.utils.constants import MAX_FINGERS
+from src.utils.note2num import note2num
+from src.utils.num2note import num2note
+
 from .instrument import Instrument
 
 
@@ -22,9 +24,10 @@ class NeckInstrument(Instrument):
         name: str = " My neck instrument",
         description: str = "A neck instrument",
         number_of_frets: int = 12,
-        open_strings: list[str] = None,  # the midi notes of the open strings
-        fingers: dict[int, str] = None,  # 0 is when the string is played without a finger
-    ):
+        open_strings: list[str] | None = None,  # the midi notes of the open strings
+        fingers: dict[int, str] | None = None,  # 0 is when the string is played without a finger
+    ) -> None:
+        """Initializes a neck instrument with the given parameters."""
         if open_strings is None:
             open_strings = ["E4", "B3", "G3", "D3", "A2", "E2"]
         if fingers is None:
@@ -47,7 +50,7 @@ class NeckInstrument(Instrument):
             "description": self.description,
         }
 
-    def __basic_attributes(self):
+    def __basic_attributes(self) -> None:
         self.string_gap_dificulty_factor = {
             (1, 2): 2.0,
             (1, 3): 1.0,
@@ -72,7 +75,7 @@ class NeckInstrument(Instrument):
             for i in range(len(neck_position))
         ]
 
-    def is_valid_position(self, in_position: NeckPosition, display: bool = False) -> bool:
+    def is_valid_position(self, in_position: NeckPosition, *, display: bool = False) -> bool:
         """Checks if a position is valid.
         A valid position is a position where:
             - two adjacent fingers must be within 1 or 0 fret of each other
@@ -103,7 +106,7 @@ class NeckInstrument(Instrument):
             min_fret = min([fret for fret in neck_position.frets if fret > 0])
             max_fret = max([fret for fret in neck_position.frets if fret > 0])
 
-            if max_fret is not None and min_fret is not None and max_fret - min_fret > 4:
+            if max_fret is not None and min_fret is not None and max_fret - min_fret > MAX_FINGERS:
                 if display:
                     print("   Max and min fret are not within the range of the left hand")
                 return False
@@ -207,7 +210,7 @@ class NeckInstrument(Instrument):
         return neck_position
 
     def position_cost(
-        self, position_1: NeckPosition, check_valid: bool = True, display: bool = False
+        self, position_1: NeckPosition, *, check_valid: bool = True, display: bool = False
     ) -> float:
         """Computes the cost of a position.
         Cost is
@@ -273,10 +276,12 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
         """Returns the possible places of a note on the neck.
         Returns a list of tuples (string, fret)."""
         places = []
-        for string, open_note in enumerate(self.open_strings):
-            for fret in range(self.number_of_frets):
-                if open_note + fret == note:
-                    places.append((string + 1, fret))
+        places.extend(
+            (string + 1, fret)
+            for string, open_note in enumerate(self.open_strings)
+            for fret in range(self.number_of_frets)
+            if open_note + fret == note
+        )
         return places
 
     def possible_positions(self, note_list: list[int]) -> list[NeckPosition]:
@@ -309,9 +314,9 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
         # now shift all the positions while finger 4 isn't used
         res = []
         for current_position in default_finger_pos:
-            while (max(current_position.fingers) < 4 and max(current_position.fingers) > 0) and (
-                not current_position.is_barre()
-            ):
+            while (
+                max(current_position.fingers) < MAX_FINGERS and max(current_position.fingers) > 0
+            ) and (not current_position.is_barre()):
                 res.append(current_position.copy())
                 current_position.shift(1)
             res.append(current_position)
@@ -328,7 +333,7 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
         return abs(sum(left_hand) / len(left_hand))
 
     def transition_cost(
-        self, position_1: NeckPosition, position_2: NeckPosition, display: bool = False
+        self, position_1: NeckPosition, position_2: NeckPosition, *, display: bool = False
     ) -> float:
         """Computes the cost of a transition between two positions.
         The transition cost is:
@@ -386,7 +391,8 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
 class Guitar(NeckInstrument):
     """Class representing a guitar instrument"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initializes a guitar instrument with 12 frets and standard tuning."""
         super().__init__(
             "guitar",
             "Basic guitar",
@@ -398,7 +404,8 @@ class Guitar(NeckInstrument):
 class Ukulele(NeckInstrument):
     """Class representing a ukulele instrument"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initializes a ukulele instrument with 12 frets and standard tuning."""
         super().__init__(
             "ukulele", "Basic ukulele", number_of_frets=12, open_strings=["A4", "E4", "C4", "G4"]
         )
@@ -407,7 +414,8 @@ class Ukulele(NeckInstrument):
 class Banjo(NeckInstrument):
     """Class representing a banjo instrument"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initializes a banjo instrument with 12 frets and standard tuning."""
         super().__init__(
             "banjo", "Basic banjo", number_of_frets=12, open_strings=["D4", "B3", "G3", "D3", "G4"]
         )
@@ -416,7 +424,8 @@ class Banjo(NeckInstrument):
 class Bass(NeckInstrument):
     """Class representing a bass instrument"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initializes a bass instrument with 12 frets and standard tuning."""
         super().__init__(
             "bass", "Basic bass", number_of_frets=12, open_strings=["G2", "D2", "A1", "E1"]
         )
@@ -425,7 +434,8 @@ class Bass(NeckInstrument):
 class Mandolin(NeckInstrument):
     """Class representing a mandolin instrument"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initializes a mandolin instrument with 18 frets and standard tuning."""
         super().__init__(
             "mandolin",
             "Basic mandolin",
@@ -437,7 +447,8 @@ class Mandolin(NeckInstrument):
 class Guitarlele(NeckInstrument):
     """Class representing a guitarlele instrument"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initializes a guitarlele instrument with 12 frets and standard tuning."""
         super().__init__(
             "guitarlele",
             "Basic guitarlele",
@@ -474,7 +485,7 @@ if __name__ == "__main__":
     positions = guitar.possible_positions(notes)
     for position in positions:
         if guitar.is_valid_position(position):
-            position = position.sort_by_string()
-            print("Valid position:", position)
-            print("Notes:", guitar.get_notes(position))
-            print(guitar.position_cost(position, display=False))
+            pos = position.sort_by_string()
+            print("Valid position:", pos)
+            print("Notes:", guitar.get_notes(pos))
+            print(guitar.position_cost(pos, display=False))

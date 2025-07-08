@@ -8,8 +8,8 @@ __email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 
-from ..instruments.neck_instrument import NeckInstrument
-from ..positions.neck_position import NeckPosition
+from src.instruments.neck_instrument import NeckInstrument
+from src.positions.neck_position import NeckPosition
 
 
 def get_pos_from_notes(notes: list[str], input_instrument: NeckInstrument) -> NeckPosition:

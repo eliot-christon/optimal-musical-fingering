@@ -10,7 +10,8 @@ __email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 
-from ..utils.roman_numerals import convert_to_roman
+from src.utils.roman_numerals import convert_to_roman
+
 from .position import Position
 
 
@@ -18,13 +19,22 @@ class NeckPosition(Position):
     """Class representing a position on a neck instrument.
     The position now gets a number of strings and frets"""
 
-    def __init__(self, placements: list[int], fingers: list[int], pos_id: int = None):
+    def __init__(
+        self, placements: list[int], fingers: list[int], pos_id: int | None = None
+    ) -> None:
+        """Initializes a NeckPosition object.
+
+        Args:
+            placements (list[int]): A list of placements (midi note numbers).
+            fingers (list[int]): A list of fingers corresponding to the placements.
+            pos_id (int|None): An optional identifier for the position.
+        """
         super().__init__(list(placements), list(fingers), pos_id)
 
     @classmethod
     def from_strings_frets(
-        cls, fingers: list[int], strings: list[int], frets: list[int], pos_id: int = None
-    ):
+        cls, fingers: list[int], strings: list[int], frets: list[int], pos_id: int | None = None
+    ) -> "NeckPosition":
         """Alternative constructor"""
         placements = cls.convert_strings_frets_to_placements(
             None, strings=list(strings), frets=list(frets)
@@ -32,17 +42,19 @@ class NeckPosition(Position):
         return cls(placements, list(fingers), pos_id)
 
     @classmethod
-    def from_position(cls, position: Position):
+    def from_position(cls, position: Position) -> "NeckPosition":
         """Alternative constructor"""
         return cls(position.placements, position.fingers, position.id)
 
     def __str__(self) -> str:
+        """Returns a string representation of the position"""
         roman_frets = [convert_to_roman(fret) for fret in self.frets]
         return (
             f"Strings: {self.strings}, Frets: {roman_frets}, Fingers: {self.fingers}, ID: {self.id}"
         )
 
     def __repr__(self) -> str:
+        """Returns a string representation of the position"""
         return f"NPosition({self.placements}, {self.fingers}, {self.id})"
 
     def to_json(self) -> dict:
@@ -54,7 +66,7 @@ class NeckPosition(Position):
             "id": self.id,
         }
 
-    def sort_by_string(self, reverse=True) -> "NeckPosition":
+    def sort_by_string(self, *, reverse: bool = True) -> "NeckPosition":
         """Sorts the placements and fingers by string"""
         sorted_placements, sorted_fingers = map(
             list,
@@ -108,7 +120,7 @@ class NeckPosition(Position):
         """Returns the frets of the position"""
         return [note % 100 for note in self.placements]
 
-    def add_note(self, string: int, fret: int, finger: int):
+    def add_note(self, string: int, fret: int, finger: int) -> None:
         """Adds a note to the position"""
         self.placements.append(string * 100 + fret)
         self.fingers.append(finger)
@@ -146,6 +158,6 @@ class NeckPosition(Position):
         non_quiet_fingers = [finger for finger in self.fingers if finger > 0]
         return len(non_quiet_fingers) != len(set(non_quiet_fingers))
 
-    def copy(self):
+    def copy(self) -> "NeckPosition":
         """Returns a copy of the position"""
         return NeckPosition(self.placements.copy(), self.fingers.copy(), self.id)

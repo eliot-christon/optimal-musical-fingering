@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from ..instruments.neck_instrument import (
+from src.instruments.neck_instrument import (
     Banjo,
     Bass,
     Guitar,
@@ -20,10 +20,11 @@ from ..instruments.neck_instrument import (
     NeckInstrument,
     Ukulele,
 )
-from ..utils.note2num import note2num
+from src.utils.note2num import note2num
+
 from .get_pos_from_notes import get_pos_from_notes
 
-instrument_classes = {
+INSTRUMENT_CLASSES: dict[str, type[NeckInstrument]] = {
     "Guitar": Guitar,
     "Ukulele": Ukulele,
     "Banjo": Banjo,
@@ -53,13 +54,13 @@ app.add_middleware(
 
 
 @app.get("/")
-def read_root():
+def read_root() -> dict:
     """Root endpoint for the API."""
     return {"message": "Welcome to the Musical Instrument API!"}
 
 
 @app.get("/getInstrumentDetails")
-def get_instrument_details(instrument_name: str):
+def get_instrument_details(instrument_name: str) -> dict:
     """
     Args:
         instrument (str): The instrument name
@@ -68,15 +69,15 @@ def get_instrument_details(instrument_name: str):
         dict: instrument details
     """
     instrument = NeckInstrument()
-    if instrument_name in instrument_classes:
-        instrument = instrument_classes[instrument_name]()
+    if instrument_name in INSTRUMENT_CLASSES:
+        instrument = INSTRUMENT_CLASSES[instrument_name]()
     else:
         return {"error": "Instrument not found."}
     return instrument.detail()
 
 
 @app.post("/getPosFromNotes")
-def get_pos_from_notes_api(note_input: NoteInput):
+def get_pos_from_notes_api(note_input: NoteInput) -> dict:
     """
     This function takes a list of notes and an instrument and returns a position.
 
@@ -88,8 +89,8 @@ def get_pos_from_notes_api(note_input: NoteInput):
         NPosition: The position to play the notes on the instrument.
     """
 
-    if note_input.instrument in instrument_classes:
-        instrument = instrument_classes[note_input.instrument]()
+    if note_input.instrument in INSTRUMENT_CLASSES:
+        instrument = INSTRUMENT_CLASSES[note_input.instrument]()
     else:
         return {"error": "Instrument not found."}
 

@@ -8,8 +8,8 @@ __email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
 
-from ..positions.position import Position
-from ..utils.note2num import note2num
+from src.positions.position import Position
+from src.utils.note2num import note2num
 
 
 class Instrument:
@@ -22,8 +22,9 @@ class Instrument:
         description: str,
         note_range: tuple[str, str],
         # (min, max), 0 is the lowest note (C0), 127 is the highest note (G10)
-        fingers: dict[int, str] = None,
-    ):
+        fingers: dict[int, str] | None = None,
+    ) -> None:
+        """Initializes an Instrument."""
         self.name = name
         self.family = family
         self.description = description
@@ -45,18 +46,22 @@ class Instrument:
             self.fingers = fingers
 
     def __str__(self) -> str:
+        """Returns a string representation of the instrument."""
         return self.name
 
     def __repr__(self) -> str:
+        """Returns a string representation of the instrument."""
         return self.name
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
+        """Checks if two instruments are equal based on their attributes."""
         if not isinstance(other, Instrument):
             return False
-        for attr in self.__dict__:
-            if getattr(self, attr) != getattr(other, attr):
-                return False
-        return True
+        return all(getattr(self, attr) == getattr(other, attr) for attr in self.__dict__)
+
+    def __hash__(self) -> int:
+        """Returns a hash of the instrument based on its attributes."""
+        return hash(tuple(sorted(self.__dict__.items())))
 
     def position_cost(self, position_1: Position) -> float:
         """Computes the cost of a position.

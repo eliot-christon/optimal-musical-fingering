@@ -36,7 +36,22 @@ dev = [
 line-length = 100
 
 lint.select = [ "ALL" ]
-lint.ignore = [ "COM812", "D2", "D3", "D4", "PT", "S", "T20" ]
+lint.ignore = [
+  "C901",    # Too much Complexity: needs refacto
+  "COM812",  # Magic comma, handled by ruff-format
+  "D2",      # Too precise documentation rules
+  "D3",      # Too precise documentation rules
+  "D4",      # Too precise documentation rules
+  "D104",    # Missing docstring in public package : TODO
+  "EM102",   # f-string in exception : not really an error
+  "ERA",     # TODO: remove commented code
+  "PLR091",  # Too much Complexity: needs refacto
+  "PLR2004", # Magic values: needs refacto
+  "PT",      # Pytest errors, we use unittest
+  "S",       # Too strict rules
+  "T20",     # Too strict on print: TODO remove print statements
+  "TRY003",  # Too strict on exceptions
+]
 
 [tool.pylint.main]
 

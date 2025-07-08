@@ -21,7 +21,7 @@ class TestAPI(unittest.TestCase):
         unittest (module): The unittest module.
     """
 
-    def test_get_pos_from_notes(self):
+    def test_get_pos_from_notes(self) -> None:
         """Test the /getPosFromNotes endpoint with a set of notes and an instrument."""
         response = requests.post(
             f"{URL}/getPosFromNotes",
@@ -39,7 +39,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(len(response["strings"]), len(response["frets"]))
         self.assertEqual(len(response["strings"]), len(response["fingers"]))
 
-    def test_get_instrument_details(self):
+    def test_get_instrument_details(self) -> None:
         """Test the /getInstrumentDetails endpoint with a specific instrument."""
         response = requests.get(
             f"{URL}/getInstrumentDetails",
