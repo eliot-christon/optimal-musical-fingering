@@ -2,3 +2,5 @@
 *.pyc
 *.npy
 *venv
+uv.lock
+node_modules

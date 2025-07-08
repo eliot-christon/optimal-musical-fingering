@@ -16,16 +16,30 @@ classifiers = [
 dependencies = [
   "fastapi==0.115.14",
   "pydantic==2.11.7",
-  "Requests==2.32.4",
-  "uvicorn==0.35.0"
+  "requests==2.32.4",
+  "uvicorn==0.35",
 ]
 urls.repository = "https://github.com/eliot-christon/optimal-musical-fingering"
-[project.optional-dependencies]
+
+[dependency-groups]
 dev = [
-  "pylint==3.3.7",
+  "mypy>=1.16.1",
+  "pre-commit>=4.2",
+  "pylint>=3.3.7",
+  "pytest>=8.4.1",
+  "ruff>=0.12.2",
+  "ty>=0.0.1a13",
+  "types-requests>=2.32.4.20250611",
 ]
 
-[tool.pylint]
+[tool.ruff]
+line-length = 100
+
+lint.select = [ "ALL" ]
+lint.ignore = [ "COM812", "D", "D203", "D212", "PT", "S", "T201" ]
+
+[tool.pylint.main]
+
 max-line-length = 100
 max-positional-arguments = 10
 max-args = 10
@@ -34,10 +48,8 @@ min-public-methods = 0
 max-attributes = 10
 max-locals = 20
 max-branches = 25
-disable = [
-  "missing-module-docstring",
-  "missing-function-docstring",
-  "missing-class-docstring",
-  "line-too-long",
-]
+disable = [  ]
 unsafe-load-any-extension = true
+ignore = [
+  ".venv",
+]
