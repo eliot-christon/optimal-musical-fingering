@@ -63,7 +63,12 @@ min-public-methods = 0
 max-attributes = 10
 max-locals = 20
 max-branches = 25
-disable = [  ]
+disable = [
+  "too-many-statements",
+  "too-many-return-statements",
+  "too-many-function-args",
+  "duplicate-code",
+]
 unsafe-load-any-extension = true
 ignore = [
   ".venv",

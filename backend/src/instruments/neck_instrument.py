@@ -103,8 +103,9 @@ class NeckInstrument(Instrument):
         # Check if the max and min fret are within the range of the left hand
         # (do not count the open strings <=> fret = 0)
         try:
-            min_fret = min([fret for fret in neck_position.frets if fret > 0])
-            max_fret = max([fret for fret in neck_position.frets if fret > 0])
+            fretted = [fret for fret in neck_position.frets if fret > 0]
+            min_fret = min(fretted)
+            max_fret = max(fretted)
 
             if max_fret is not None and min_fret is not None and max_fret - min_fret > MAX_FINGERS:
                 if display:
@@ -139,11 +140,10 @@ class NeckInstrument(Instrument):
             ):
                 continue
 
-            # Check if the adjacing fingers are within 1 or 0 fret of each other
-            if (
-                abs(neck_position.frets[i + 1] - neck_position.frets[i]) > 1
-                and abs(neck_position.fingers[i + 1] - neck_position.fingers[i]) < 1
-            ):
+            # Check if two adjacent fingers are within 1 fret of each other
+            fret_diff = abs(neck_position.frets[i + 1] - neck_position.frets[i])
+            finger_diff = abs(neck_position.fingers[i + 1] - neck_position.fingers[i])
+            if fret_diff > 1 > finger_diff:
                 if display:
                     print("   Fingers are not within 1 or 0 fret of each other")
                 return False
@@ -188,7 +188,7 @@ class NeckInstrument(Instrument):
             if (
                 (i != len(neck_position) - 1)
                 and (neck_position.frets[i] == neck_position.frets[i + 1])
-                and (barring_fret == neck_position.frets[i] or barring_fret == 0)
+                and (barring_fret in (neck_position.frets[i], 0))
             ):
                 # check if no other lower fret placements on lower strings
                 barring = True
