@@ -6,8 +6,8 @@ export async function getInstrumentDetails(instrumentName) {
   return res.json()
 }
 
-export async function getPosFromNotes(notes, instrument) {
-  const res = await fetch(`${CONFIG.API_URL}/getPosFromNotes`, {
+export async function getBestPosFromNotes(notes, instrument) {
+  const res = await fetch(`${CONFIG.API_URL}/getBestPosFromNotes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ notes, instrument }),

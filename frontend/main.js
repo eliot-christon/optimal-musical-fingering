@@ -1,4 +1,4 @@
-import { getInstrumentDetails, getPosFromNotes } from './js/api.js'
+import { getInstrumentDetails, getBestPosFromNotes } from './js/api.js'
 import { drawNeck } from './js/drawNeck.js'
 import { drawPosition } from './js/drawPosition.js'
 
@@ -23,7 +23,7 @@ submitButton.addEventListener('click', async () => {
   const notes = notesInput.value.trim().split(' ').filter(Boolean)
   const instrument = instrumentSelect.value
   try {
-    const data = await getPosFromNotes(notes, instrument)
+    const data = await getBestPosFromNotes(notes, instrument)
     drawPosition(data)
   } catch (error) {
     console.error("Erreur lors de l'appel API:", error)

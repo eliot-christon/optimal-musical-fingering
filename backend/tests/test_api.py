@@ -3,7 +3,6 @@ This is the test suite for the API endpoints of the musical instrument fingering
 It tests the functionality of the endpoints that retrieve finger positions from musical notes.
 """
 
-
 import unittest
 
 import requests
@@ -18,10 +17,10 @@ class TestAPI(unittest.TestCase):
         unittest (module): The unittest module.
     """
 
-    def test_get_pos_from_notes(self) -> None:
-        """Test the /getPosFromNotes endpoint with a set of notes and an instrument."""
+    def test_get_best_pos_from_notes(self) -> None:
+        """Test the /getBestPosFromNotes endpoint with a set of notes and an instrument."""
         response = requests.post(
-            f"{URL}/getPosFromNotes",
+            f"{URL}/getBestPosFromNotes",
             json={
                 "notes": ["C4", "E4", "G4"],
                 "instrument": "Guitar",

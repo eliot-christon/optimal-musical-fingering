@@ -5,8 +5,6 @@ These classes provide methods for creating, manipulating,
 and sorting positions based on placements and fingers.
 """
 
-
-
 from src.utils.roman_numerals import convert_to_roman
 
 from .position import Position

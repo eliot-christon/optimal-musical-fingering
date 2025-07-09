@@ -3,16 +3,13 @@ This module contains the logic for determining the optimal finger positions
 for a given set of musical notes and a specific instrument.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
-
-
 from src.instruments.neck_instrument import NeckInstrument
 from src.positions.neck_position import NeckPosition
 
 
-def get_pos_from_notes(notes: list[int], input_instrument: NeckInstrument) -> NeckPosition | int:
+def get_all_pos_from_notes(
+    notes: list[int], input_instrument: NeckInstrument
+) -> dict[NeckPosition, float] | int:
     """
     This function takes a list of notes and an instrument and returns a position.
 
@@ -21,7 +18,8 @@ def get_pos_from_notes(notes: list[int], input_instrument: NeckInstrument) -> Ne
         instrument (INeck): A neck instrument.
 
     Returns:
-        NeckPosition: The position to play the notes on the instrument.
+        dict[NeckPosition, int] | int: A dictionary mapping positions to their costs,
+                                       or -1 if no valid positions are found.
     """
 
     possible_positions = input_instrument.possible_positions(notes)
@@ -32,10 +30,9 @@ def get_pos_from_notes(notes: list[int], input_instrument: NeckInstrument) -> Ne
     if len(possible_positions) == 0:
         return -1
 
-    best_position = possible_positions[0]
-
+    positions_costs = {}
     for position in possible_positions:
-        if input_instrument.position_cost(position) < input_instrument.position_cost(best_position):
-            best_position = position
+        cost = input_instrument.position_cost(position)
+        positions_costs[position] = cost
 
-    return best_position
+    return positions_costs
