@@ -4,15 +4,15 @@ for a given set of musical notes and a specific instrument.
 """
 
 __author__ = "Eliot Christon"
-__email__  = "eliot.christon@gmail.com"
+__email__ = "eliot.christon@gmail.com"
 __github__ = "eliot-christon"
 
-from typing import List
 
-from ..instruments.neck_instrument import NeckInstrument
-from ..positions.neck_position import NeckPosition
+from src.instruments.neck_instrument import NeckInstrument
+from src.positions.neck_position import NeckPosition
 
-def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> NeckPosition:
+
+def get_pos_from_notes(notes: list[int], input_instrument: NeckInstrument) -> NeckPosition | int:
     """
     This function takes a list of notes and an instrument and returns a position.
 
@@ -25,8 +25,9 @@ def get_pos_from_notes(notes: List[str], input_instrument: NeckInstrument) -> Ne
     """
 
     possible_positions = input_instrument.possible_positions(notes)
-    possible_positions = [pos for pos in possible_positions
-                          if input_instrument.is_valid_position(pos)]
+    possible_positions = [
+        pos for pos in possible_positions if input_instrument.is_valid_position(pos)
+    ]
 
     if len(possible_positions) == 0:
         return -1
