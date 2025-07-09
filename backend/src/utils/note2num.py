@@ -2,9 +2,6 @@
 This module provides a function to convert musical notes to their corresponding MIDI note numbers.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 from .constants import MAX_MIDI_NOTE, MIN_MIDI_NOTE
 

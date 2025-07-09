@@ -3,9 +3,6 @@ This is the test suite for the API endpoints of the musical instrument fingering
 It tests the functionality of the endpoints that retrieve finger positions from musical notes.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 import unittest
 

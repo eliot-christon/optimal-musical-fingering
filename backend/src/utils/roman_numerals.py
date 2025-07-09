@@ -4,9 +4,6 @@ Romans numerals are a numeral system originating from ancient Rome,
 using combinations of letters from the Latin alphabet (I, V, X, L, C, D, M).
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 from .constants import MAX_ROMAN_NUMERAL, MIN_ROMAN_NUMERAL
 

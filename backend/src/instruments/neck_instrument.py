@@ -3,9 +3,6 @@ This module contains the NeckInstrument class,
 which represents a neck instrument and its properties.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 
 from src.positions.neck_position import NeckPosition

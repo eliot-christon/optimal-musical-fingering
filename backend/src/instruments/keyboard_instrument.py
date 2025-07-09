@@ -3,9 +3,6 @@ This module contains the KeyboardInstrument class,
 which represents a keyboard instrument.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 
 from src.positions.position import Position

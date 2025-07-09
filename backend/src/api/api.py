@@ -2,9 +2,6 @@
 This module provides an API for interacting with musical instruments and their finger positions.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 
 from fastapi import FastAPI

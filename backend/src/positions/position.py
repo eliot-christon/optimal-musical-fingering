@@ -5,9 +5,6 @@ These classes provide methods for creating, manipulating,
 and sorting positions based on placements and fingers.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 
 from src.utils.note2num import note2num

@@ -3,9 +3,6 @@ This module contains the Instrument class,
 which represents a musical instrument and its properties.
 """
 
-__author__ = "Eliot Christon"
-__email__ = "eliot.christon@gmail.com"
-__github__ = "eliot-christon"
 
 
 from abc import abstractmethod
