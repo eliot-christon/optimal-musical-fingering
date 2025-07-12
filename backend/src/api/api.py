@@ -123,7 +123,7 @@ def get_all_pos_from_notes_api(note_input: NoteInput) -> dict:
     if isinstance(positions_costs, int):
         return {"error": "No valid positions found for the given notes."}
 
-    return {pos.to_json(): cost for pos, cost in positions_costs.items()}
+    return {num: (pos.to_json(), cost) for num, (pos, cost) in enumerate(positions_costs.items())}
 
 
 if __name__ == "__main__":
