@@ -11,6 +11,9 @@ const changePositionButton = document.getElementById('changePosition')
 const positionDifficulty = document.getElementById('positionDifficulty')
 const difficultyValue = document.getElementById('difficultyValue')
 
+// Initial setup, clear any previous state
+clearAll()
+
 // ⚡️ On instrument change
 instrumentSelect.addEventListener('change', async () => {
   const instrument = instrumentSelect.value
@@ -19,6 +22,7 @@ instrumentSelect.addEventListener('change', async () => {
     drawNeck(neckContainer, data.strings.length, data.frets, data.strings)
     // Hide the difficulty box initially
     positionDifficulty.style.display = 'none'
+    changePositionButton.style.display = 'none' // Hide change position button
     difficultyValue.textContent = '0' // Reset difficulty value
   } catch (error) {
     console.error('Loading instrument details failed:', error)
@@ -51,6 +55,7 @@ submitButton.addEventListener('click', async () => {
     const difficulty = sortedPositions[0][1][1]
     difficultyValue.textContent = difficulty
     positionDifficulty.style.display = 'block' // Show the difficulty box
+    changePositionButton.style.display = 'block' // Show the change position button
     // draw the first position
     drawPosition(sortedPositions[0][1][0])
     console.log('Positions data:', data)
@@ -72,5 +77,5 @@ changePositionButton.addEventListener('click', () => {
   drawPosition(currentPosition)
   // Update the difficulty value
   const difficulty = window.positions[window.currentPositionIndex][1][1]
-  difficultyValue.textContent = difficulty.toFixed(2)
+  difficultyValue.textContent = Math.round(difficulty)
 })

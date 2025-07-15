@@ -1,3 +1,10 @@
+/* Button row for horizontal alignment */
+#buttonRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -34,7 +41,10 @@ button {
   cursor: pointer;
 }
 button:hover {
+  transform: translateY(-1px);
   background-color: #ff4c4c;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
 }
 
 .difficulty-chip {
