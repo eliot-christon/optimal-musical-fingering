@@ -7,37 +7,39 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <h1>Instrument Neck Visualizer</h1>
+    <div class="container">
+      <h1>Instrument Neck Visualizer</h1>
 
-    <!-- Text input for notes -->
-    <label for="notes">Enter Notes (e.g. C D E):</label>
-    <input type="text" id="notes" placeholder="Type notes here" />
+      <!-- Text input for notes -->
+      <label for="notes">Enter Notes (e.g. C D E):</label>
+      <input type="text" id="notes" placeholder="Type notes here" />
 
-    <!-- Combo box for selecting instrument -->
-    <label for="instrument">Select Instrument:</label>
-    <select id="instrument">
-      <option value=" "></option>
-      <option value="Guitar">Guitar (6 strings)</option>
-      <option value="Bass">Bass (4 strings)</option>
-      <option value="Ukulele">Ukulele (4 strings)</option>
-      <option value="Guitarlele">Guitarlele (6 strings)</option>
-      <option value="Banjo">Banjo (5 strings)</option>
-      <option value="Mandolin">Mandolin (8 strings)</option>
-    </select>
+      <!-- Combo box for selecting instrument -->
+      <label for="instrument">Select Instrument:</label>
+      <select id="instrument">
+        <option value=" "></option>
+        <option value="Guitar">Guitar (6 strings)</option>
+        <option value="Bass">Bass (4 strings)</option>
+        <option value="Ukulele">Ukulele (4 strings)</option>
+        <option value="Guitarlele">Guitarlele (6 strings)</option>
+        <option value="Banjo">Banjo (5 strings)</option>
+        <option value="Mandolin">Mandolin (8 strings)</option>
+      </select>
 
-    <!-- Submit button -->
-    <button id="submit">Submit</button>
+      <!-- Submit button -->
+      <button id="submit">Submit</button>
 
-    <!-- Change position button -->
-    <button id="changePosition">Change Position</button>
+      <!-- Change position button -->
+      <button id="changePosition">Change Position</button>
 
-    <!-- Position dificulty display box -->
-    <div id="positionDifficulty" class="difficulty-box">
-      <p>Position Difficulty: <span id="difficultyValue">0</span></p>
+      <!-- Position dificulty display box -->
+      <div id="positionDifficulty" class="difficulty-box">
+        <p>Position Difficulty: <span id="difficultyValue" class="difficulty-chip">0</span></p>
+      </div>
+
+      <!-- Neck visualization -->
+      <div class="neck-container" id="neckContainer"></div>
     </div>
-
-    <!-- Neck visualization -->
-    <div class="neck-container" id="neckContainer"></div>
 
     <!-- Include the main JavaScript file -->
     <script type="module" src="./main.js"></script>

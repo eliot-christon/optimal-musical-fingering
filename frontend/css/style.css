@@ -1,18 +1,63 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background: #fff;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto auto auto auto;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  border-radius: 12px;
 }
 label {
   display: block;
-  margin-top: 10px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  font-weight: bold;
 }
+
+input,
+select,
+button {
+  border: 0.05rem solid #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+button {
+  background-color: #ff6b6b;
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #ff4c4c;
+}
+
+.difficulty-chip {
+  background-color: #ffd700;
+  padding: 0.3rem 0.5rem;
+  border-radius: 1.2rem;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
 .fretboard {
   display: grid;
-  background-color: #fdf5df;
+  background: linear-gradient(135deg, #fdf5df 0%, #f9ebcc 50%, #ebdcbb 100%);
   grid-template-rows: repeat(var(--strings-count), 1fr);
   grid-template-columns: 35px repeat(calc(var(--frets-count) - 1), 1fr);
   gap: 1px;
+  border-radius: 1.2rem 0 0 1rem;
   position: relative;
+}
+h1 {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 .nut {
   width: 10px;
@@ -24,17 +69,18 @@ label {
   position: relative;
 }
 .string {
-  height: 10px;
-  border-bottom: 2px solid black;
-  margin: 5px 0;
-  transform: translateY(-50%);
+  height: 0.6rem;
+  border-bottom: 0.13rem solid black;
+  margin: 0.3rem 0;
+  transform: translateY(-25%);
+  box-shadow: 0 0.13rem 0.27rem 0 rgba(0, 0, 0, 0.1);
 }
 .fret-dot {
-  width: 10px;
-  height: 10px;
-  background-color: black;
-  border: 1px solid white;
-  border-radius: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: radial-gradient(circle at 30% 30%, #cfcfcf 20%, #999999 100%);
+  border: 1.5px solid #929292;
+  border-radius: 100%;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -49,26 +95,26 @@ label {
   background-color: black;
 }
 .note-position {
-  background-color: red;
+  background: rgba(255, 107, 107, 0.907);
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
+  width: 1.6rem;
+  height: 1.6rem;
   margin: auto;
-
-  color: white;
-  border-radius: 50%;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1em;
   text-align: center;
-  font-size: 0.8em;
-  padding: 0.2em;
-  z-index: 2;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.13);
+  z-index: 2;
+  user-select: none;
 }
 .string-label {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 4px;
+  padding-right: 0.4rem;
   font-weight: bold;
 }
