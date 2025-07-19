@@ -29,7 +29,7 @@ repos:
         language: python
         types: [python]
         files: ^backend/.*
-        args: ['--rcfile=backend/pyproject.toml']
+        args: ['--rcfile=pyproject.toml']
         require_serial: true
       - id: mypy
         name: mypy
