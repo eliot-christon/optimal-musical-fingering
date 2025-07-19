@@ -45,20 +45,22 @@ class NeckPosition(Position):
         """Returns a string representation of the position"""
         roman_frets = [convert_to_roman(fret) for fret in self.frets]
         return (
-            f"Strings: {self.strings}, Frets: {roman_frets}, Fingers: {self.fingers}, ID: {self.id}"
+            f"Strings: {self.strings}, "
+            f"Frets: {roman_frets}, "
+            f"Fingers: {self._fingers}, ID: {self._id}"
         )
 
     def __repr__(self) -> str:
         """Returns a string representation of the position"""
-        return f"NPosition({self.placements}, {self.fingers}, {self.id})"
+        return f"NPosition({self._placements}, {self._fingers}, {self._id})"
 
     def to_json(self) -> dict:
         """Returns the position as a json"""
         return {
             "strings": self.strings,
             "frets": self.frets,
-            "fingers": self.fingers,
-            "id": self.id,
+            "fingers": self._fingers,
+            "id": self._id,
         }
 
     def sort_by_string(self, *, reverse: bool = True) -> "NeckPosition":
@@ -67,36 +69,38 @@ class NeckPosition(Position):
             list,
             zip(
                 *sorted(
-                    zip(self.placements, self.fingers, strict=False),
+                    zip(self._placements, self._fingers, strict=False),
                     key=lambda x: x[0],
                     reverse=reverse,
                 ),
                 strict=False,
             ),
         )
-        return NeckPosition(sorted_placements, sorted_fingers, self.id)
+        return NeckPosition(sorted_placements, sorted_fingers, self._id)
 
     def sort_by_fret(self) -> "NeckPosition":
         """Sorts the placements and fingers by fret"""
         sorted_placements, sorted_fingers = map(
             list,
             zip(
-                *sorted(zip(self.placements, self.fingers, strict=False), key=lambda x: x[0] % 100),
+                *sorted(
+                    zip(self._placements, self._fingers, strict=False), key=lambda x: x[0] % 100
+                ),
                 strict=False,
             ),
         )
-        return NeckPosition(sorted_placements, sorted_fingers, self.id)
+        return NeckPosition(sorted_placements, sorted_fingers, self._id)
 
     def sort_by_finger(self) -> "NeckPosition":
         """Sorts the placements and fingers by finger"""
         placements, fingers = map(
             list,
             zip(
-                *sorted(zip(self.placements, self.fingers, strict=False), key=lambda x: x[1]),
+                *sorted(zip(self._placements, self._fingers, strict=False), key=lambda x: x[1]),
                 strict=False,
             ),
         )
-        return NeckPosition(placements, fingers, self.id)
+        return NeckPosition(placements, fingers, self._id)
 
     @staticmethod
     def convert_strings_frets_to_placements(strings: list[int], frets: list[int]) -> list[int]:
@@ -107,51 +111,65 @@ class NeckPosition(Position):
     @property
     def strings(self) -> list[int]:
         """Returns the strings of the position"""
-        return [note // 100 for note in self.placements]
+        return [note // 100 for note in self._placements]
 
     @property
     def frets(self) -> list[int]:
         """Returns the frets of the position"""
-        return [note % 100 for note in self.placements]
+        return [note % 100 for note in self._placements]
 
     def add_note(self, string: int, fret: int, finger: int) -> None:
         """Adds a note to the position"""
-        self.placements.append(string * 100 + fret)
-        self.fingers.append(finger)
+        self._placements.append(string * 100 + fret)
+        self._fingers.append(finger)
 
     def get_full_position(self, num_fingers: int = 6) -> "NeckPosition":
         """Returns the full position (all strings)
         quiet placements are represented by -1 (0 is playing the open string)
         """
+
+        if num_fingers < len(self._fingers):
+            msg = (
+                "num_fingers must be greater than or equal to the number of fingers in the position"
+            )
+            raise ValueError(msg)
+
         num_strings = num_fingers  # assuming num_fingers is the number of strings
         new_placements = []
         for i in range(num_strings):
             if i in self.strings:
-                new_placements.append(self.placements[self.strings.index(i)])
+                new_placements.append(self._placements[self.strings.index(i)])
             else:
                 new_placements.append(-1)
-        return NeckPosition(new_placements, self.fingers)
+        return NeckPosition(new_placements, self._fingers)
 
     def shift(self, shift: int, max_finger: int = 4) -> None:
         """Shifts the position by a number of fingers.
         Only non-quiet placements are shifted if max_finger doesn't occur in the position"""
-        if max_finger in self.fingers or max(self.fingers) + shift > max_finger:
-            return
-        # if finger > 0, shift finger
+        if max(self._fingers) + shift > max_finger:
+            raise ValueError(
+                f"Cannot shift position by {shift} fingers, "
+                f"max finger {max_finger} would be exceeded."
+            )
+        if shift < 0 and min(self._fingers) + shift < 0:
+            raise ValueError(
+                f"Cannot shift position by {shift} fingers, "
+                f"min finger {min(self._fingers)} would be exceeded."
+            )
         new_fingers: list[int] = []
-        for i in range(len(self.placements)):
-            if self.fingers[i] > 0:
-                new_fingers.append(self.fingers[i] + shift)
+        for i in range(len(self._placements)):
+            if self._fingers[i] > 0:
+                new_fingers.append(self._fingers[i] + shift)
             else:
-                new_fingers.append(self.fingers[i])
-        self.fingers = new_fingers
+                new_fingers.append(self._fingers[i])
+        self._fingers = new_fingers
 
     def is_barre(self) -> bool:
         """Returns True if the position is a barre.
         is barre when same finger > 0 on multiple strings"""
-        non_quiet_fingers = [finger for finger in self.fingers if finger > 0]
+        non_quiet_fingers = [finger for finger in self._fingers if finger > 0]
         return len(non_quiet_fingers) != len(set(non_quiet_fingers))
 
     def copy(self) -> "NeckPosition":
         """Returns a copy of the position"""
-        return NeckPosition(self.placements.copy(), self.fingers.copy(), self.id)
+        return NeckPosition(self._placements.copy(), self._fingers.copy(), self._id)
