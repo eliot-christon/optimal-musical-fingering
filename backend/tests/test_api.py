@@ -53,7 +53,3 @@ class TestAPI(unittest.TestCase):
         self.assertLess(response["range"][0], response["range"][1])
         self.assertTrue(isinstance(response["description"], str))
         self.assertTrue(isinstance(response["frets"], int))
-
-
-if __name__ == "__main__":
-    unittest.main()

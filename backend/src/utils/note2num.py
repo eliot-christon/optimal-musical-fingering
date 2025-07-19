@@ -2,12 +2,11 @@
 This module provides a function to convert musical notes to their corresponding MIDI note numbers.
 """
 
-
 from .constants import MAX_MIDI_NOTE, MIN_MIDI_NOTE
 
 
 def note2num(note: str) -> int:
-    """Convert a note to its corresponding number. (midi note number, C0 = 0, G10 = 127)"""
+    """Convert a note to its corresponding number.(midi note number, C0 = 0, G10 = MAX_MIDI_NOTE)"""
     notes = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
 
     # the note has, at least, 1 letter and 1 number. It could also have an alteration (# or b)
