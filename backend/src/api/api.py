@@ -53,7 +53,7 @@ app.add_middleware(
 @app.get("/")
 def read_root() -> dict:
     """Root endpoint for the API."""
-    return {"message": "Welcome to the Musical Instrument API!"}
+    return {"message": "Welcome to the Optimal Musical Instrument Fingering API!"}
 
 
 @app.get("/getInstrumentDetails")
