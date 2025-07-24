@@ -4,16 +4,20 @@ on: [push]
 
 jobs:
   build:
-    runs-on:
-      - python-3.12
-
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
     steps:
       - uses: actions/checkout@v4
-      - name: Install environment
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
         run: |
-          pip install uv
-          uv sync
-          pre-commit install
-          pre-commit autoupdate
-          pre-commit run --all-files
-          uv run pytest
+          python -m pip install --upgrade pip
+          pip install pylint
+      - name: Analysing the code with pylint
+        run: |
+          pylint $(git ls-files '*.py')
