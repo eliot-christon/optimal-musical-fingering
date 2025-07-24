@@ -3,8 +3,6 @@ This module contains the Instrument class,
 which represents a musical instrument and its properties.
 """
 
-
-
 from abc import abstractmethod
 
 from src.positions.position import Position

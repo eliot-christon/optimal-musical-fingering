@@ -3,7 +3,6 @@ This module provides a function to convert a number to its corresponding musical
 The notes are represented in MIDI note number format, where C0 = 0 and G10 = 127.
 """
 
-
 from .constants import MAX_MIDI_NOTE, MIN_MIDI_NOTE
 
 

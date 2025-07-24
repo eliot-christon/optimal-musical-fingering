@@ -3,8 +3,6 @@ This module contains the NeckInstrument class,
 which represents a neck instrument and its properties.
 """
 
-
-
 from src.positions.neck_position import NeckPosition
 from src.utils.constants import MAX_FINGERS
 from src.utils.note2num import note2num
