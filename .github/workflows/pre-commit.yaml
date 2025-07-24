@@ -43,4 +43,4 @@ jobs:
           source .venv/bin/activate
           # Do not run test_api.py
           pytest
-          pytest --ignore=backend/tests/test_api.py --cov=backend --cov-report=xml --cov-report=html
+          pytest --cov=backend --cov-report=xml --cov-report=html

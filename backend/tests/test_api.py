@@ -5,11 +5,13 @@ It tests the functionality of the endpoints that retrieve finger positions from 
 
 import unittest
 
+import pytest
 import requests
 
 URL = "http://localhost:8000"
 
 
+@pytest.mark.skip("Skipping tests that require a running server")
 class TestAPI(unittest.TestCase):
     """Test suite for the API endpoints of the musical instrument fingering application.
 
