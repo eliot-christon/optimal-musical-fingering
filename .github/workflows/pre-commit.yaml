@@ -1,0 +1,19 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  build:
+    runs-on:
+      - python-3.12
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install environment
+        run: |
+          pip install uv
+          uv sync
+          pre-commit install
+          pre-commit autoupdate
+          pre-commit run --all-files
+          uv run pytest
