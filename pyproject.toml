@@ -15,6 +15,7 @@ classifiers = [
 ]
 dependencies = [
   "fastapi==0.115.14",
+  "pretty-midi>=0.2.10",
   "pydantic==2.11.7",
   "requests==2.32.4",
   "uvicorn==0.35",
@@ -73,3 +74,11 @@ unsafe-load-any-extension = true
 ignore = [
   ".venv",
 ]
+
+# mypy is strict for all packages except pretty_midi.
+# The following section silences missing type hints errors for pretty_midi only,
+# so you keep strict type checking everywhere else.
+
+[[tool.mypy.overrides]]
+module = [ "pretty_midi.*" ]
+follow_untyped_imports = true
