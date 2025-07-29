@@ -4,7 +4,8 @@ It tests the functionality of chord naming based on musical notes.
 """
 
 import pytest
-from src.autochord.name_chord import name_chord
+
+from backend.src.autochord.name_chord import name_chord
 
 
 def test_name_chord() -> None:

@@ -2,7 +2,7 @@
 Tests for the MusicPiece class, which represents a musical piece with timed chords.
 """
 
-from src.music_piece.music_piece import MusicPiece
+from backend.src.music_piece.music_piece import MusicPiece
 
 PATH_TO_MIDI_FILE = "backend/assets/midi_files/sample_1.mid"
 
