@@ -5,7 +5,7 @@ representation, and manipulation.
 
 from pretty_midi import PrettyMIDI
 
-from src.music_piece.timed_chord import TimedChord
+from backend.src.music_piece.timed_chord import TimedChord
 
 
 class MusicPiece:

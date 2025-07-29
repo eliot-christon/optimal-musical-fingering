@@ -5,7 +5,7 @@ These classes provide methods for creating, manipulating,
 and sorting positions based on placements and fingers.
 """
 
-from src.utils.note2num import note2num
+from backend.src.utils.note2num import note2num
 
 
 class Position:

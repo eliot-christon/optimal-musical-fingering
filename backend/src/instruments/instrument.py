@@ -5,8 +5,8 @@ which represents a musical instrument and its properties.
 
 from abc import abstractmethod
 
-from src.positions.position import Position
-from src.utils.note2num import note2num
+from backend.src.positions.position import Position
+from backend.src.utils.note2num import note2num
 
 
 class Instrument:
