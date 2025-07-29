@@ -2,8 +2,11 @@
 This module provides an API for interacting with musical instruments and their finger positions.
 """
 
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from src.instruments.neck_instrument import (
@@ -50,10 +53,13 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-def read_root() -> dict:
-    """Root endpoint for the API."""
-    return {"message": "Welcome to the Optimal Musical Instrument Fingering API!"}
+@app.get("/", response_class=HTMLResponse)
+def read_root() -> HTMLResponse:
+    """Root endpoint for the API, returns the frontend HTML."""
+    index_path = Path(__file__).parents[3] / "frontend" / "index.html"
+    if index_path.exists():
+        return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+    return HTMLResponse(content="<h1>index.html not found</h1>")
 
 
 @app.get("/getInstrumentDetails")
