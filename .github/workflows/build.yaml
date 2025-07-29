@@ -18,7 +18,7 @@ jobs:
           uv sync
       - name: Run script to create executable
         run: |
-          source .venv/bin/activate
+          .venv\Scripts\activate
           uv add pyinstaller
           uv run pyinstaller .\main.py --clean -F --add-data frontend:frontend
       - name: Upload executable
