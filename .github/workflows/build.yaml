@@ -1,0 +1,28 @@
+name: Create executable
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv sync
+      - name: Run script to create executable
+        run: |
+          .venv\Scripts\activate
+          uv add pyinstaller
+          uv run pyinstaller .\main.py --clean -F --add-data frontend:frontend
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: executable
+          path: dist/main.exe

@@ -2,7 +2,7 @@
 Tests for the TimedChord class, which represents a chord with timing information.
 """
 
-from src.music_piece.timed_chord import TimedChord
+from backend.src.music_piece.timed_chord import TimedChord
 
 # Create a TimedChord instance for testing
 chord = (60, 64, 67)  # C major chord in MIDI

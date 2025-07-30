@@ -8,7 +8,7 @@ and sorting positions based on placements and fingers.
 from collections.abc import Iterable
 from typing import NamedTuple
 
-from src.utils.note2num import note2num
+from backend.src.utils.note2num import note2num
 
 
 class FingerPosition(NamedTuple):

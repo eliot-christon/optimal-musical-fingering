@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
-from src.instruments.neck_instrument import (
+from backend.src.instruments.neck_instrument import (
     Banjo,
     Bass,
     Guitar,
@@ -18,8 +18,8 @@ from src.instruments.neck_instrument import (
     NeckInstrument,
     Ukulele,
 )
-from src.positions.neck_position import NeckPosition
-from src.utils.note2num import note2num
+from backend.src.positions.neck_position import NeckPosition
+from backend.src.utils.note2num import note2num
 
 from .get_all_pos_from_notes import get_all_pos_from_notes
 from .get_best_pos_from_notes import get_best_pos_from_notes
@@ -130,9 +130,3 @@ def get_all_pos_from_notes_api(note_input: NoteInput) -> dict:
         return {"error": "No valid positions found for the given notes."}
 
     return {num: (pos.to_json(), cost) for num, (pos, cost) in enumerate(positions_costs.items())}
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="localhost", port=8000)

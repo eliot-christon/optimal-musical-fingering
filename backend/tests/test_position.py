@@ -4,7 +4,8 @@ It tests the functionality of the position calculation based on musical notes.
 """
 
 import pytest
-from src.positions.position import Position
+
+from backend.src.positions.position import Position
 
 # Define some sample positions for testing
 position_1 = Position(finger_positions=((48, 1), (52, 2), (55, 3)), pos_id=1)
