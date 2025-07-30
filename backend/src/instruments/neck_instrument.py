@@ -306,7 +306,7 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
                         new_positions.append(new_position)
                 return compute_positions(note_list, new_positions, index + 1)
 
-            no_finger_pos = compute_positions(note_list, [NeckPosition([], [])], 0)
+            no_finger_pos = compute_positions(note_list, [NeckPosition(())], 0)
         default_finger_pos = [self.default_fingering(position) for position in no_finger_pos]
         # now shift all the positions while finger 4 isn't used
         res = []
@@ -457,7 +457,7 @@ class Guitarlele(NeckInstrument):
 if __name__ == "__main__":
     guitar = Guitar()
 
-    pos1 = NeckPosition([300, 103, 201], [0, 3, 1])
+    pos1 = NeckPosition(finger_positions=[(300, 0), (103, 3), (201, 1)])
     Fmaj7 = NeckPosition.from_strings_frets(
         fingers=[1, 3, 2, 4], strings=[6, 4, 3, 2], frets=[1, 3, 2, 3]
     )

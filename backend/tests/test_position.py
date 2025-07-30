@@ -8,8 +8,8 @@ import pytest
 from backend.src.positions.position import Position
 
 # Define some sample positions for testing
-position_1 = Position(placements=[48, 52, 55], fingers=[1, 2, 3], pos_id=1)
-position_2 = Position(placements=[48, 55, 52], fingers=[4, 2, 1])
+position_1 = Position(finger_positions=((48, 1), (52, 2), (55, 3)), pos_id=1)
+position_2 = Position(finger_positions=((48, 4), (55, 2), (52, 1)), pos_id=2)
 position_3 = Position.from_str_notes(["C4", "E4", "G4"], [1, 2, 3])
 position_3.id = 1
 
