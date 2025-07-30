@@ -6,8 +6,8 @@ It provides functionality to analyze the intervals between notes and determine t
 import json
 from pathlib import Path
 
-from src.utils.note2num import note2num
-from src.utils.num2note import num2note
+from backend.src.utils.note2num import note2num
+from backend.src.utils.num2note import num2note
 
 # Get the path to chord_data.json relative to this file using pathlib
 CHORD_DATA_PATH = Path(__file__).parent / "chord_data.json"

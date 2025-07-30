@@ -3,7 +3,7 @@ This module contains the KeyboardInstrument class,
 which represents a keyboard instrument.
 """
 
-from src.positions.position import Position
+from backend.src.positions.position import Position
 
 from .instrument import Instrument
 

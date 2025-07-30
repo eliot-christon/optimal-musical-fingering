@@ -4,8 +4,9 @@ It tests the functionality of the neck position calculation based on musical not
 """
 
 import pytest
-from src.positions.neck_position import NeckPosition
-from src.positions.position import Position
+
+from backend.src.positions.neck_position import NeckPosition
+from backend.src.positions.position import Position
 
 # Define some sample neck positions for testing
 neck_position_1 = NeckPosition(finger_positions=((201, 1), (402, 2), (503, 3)), pos_id=1)

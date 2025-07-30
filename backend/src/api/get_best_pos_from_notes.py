@@ -3,8 +3,8 @@ This module contains the logic for determining the optimal finger positions
 for a given set of musical notes and a specific instrument.
 """
 
-from src.instruments.neck_instrument import NeckInstrument
-from src.positions.neck_position import NeckPosition
+from backend.src.instruments.neck_instrument import NeckInstrument
+from backend.src.positions.neck_position import NeckPosition
 
 
 def get_best_pos_from_notes(
