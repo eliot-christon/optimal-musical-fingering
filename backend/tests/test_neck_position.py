@@ -8,13 +8,13 @@ from src.positions.neck_position import NeckPosition
 from src.positions.position import Position
 
 # Define some sample neck positions for testing
-neck_position_1 = NeckPosition(placements=[201, 402, 503], fingers=[1, 2, 3], pos_id=1)
-neck_position_2 = NeckPosition(placements=[110], fingers=[4])
+neck_position_1 = NeckPosition(finger_positions=((201, 1), (402, 2), (503, 3)), pos_id=1)
+neck_position_2 = NeckPosition(finger_positions=((110, 4),), pos_id=2)
 neck_position_3 = NeckPosition.from_strings_frets(
     fingers=[1, 2, 3], strings=[2, 4, 5], frets=[1, 2, 3], pos_id=1
 )
 neck_position_4 = NeckPosition.from_position(
-    Position(placements=[201, 402, 503], fingers=[1, 2, 3], pos_id=1)
+    Position(finger_positions=((201, 1), (402, 2), (503, 3)), pos_id=1)
 )
 
 
@@ -49,7 +49,7 @@ def test_neck_position_add_note() -> None:
 def test_neck_position_get_full_position() -> None:
     """Test getting the full position with a specific number of fingers."""
     full_position = neck_position_1.get_full_position(num_fingers=6)
-    assert len(full_position.fingers) == 3
+    assert len(full_position.fingers) == 6
     assert full_position.placements == [-1, -1, 201, -1, 402, 503]
     with pytest.raises(ValueError):
         neck_position_1.get_full_position(num_fingers=2)
@@ -57,7 +57,7 @@ def test_neck_position_get_full_position() -> None:
 
 def test_neck_position_shift() -> None:
     """Test shifting the NeckPosition."""
-    neck_position = NeckPosition(placements=[201, 402, 503], fingers=[1, 2, 3], pos_id=1)
+    neck_position = NeckPosition(finger_positions=((201, 1), (402, 2), (503, 3)), pos_id=1)
     neck_position.shift(1)
     assert neck_position.placements == [201, 402, 503]
     assert neck_position.fingers == [2, 3, 4]
@@ -70,15 +70,15 @@ def test_neck_position_shift() -> None:
 
 def test_neck_position_is_barre() -> None:
     """Test if the NeckPosition is a barre."""
-    neck_position = NeckPosition(placements=[201, 402, 503], fingers=[1, 2, 3], pos_id=1)
+    neck_position = NeckPosition(finger_positions=((201, 1), (402, 2), (503, 3)), pos_id=1)
     assert not neck_position.is_barre()
-    barre_position = NeckPosition(placements=[201, 402, 503], fingers=[1, 1, 1])
+    barre_position = NeckPosition(finger_positions=((201, 1), (402, 1), (503, 1)), pos_id=2)
     assert barre_position.is_barre()
 
 
 def test_neck_position_copy() -> None:
     """Test copying the NeckPosition."""
-    neck_position = NeckPosition(placements=[201, 402, 503], fingers=[1, 2, 3], pos_id=1)
+    neck_position = NeckPosition(finger_positions=((201, 1), (402, 2), (503, 3)), pos_id=1)
     copied_position = neck_position.copy()
     assert copied_position == neck_position
     assert copied_position is not neck_position
