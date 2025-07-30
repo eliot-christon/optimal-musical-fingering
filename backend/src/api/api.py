@@ -130,9 +130,3 @@ def get_all_pos_from_notes_api(note_input: NoteInput) -> dict:
         return {"error": "No valid positions found for the given notes."}
 
     return {num: (pos.to_json(), cost) for num, (pos, cost) in enumerate(positions_costs.items())}
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="localhost", port=8000)
