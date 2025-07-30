@@ -15,7 +15,8 @@ class FingerPosition(NamedTuple):
     """Named tuple representing a finger position on an instrument.
 
     Attributes:
-        placement (int): The MIDI note number of the placement.
+        placement (int): The placement number,
+                         can represent the MIDI note number or another identifier.
         finger (int): The finger number associated with the placement.
     """
 
