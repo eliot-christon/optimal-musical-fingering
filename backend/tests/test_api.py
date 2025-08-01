@@ -3,13 +3,9 @@ This is the test suite for the API endpoints of the musical instrument fingering
 It tests the functionality of the endpoints that retrieve finger positions from musical notes.
 """
 
-import pytest
 import requests
 
 URL = "http://localhost:8000"
-
-# Ensure the server is running before executing these tests
-pytestmark = pytest.mark.skip("Skipping tests that require a running server")
 
 
 def test_get_best_pos_from_notes() -> None:
