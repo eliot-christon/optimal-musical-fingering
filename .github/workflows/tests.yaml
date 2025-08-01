@@ -20,14 +20,7 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest --cov=backend --cov-report=xml --cov-report=html
-      - name: Upload test coverage
-        uses: actions/upload-artifact@v4
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          name: test-coverage
-          path: coverage.xml
-          if: success()
-      - name: Upload HTML coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: html-coverage
-          path: htmlcov/
+          token: ${{ secrets.CODECOV_TOKEN }}
