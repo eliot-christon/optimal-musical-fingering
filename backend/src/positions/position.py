@@ -73,7 +73,7 @@ class Position:
 
     def __hash__(self) -> int:
         """Returns a hash of the position"""
-        return hash((self._finger_positions, self._id))
+        return hash((tuple(self._finger_positions), self._id))
 
     def __eq__(self, other: object) -> bool:
         """Checks if two Position instances are equal"""
@@ -105,6 +105,12 @@ class Position:
     def id(self, value: int | None) -> None:
         """Sets the ID of the position"""
         self._id = value
+
+    def change_finger(self, index: int, new_finger: int) -> None:
+        """Changes the finger at a specific index to a new finger."""
+        self._finger_positions[index] = FingerPosition(
+            self._finger_positions[index].placement, new_finger
+        )
 
     def sort_by_finger(self) -> "Position":
         """Sorts the placements and fingers by finger"""

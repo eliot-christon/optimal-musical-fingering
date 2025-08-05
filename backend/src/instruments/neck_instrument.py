@@ -172,12 +172,12 @@ class NeckInstrument(Instrument):
         for i in range(len(neck_position)):
             # Place the 0 finger if the string is open (fret = 0)
             if neck_position.frets[i] == 0:
-                neck_position.fingers[i] = 0
+                neck_position.change_finger(i, 0)
                 continue
 
             # Assign fingers in increasing order
             current_finger += max(neck_position.frets[i] - current_fret - 1, 0)
-            neck_position.fingers[i] = current_finger
+            neck_position.change_finger(i, current_finger)
             current_fret = neck_position.frets[i]
             # check if the next placement is on the same fret (only one barring possible)
             if (
