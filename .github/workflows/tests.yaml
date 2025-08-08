@@ -20,7 +20,6 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest --cov=backend --cov-report=xml --cov-report=html
-          coverage-report:
       - name: Generate coverage report
         id: generate-coverage-report
         env:
