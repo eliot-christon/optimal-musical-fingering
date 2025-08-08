@@ -62,16 +62,12 @@ class NeckPosition(Position):
 
     def sort_by_fret(self) -> "NeckPosition":
         """Sorts the placements and fingers by fret"""
-        sorted_finger_positions = sorted(
-            self._finger_positions, key=lambda x: x.placement % 100, reverse=False
-        )
+        sorted_finger_positions = sorted(self._finger_positions, key=lambda x: x.placement % 100)
         return NeckPosition(sorted_finger_positions, self._id)
 
     def sort_by_finger(self) -> "NeckPosition":
         """Sorts the placements and fingers by finger"""
-        sorted_finger_positions = sorted(
-            self._finger_positions, key=lambda x: x.finger, reverse=False
-        )
+        sorted_finger_positions = sorted(self._finger_positions, key=lambda x: x.finger)
         return NeckPosition(sorted_finger_positions, self._id)
 
     @staticmethod
@@ -129,14 +125,10 @@ class NeckPosition(Position):
                 f"Cannot shift position by {shift} fingers, "
                 f"min finger {min(self.fingers)} would be exceeded."
             )
-        new_finger_positions: list[FingerPosition] = []
-        for finger_position in self._finger_positions:
-            if finger_position.finger > 0:
-                new_finger_positions.append(
-                    FingerPosition(finger_position.placement, finger_position.finger + shift)
-                )
-            else:
-                new_finger_positions.append(finger_position)
+        new_finger_positions: list[FingerPosition] = [
+            FingerPosition(fp.placement, fp.finger + shift) if fp.finger > 0 else fp
+            for fp in self._finger_positions
+        ]
         self._finger_positions = new_finger_positions
 
     def is_barre(self) -> bool:
@@ -147,4 +139,4 @@ class NeckPosition(Position):
 
     def copy(self) -> "NeckPosition":
         """Returns a copy of the position"""
-        return NeckPosition(self._finger_positions, self._id)
+        return NeckPosition(self._finger_positions.copy(), self._id)
