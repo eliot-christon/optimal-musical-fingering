@@ -19,9 +19,9 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest --cov=backend --cov-report=xml --cov-report=html
-      - name: Generate coverage report
-        id: generate-coverage-report
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: ./
+          pytest --cov=backend --cov-report=xml:coverage.xml
+      - name: Get Coverage
+        uses: orgoro/coverage@v3.2
+        with:
+          coverageFile: coverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
