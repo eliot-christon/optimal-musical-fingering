@@ -1,9 +1,9 @@
-name: Pre-commit
+name: Tests and coverage on python
 
 on: [push]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,8 +16,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install uv
           uv sync
-      - name: Run pre-commit hooks
+      - name: Run tests
         run: |
           source .venv/bin/activate
-          pre-commit install
-          pre-commit run --all-files
+          pytest --cov=backend --cov-report=xml:coverage.xml
+      - name: Get Coverage
+        uses: orgoro/coverage@v3.2
+        with:
+          coverageFile: coverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}

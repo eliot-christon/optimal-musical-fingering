@@ -3,7 +3,7 @@ name: Create executable
 on: [push]
 
 jobs:
-  lint:
+  build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
