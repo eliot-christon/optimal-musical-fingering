@@ -125,11 +125,10 @@ class NeckPosition(Position):
                 f"Cannot shift position by {shift} fingers, "
                 f"min finger {min(self.fingers)} would be exceeded."
             )
-        new_finger_positions: list[FingerPosition] = [
+        self._finger_positions = [
             FingerPosition(fp.placement, fp.finger + shift) if fp.finger > 0 else fp
             for fp in self._finger_positions
         ]
-        self._finger_positions = new_finger_positions
 
     def is_barre(self) -> bool:
         """Returns True if the position is a barre.
