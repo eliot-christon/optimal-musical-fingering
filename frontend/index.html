@@ -4,47 +4,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Instrument Neck Visualizer</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/style.css" />
   </head>
+
   <body>
-    <div class="container">
-      <h1>Instrument Neck Visualizer</h1>
+    <header>
+      <h1>Optimal Musical Fingering</h1>
+    </header>
 
-      <!-- Text input for notes -->
-      <label for="notes">Enter Notes (e.g. C D E):</label>
-      <input type="text" id="notes" placeholder="Type notes here" />
+    <nav>
+      <!-- Future navigation links will be added here -->
+    </nav>
 
-      <!-- Combo box for selecting instrument -->
-      <label for="instrument">Select Instrument:</label>
-      <select id="instrument">
-        <option value=" "></option>
-        <option value="Guitar">Guitar (6 strings)</option>
-        <option value="Bass">Bass (4 strings)</option>
-        <option value="Ukulele">Ukulele (4 strings)</option>
-        <option value="Guitarlele">Guitarlele (6 strings)</option>
-        <option value="Banjo">Banjo (5 strings)</option>
-        <option value="Mandolin">Mandolin (8 strings)</option>
-      </select>
+    <main>
+      <div class="container">
+        <h2>Instrument Neck Visualizer</h2>
 
-      <!-- Button row: Submit and Change Position side by side -->
-      <div id="buttonRow">
-        <button id="submit">Submit</button>
-        <button id="changePosition">Change Position</button>
+        <!-- Text input for notes -->
+        <label for="notes">Enter Notes (e.g. C D E):</label>
+        <input type="text" id="notes" placeholder="Type notes here" />
+
+        <!-- Combo box for selecting instrument -->
+        <label for="instrument">Select Instrument:</label>
+        <select id="instrument">
+          <option value=" "></option>
+          <option value="Guitar">Guitar (6 strings)</option>
+          <option value="Bass">Bass (4 strings)</option>
+          <option value="Ukulele">Ukulele (4 strings)</option>
+          <option value="Guitarlele">Guitarlele (6 strings)</option>
+          <option value="Banjo">Banjo (5 strings)</option>
+          <option value="Mandolin">Mandolin (8 strings)</option>
+        </select>
+
+        <!-- Button row: Submit and Change Position side by side -->
+        <div id="buttonRow">
+          <button id="submit">Submit</button>
+          <button id="changePosition">Change Position</button>
+        </div>
+
+        <!-- Position dificulty display box -->
+        <div id="positionDifficulty" class="difficulty-box">
+          <p>Position Difficulty: <span id="difficultyValue" class="difficulty-chip">0</span></p>
+        </div>
+
+        <!-- Neck visualization -->
+        <div class="neck-container" id="neckContainer"></div>
       </div>
-
-      <!-- Position dificulty display box -->
-      <div id="positionDifficulty" class="difficulty-box">
-        <p>Position Difficulty: <span id="difficultyValue" class="difficulty-chip">0</span></p>
-      </div>
-
-      <!-- Neck visualization -->
-      <div class="neck-container" id="neckContainer"></div>
-    </div>
+    </main>
 
     <!-- Include the main JavaScript file -->
     <script type="module" src="main.js"></script>
 
     <!-- Include the environment variables script -->
     <script type="module" src="env.js"></script>
+
+    <footer>
+      <a href="https://github.com/eliot-christon/optimal-musical-fingering" target="_blank" class="github-link"
+        >GitHub Repository</a
+      >
+    </footer>
   </body>
 </html>

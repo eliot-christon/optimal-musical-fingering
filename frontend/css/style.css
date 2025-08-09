@@ -1,30 +1,62 @@
-/* Button row for horizontal alignment */
-#buttonRow {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-  margin-bottom: 8px;
-}
+/* Global styles */
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   background: #fff;
 }
 
-.container {
-  max-width: 800px;
-  margin: auto auto auto auto;
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-  border-radius: 12px;
+h1 {
+  font-family: 'Lavishly Yours', cursive;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 1.5em;
+  margin-bottom: 20px;
 }
+
+h2 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2em;
+  margin: 0;
+}
+
 label {
   display: block;
   margin-top: 15px;
   margin-bottom: 5px;
   font-size: 1rem;
   font-weight: bold;
+}
+
+header {
+  padding: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Style for github link */
+.github-link {
+  font-size: 0.8rem;
+  color: #0366d6;
+  text-decoration: none;
+}
+.github-link:hover {
+  text-decoration: underline;
+  text-decoration-color: deepskyblue;
+  color: deepskyblue;
+}
+
+/* Button row for horizontal alignment */
+#buttonRow {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 
 input,
@@ -47,6 +79,15 @@ button:hover {
   transition: all 0.2s ease;
 }
 
+.container {
+  max-width: 800px;
+  margin: auto auto auto auto;
+  padding: 15px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  border-radius: 12px;
+}
+
 .difficulty-chip {
   background-color: #ffd700;
   padding: 0.3rem 0.5rem;
@@ -64,11 +105,7 @@ button:hover {
   border-radius: 1.2rem 0 0 1rem;
   position: relative;
 }
-h1 {
-  font-size: 2.5em;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
+
 .nut {
   width: 10px;
   background-color: #d3d3d3;
