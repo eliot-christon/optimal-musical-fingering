@@ -12,5 +12,5 @@ def num2note(num: int) -> str:
         raise ValueError(f"The number {num} is not in the range of a midi note number (0-127)")
     notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     note = notes[num % 12]
-    octave = num // 12
+    octave = (num // 12) - 1
     return note + str(octave)

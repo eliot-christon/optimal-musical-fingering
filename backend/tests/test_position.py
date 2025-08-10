@@ -8,8 +8,8 @@ import pytest
 from backend.src.positions.position import Position
 
 # Define some sample positions for testing
-position_1 = Position(finger_positions=((48, 1), (52, 2), (55, 3)), pos_id=1)
-position_2 = Position(finger_positions=((48, 4), (55, 2), (52, 1)), pos_id=2)
+position_1 = Position(finger_positions=((60, 1), (64, 2), (67, 3)), pos_id=1)
+position_2 = Position(finger_positions=((60, 4), (67, 2), (64, 1)), pos_id=2)
 position_3 = Position.from_str_notes(["C4", "E4", "G4"], [1, 2, 3])
 position_3.id = 1
 
@@ -29,13 +29,13 @@ def test_position_sort_by_finger() -> None:
     """Test sorting the position by finger."""
     sorted_position = position_2.sort_by_finger()
     assert sorted_position.fingers == [1, 2, 4]
-    assert sorted_position.placements == [52, 55, 48]
+    assert sorted_position.placements == [64, 67, 60]
 
 
 def test_position_sort_by_placement() -> None:
     """Test sorting the position by placement."""
     sorted_position = position_2.sort_by_placement()
-    assert sorted_position.placements == [48, 52, 55]
+    assert sorted_position.placements == [60, 64, 67]
     assert sorted_position.fingers == [4, 1, 2]
 
 

@@ -18,7 +18,7 @@ def note2num(note: str) -> int:
         alt = ""
         octave = int(note[1:])
 
-    num = notes[letter] + 12 * octave
+    num = notes[letter] + 12 * (octave + 1)
     num += 1 * (alt == "#") - 1 * (alt == "b")
 
     if num < MIN_MIDI_NOTE or num > MAX_MIDI_NOTE:
