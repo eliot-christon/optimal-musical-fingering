@@ -17,17 +17,24 @@ def neck_arrangement(music_piece: MusicPiece, instrument: NeckInstrument) -> lis
         - transition cost
     """
     positions = []
+    errors = []
     for timed_chord in music_piece.timed_chords:
         notes = list(timed_chord.chord)
         possible_pos = instrument.possible_positions(notes)
         if len(possible_pos) == 0:
-            raise ValueError(f"No positions found for notes: {notes} for {instrument}")
-        possible_pos = [pos for pos in possible_pos if instrument.is_valid_position(pos)]
-
-        if len(possible_pos) == 0:
             notes_str = ", ".join([num2note(note) for note in notes])
-            raise ValueError(f"No valid positions found for notes: {notes_str} for {instrument}")
+            errors.append(f"No positions found for notes: {notes_str} for {instrument}")
+            continue
+        valid_pos = [pos for pos in possible_pos if instrument.is_valid_position(pos)]
+
+        if len(valid_pos) == 0:
+            notes_str = ", ".join([num2note(note) for note in notes])
+            errors.append(f"No valid positions found for notes: {notes_str} for {instrument}")
+            continue
 
         # no logic for now, just taking any position
-        positions.append(possible_pos[0])
+        positions.append(valid_pos[0])
+
+    if errors:
+        raise ValueError("Errors found during neck arrangement:\n" + "\n\t".join(errors))
     return positions
