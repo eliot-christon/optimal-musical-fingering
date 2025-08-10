@@ -42,7 +42,7 @@ class NeckPosition(Position):
 
     def __repr__(self) -> str:
         """Returns a string representation of the position"""
-        return f"NPosition({self.strings}, {self.frets}, {self.fingers}, {self.id})"
+        return f"NeckPosition({self.strings}, {self.frets}, {self.fingers}, {self.id})"
 
     def to_json(self) -> dict:
         """Returns the position as a json"""
