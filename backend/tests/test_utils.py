@@ -12,9 +12,9 @@ from backend.src.utils.roman_numerals import convert_to_roman
 
 def test_note2num_conversion() -> None:
     """Test the note to MIDI number conversion."""
-    assert note2num("C4") == 48
-    assert note2num("D#5") == 63
-    assert note2num("B4") == 59
+    assert note2num("C4") == 60
+    assert note2num("D#5") == 75
+    assert note2num("B4") == 71
 
 
 def test_note2num_raises() -> None:
@@ -25,9 +25,9 @@ def test_note2num_raises() -> None:
 
 def test_num2note_conversion() -> None:
     """Test the MIDI number to note conversion."""
-    assert num2note(60) == "C5"
-    assert num2note(75) == "D#6"
-    assert num2note(59) == "B4"
+    assert num2note(60) == "C4"
+    assert num2note(75) == "D#5"
+    assert num2note(59) == "B3"
     assert isinstance(num2note(constants.MAX_MIDI_NOTE), str)
 
 
