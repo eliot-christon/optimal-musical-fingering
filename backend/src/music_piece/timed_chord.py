@@ -46,7 +46,22 @@ class TimedChord:
         """Returns the start time of the chord."""
         return self.__start_time
 
+    @start_time.setter
+    def start_time(self, value: float) -> None:
+        """Sets the start time of the chord."""
+        self.__start_time = value
+
     @property
     def duration(self) -> float:
         """Returns the duration of the chord."""
         return self.__duration
+
+    @duration.setter
+    def duration(self, value: float) -> None:
+        """Sets the duration of the chord."""
+        self.__duration = value
+
+    @property
+    def end_time(self) -> float:
+        """Returns the end time of the chord."""
+        return self.__start_time + self.__duration

@@ -30,23 +30,41 @@ class MusicPiece:
         self.__timed_chords: list[TimedChord] = []
 
     @classmethod
-    def from_midi(cls, midi_file: str) -> "MusicPiece":
+    def from_midi(cls, midi_file: str, fs: int = 20) -> "MusicPiece":
         """Creates a MusicPiece object from a MIDI file.
 
         Args:
             midi_file (str): The path to the MIDI file.
+            fs (int): The frame rate.
 
         Returns:
             MusicPiece: An instance of MusicPiece created from the MIDI file.
         """
         midi_data = PrettyMIDI(midi_file)
         music_piece = cls(title="Unknown Title", composer="Unknown Composer")
-        for instrument in midi_data.instruments:
-            for note in instrument.notes:
-                timed_chord = TimedChord(
-                    chord=(note.pitch,), start_time=note.start, duration=note.end - note.start
-                )
-                music_piece.__timed_chords.append(timed_chord)
+        # first create a merged piano roll
+        piano_roll = sum(instr.get_piano_roll(fs=fs) for instr in midi_data.instruments)
+        # Convert to boolean (note present or not)
+        note_on = piano_roll > 0
+        # transpose
+        note_on = note_on.T
+        # Create timed chords from the piano roll
+        previous_timed_chord = TimedChord(chord=(), start_time=0, duration=0)
+        for time, column in enumerate(note_on):
+            current_chord = tuple(pitch for pitch, is_on in enumerate(column) if is_on)
+            if not current_chord:
+                continue
+            current_timed_chord = TimedChord(
+                chord=current_chord, start_time=time / fs, duration=1 / fs
+            )
+            if previous_timed_chord.chord == current_timed_chord.chord:
+                current_timed_chord.duration += previous_timed_chord.duration
+                current_timed_chord.start_time = previous_timed_chord.start_time
+            elif previous_timed_chord.chord:
+                music_piece.add_timed_chord(previous_timed_chord)
+            previous_timed_chord = current_timed_chord
+        if current_timed_chord.chord:
+            music_piece.add_timed_chord(current_timed_chord)
         return music_piece
 
     def __str__(self) -> str:
@@ -73,9 +91,5 @@ class MusicPiece:
         return self.__timed_chords
 
     def add_timed_chord(self, timed_chord: TimedChord) -> None:
-        """Adds a timed chord to the music piece.
-
-        Args:
-            timed_chord (TimedChord): The timed chord to add.
-        """
+        """Adds a timed chord to the music piece."""
         self.__timed_chords.append(timed_chord)
