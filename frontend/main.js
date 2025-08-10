@@ -79,3 +79,9 @@ changePositionButton.addEventListener('click', () => {
   const difficulty = window.positions[window.currentPositionIndex][1][1]
   difficultyValue.textContent = Math.round(difficulty)
 })
+
+// Night mode toggle
+const nightModeToggle = document.getElementById('nightModeToggle')
+nightModeToggle.addEventListener('change', function () {
+  document.body.classList.toggle('night-mode', this.checked)
+})

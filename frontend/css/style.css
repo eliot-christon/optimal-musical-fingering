@@ -29,8 +29,8 @@ label {
 
 header {
   padding: 5px;
-  margin-bottom: 20px;
   text-align: center;
+  position: relative;
 }
 
 footer {
@@ -164,4 +164,98 @@ button:hover {
   justify-content: flex-end;
   padding-right: 0.4rem;
   font-weight: bold;
+}
+
+/* Night mode styles */
+body.night-mode {
+  background: #181a1b;
+  color: #e0e0e0;
+}
+body.night-mode .container {
+  background: #23272a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+body.night-mode input,
+body.night-mode select {
+  background: #23272a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+body.night-mode button {
+  background: #444;
+  color: #e0e0e0;
+  border-color: #666;
+}
+
+body.night-mode .difficulty-chip {
+  background-color: #444;
+  color: #ffd700;
+}
+body.night-mode .fretboard {
+  background: linear-gradient(135deg, #424036 0%, #2b2926 100%);
+}
+body.night-mode .fret {
+  border-right: 3px solid #565656;
+}
+body.night-mode .fret-dot {
+  background: radial-gradient(circle at 30% 30%, #696969 20%, #808080 100%);
+  border: 1.5px solid #666;
+}
+body.night-mode .nut {
+  background-color: #686661;
+  border-right: 2px solid #c6c6c6;
+}
+body.night-mode .string {
+  border-bottom: 0.13rem solid #929292;
+}
+body.night-mode .github-link {
+  color: #7abaff;
+}
+body.night-mode .github-link:hover {
+  color: #ffd700;
+  text-decoration-color: #ffd700;
+}
+
+/* Toggle switch styles */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  font-size: 0.7em;
+  margin-left: 0;
+  position: absolute;
+  right: 1.8em;
+  top: 1.2em;
+  z-index: 10;
+}
+.switch input {
+  display: none;
+}
+.switch .slider {
+  width: 26px;
+  height: 14px;
+  background: #ccc;
+  border-radius: 14px;
+  position: relative;
+  transition: background 0.2s;
+  cursor: pointer;
+  display: inline-block;
+}
+.switch .slider:before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 1px;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.switch input:checked + .slider {
+  background: #444;
+}
+.switch input:checked + .slider:before {
+  transform: translateX(10px);
 }
