@@ -65,3 +65,7 @@ class TimedChord:
     def end_time(self) -> float:
         """Returns the end time of the chord."""
         return self.__start_time + self.__duration
+
+    def is_not_empty(self) -> bool:
+        """Returns True if the chord is not empty (notes are played)."""
+        return bool(self.__chord)
