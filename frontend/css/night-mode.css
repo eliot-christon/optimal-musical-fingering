@@ -2,6 +2,10 @@ body.night-mode {
   background: #181a1b;
   color: #e0e0e0;
 }
+body.night-mode header {
+  background-color: #181a1b;
+  border-bottom: 1px solid #fff;
+}
 body.night-mode .container {
   background: #23272a;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
