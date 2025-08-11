@@ -1,0 +1,41 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background: #fff;
+}
+
+h1 {
+  font-family: 'Lavishly Yours', cursive;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2em;
+  margin: 0;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+a {
+  font-size: 0.8rem;
+  color: #0366d6;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  text-decoration-color: deepskyblue;
+  color: deepskyblue;
+}
+a:active {
+  color: deeppink;
+  text-decoration: none;
+}

@@ -1,0 +1,68 @@
+.fretboard {
+  display: grid;
+  background: linear-gradient(135deg, #fdf5df 0%, #f9ebcc 50%, #ebdcbb 100%);
+  grid-template-rows: repeat(var(--strings-count), 1fr);
+  grid-template-columns: 35px repeat(calc(var(--frets-count) - 1), 1fr);
+  gap: 1px;
+  border-radius: 1.2rem 0 0 1rem;
+  position: relative;
+}
+.nut {
+  width: 10px;
+  background-color: #d3d3d3;
+  border-right: 2px solid black;
+}
+.fret {
+  border-right: 3px solid #ccc;
+  position: relative;
+}
+.string {
+  height: 0.6rem;
+  border-bottom: 0.13rem solid black;
+  margin: 0.3rem 0;
+  transform: translateY(-25%);
+  box-shadow: 0 0.13rem 0.27rem 0 rgba(0, 0, 0, 0.1);
+}
+.string-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.4rem;
+  font-weight: bold;
+}
+.fret-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  background: radial-gradient(circle at 30% 30%, #cfcfcf 20%, #999999 100%);
+  border: 1.5px solid #929292;
+  border-radius: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.neck-container {
+  margin-top: 20px;
+}
+.finger-dot {
+  width: 10px;
+  height: 10px;
+  background-color: black;
+}
+.note-position {
+  background: rgba(255, 107, 107, 0.907);
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin: auto;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1em;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.13);
+  z-index: 2;
+  user-select: none;
+}
