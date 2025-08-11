@@ -1,4 +1,4 @@
-import { getInstrumentDetails, getBestPosFromNotes, getAllPosFromNotes } from './js/api.js'
+import { getInstrumentDetails, getAllPosFromNotes } from './js/api.js'
 import { drawNeck } from './js/drawNeck.js'
 import { drawPosition } from './js/drawPosition.js'
 import { clearAll } from './js/clearAll.js'
