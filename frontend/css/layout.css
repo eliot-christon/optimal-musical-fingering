@@ -1,7 +1,11 @@
 header {
-  padding: 5px;
+  position: sticky;
+  top: 0;
+  padding: 4px;
   text-align: center;
-  position: relative;
+  background-color: #fff;
+  border-bottom: 1px solid #000;
+  margin-bottom: 8px;
 }
 .container {
   max-width: 800px;
