@@ -6,7 +6,7 @@ from pathlib import Path
 
 from backend.src.music_piece.music_piece import MusicPiece
 
-PATH_TO_MIDI_FILE = Path("backend/assets/midi_files/test_sample.mid")
+PATH_TO_MIDI_FILE = Path("backend/assets/midi_files/test_sample1.mid")
 
 
 def test_music_piece_initialization() -> None:
@@ -20,7 +20,7 @@ def test_music_piece_from_midi() -> None:
     """Test the creation of a MusicPiece object from a MIDI file."""
     piece = MusicPiece.from_midi(PATH_TO_MIDI_FILE)
     assert isinstance(piece, MusicPiece)
-    assert piece.title == "test_sample"
+    assert piece.title == "test_sample1"
     assert len(piece.timed_chords) > 0
     assert piece.timed_chords[0].chord == (55, 63, 67, 70)
     assert piece.timed_chords[1].start_time - piece.timed_chords[0].start_time > 1
