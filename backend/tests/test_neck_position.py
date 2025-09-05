@@ -29,6 +29,21 @@ def test_neck_position_from_position() -> None:
     assert neck_position_4 == neck_position_1
 
 
+def test_neck_position_to_placement_code() -> None:
+    """Test converting a NeckPosition to a placement code string."""
+    assert neck_position_1.to_placement_code() == 201140225033
+    assert neck_position_2.to_placement_code() == 1104
+    assert neck_position_3.to_placement_code() == 201140225033
+
+
+def test_neck_position_from_placement_code() -> None:
+    """Test creating a NeckPosition from a placement code string."""
+    pos = NeckPosition.from_placement_code(201140225033, pos_id=1)
+    assert pos == neck_position_1
+    pos = NeckPosition.from_placement_code(1104, pos_id=2)
+    assert pos == neck_position_2
+
+
 def test_neck_position_strings() -> None:
     """Test the strings of the NeckPosition."""
     assert neck_position_1.strings == [2, 4, 5]

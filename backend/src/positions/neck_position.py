@@ -33,6 +33,37 @@ class NeckPosition(Position):
         """Alternative constructor"""
         return cls(finger_positions=position.finger_positions, pos_id=position.id)
 
+    @classmethod
+    def from_placement_code(cls, placement_code: int, pos_id: int | None = None) -> "NeckPosition":
+        """Alternative constructor from placement code integer.
+        Placement code format: "num1num2num3num4..."
+        where numN is 1000*string + 10*fret + finger (e.g. "2001" for string 2, fret 0, finger 1)
+        """
+        finger_positions = []
+        code_str = str(placement_code)
+        for i in range(0, len(code_str), 4):
+            code = code_str[i : i + 4]
+            num = int(code)
+            string = num // 1000
+            fret = (num % 1000) // 10
+            finger = num % 10
+            placement = string * 100 + fret
+            finger_positions.append(FingerPosition(placement, finger))
+        return cls(finger_positions, pos_id)
+
+    def to_placement_code(self) -> int:
+        """Converts the NeckPosition to a placement code integer.
+        Placement code format: "num1num2num3num4..."
+        where numN is 1000*string + 10*fret + finger (e.g. "2001" for string 2, fret 0, finger 1)
+        """
+        codes = []
+        for placement, finger in zip(self.placements, self.fingers, strict=False):
+            string = placement // 100
+            fret = placement % 100
+            code = string * 1000 + fret * 10 + finger
+            codes.append(str(code))
+        return int("".join(codes))
+
     def __str__(self) -> str:
         """Returns a string representation of the position"""
         roman_frets = [convert_to_roman(fret) for fret in self.frets]
