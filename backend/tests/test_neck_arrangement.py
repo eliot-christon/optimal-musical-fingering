@@ -36,8 +36,18 @@ def test_neck_arrangement_basic() -> None:
 
 def test_neck_arrangement_from_midi() -> None:
     """Test neck arrangement functionality with a MIDI file."""
-    midi_file_path = Path("backend/assets/midi_files/test_sample.mid")
+    midi_file_path = Path("backend/assets/midi_files/test_sample1.mid")
     music_piece = MusicPiece.from_midi(midi_file_path)
     instrument = Guitar()
     with raises(ValueError):
         _ = neck_arrangement(music_piece=music_piece, instrument=instrument)
+
+
+def test_neck_arrangement_from_midi_2() -> None:
+    """Test neck arrangement functionality with a MIDI file."""
+    midi_file_path = Path("backend/assets/midi_files/test_sample4.mid")
+    music_piece = MusicPiece.from_midi(midi_file_path)
+    instrument = Guitar()
+    positions = neck_arrangement(music_piece=music_piece, instrument=instrument)
+    assert isinstance(positions, list)
+    # assert len(positions) == len(music_piece.timed_chords)

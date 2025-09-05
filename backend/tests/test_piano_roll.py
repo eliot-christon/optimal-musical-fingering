@@ -6,7 +6,7 @@ from pathlib import Path
 
 from backend.src.music_piece.piano_roll import PianoRoll
 
-PATH_TO_MIDI_FILE = Path("backend/assets/midi_files/test_sample.mid")
+PATH_TO_MIDI_FILE = Path("backend/assets/midi_files/test_sample3.mid")
 
 basic_roll = [[False, True, False, False], [True, True, False, False], [False, True, True, False]]
 
