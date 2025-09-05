@@ -1,0 +1,35 @@
+"""
+This module provides the bulding of a position graph for arranging musical pieces.
+"""
+
+from backend.src.instruments.neck_instrument import NeckInstrument
+from backend.src.music_piece.arrangement.graph import Graph
+from backend.src.music_piece.music_piece import MusicPiece
+from backend.src.positions.neck_position import NeckPosition
+
+
+def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) -> Graph:
+    """Builds a graph of positions for the given music piece and instrument."""
+    graph = Graph()
+    position_map = list[list[int]]()
+
+    for time_index, timed_chord in enumerate(music_piece.timed_chords):
+        position_map.append([])
+        notes = list(timed_chord.chord)
+        possible_positions = instrument.possible_positions(notes)
+        valid_positions = [pos for pos in possible_positions if instrument.is_valid_position(pos)]
+
+        for pos in valid_positions:
+            position_id = pos.to_placement_code()
+            graph.add_node(position_id, cost=instrument.position_cost(pos, check_valid=False))
+            position_map[time_index].append(position_id)
+
+        if time_index > 0:
+            for prev_id in position_map[time_index - 1]:
+                for curr_id in position_map[time_index]:
+                    prev_pos = NeckPosition.from_placement_code(prev_id)
+                    curr_pos = NeckPosition.from_placement_code(curr_id)
+                    transition_cost = instrument.transition_cost(prev_pos, curr_pos)
+                    graph.add_edge(prev_id, curr_id, edge_cost=transition_cost)
+
+    return graph
