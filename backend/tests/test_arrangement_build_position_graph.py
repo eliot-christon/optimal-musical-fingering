@@ -10,8 +10,8 @@ from backend.src.music_piece.timed_chord import TimedChord
 
 test_piece = MusicPiece()
 test_piece.add_timed_chord(TimedChord(chord=(48, 52, 55), start_time=0.0, duration=1.0))  # C major
-test_piece.add_timed_chord(TimedChord(chord=(47, 52, 55), start_time=1.0, duration=1.0))  # F# major
-test_piece.add_timed_chord(TimedChord(chord=(57, 61, 54), start_time=3.0, duration=0.8))  # A major
+test_piece.add_timed_chord(TimedChord(chord=(47, 52, 55), start_time=1.0, duration=1.0))  # E minor
+test_piece.add_timed_chord(TimedChord(chord=(52, 57, 61), start_time=3.0, duration=0.8))  # A major
 
 
 def test_build_position_graph() -> None:
@@ -42,7 +42,7 @@ def test_build_position_graph() -> None:
         valid_positions.append(
             len([pos for pos in possible_positions if guitar.is_valid_position(pos)])
         )
-    expected_edges = 0
+    expected_edges = valid_positions[0] + valid_positions[-1]  # edges from start and to terminal
     print(valid_positions)
     for i in range(len(valid_positions) - 1):
         expected_edges += valid_positions[i] * valid_positions[i + 1]
@@ -55,7 +55,7 @@ def test_dijkstra_on_position_graph() -> None:
     graph = build_position_graph(test_piece, guitar)
 
     # Run Dijkstra's algorithm from the first node
-    start_node_id = next(iter(graph.nodes))
+    start_node_id = -1
     result = dijkstra(graph, start_node_id)
 
     # Check that distances are computed
@@ -73,3 +73,11 @@ def test_dijkstra_on_position_graph() -> None:
         elif result.distances[node_id] < float("inf"):
             assert path[0] == start_node_id
             assert path[-1] == node_id
+
+    assert result.get_path(-2) == [
+        -1,
+        300040235034,
+        300050224023,
+        402130212021,
+        -2,
+    ]  # terminal node

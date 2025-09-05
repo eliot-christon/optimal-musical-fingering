@@ -32,4 +32,16 @@ def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) ->
                     transition_cost = instrument.transition_cost(prev_pos, curr_pos)
                     graph.add_edge(prev_id, curr_id, edge_cost=transition_cost)
 
+    # add a start node that connects to all first positions with 0 cost
+    # add a terminal node that all last positions connect to with 0 cost
+    start_node_id = -1
+    terminal_node_id = -2
+    graph.add_node(start_node_id, cost=0.0)
+    graph.add_node(terminal_node_id, cost=0.0)
+
+    for first_id in position_map[0]:
+        graph.add_edge(start_node_id, first_id, edge_cost=0.0)
+    for last_id in position_map[-1]:
+        graph.add_edge(last_id, terminal_node_id, edge_cost=0.0)
+
     return graph
