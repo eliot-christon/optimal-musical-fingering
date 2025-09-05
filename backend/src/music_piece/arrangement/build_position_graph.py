@@ -28,7 +28,7 @@ def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) ->
             continue
 
         for pos in valid_positions:
-            position_id = pos.to_placement_code()
+            position_id = pos.to_placement_code() * 1000 + time_index  # unique ID
             graph.add_node(position_id, cost=instrument.position_cost(pos, check_valid=False))
             position_map[time_index].append(position_id)
 
@@ -36,8 +36,8 @@ def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) ->
             for prev_id in position_map[time_index - 1]:
                 for curr_id in position_map[time_index]:
                     transition_cost = instrument.transition_cost(
-                        NeckPosition.from_placement_code(prev_id),
-                        NeckPosition.from_placement_code(curr_id),
+                        NeckPosition.from_placement_code(prev_id // 1000),
+                        NeckPosition.from_placement_code(curr_id // 1000),
                     )
                     graph.add_edge(prev_id, curr_id, edge_cost=transition_cost)
 
