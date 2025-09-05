@@ -76,8 +76,8 @@ def test_dijkstra_on_position_graph() -> None:
 
     assert result.get_path(-2) == [
         -1,
-        300040235034,
-        300050224023,
-        402130212021,
+        300040235034000,
+        300050224023001,
+        402130212021002,
         -2,
     ]  # terminal node

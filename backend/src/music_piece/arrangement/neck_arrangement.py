@@ -37,7 +37,7 @@ def neck_arrangement(music_piece: MusicPiece, instrument: NeckInstrument) -> lis
 
     path_ids = result.get_path(terminal_node_id)
     return [
-        NeckPosition.from_placement_code(node_id)
+        NeckPosition.from_placement_code(node_id // 1000)  # last three digits are time index
         for node_id in path_ids
         if node_id not in (start_node_id, terminal_node_id)
     ]

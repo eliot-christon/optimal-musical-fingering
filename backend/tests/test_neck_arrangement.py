@@ -50,4 +50,4 @@ def test_neck_arrangement_from_midi_2() -> None:
     instrument = Guitar()
     positions = neck_arrangement(music_piece=music_piece, instrument=instrument)
     assert isinstance(positions, list)
-    # assert len(positions) == len(music_piece.timed_chords)
+    assert len(positions) == len(music_piece.timed_chords)
