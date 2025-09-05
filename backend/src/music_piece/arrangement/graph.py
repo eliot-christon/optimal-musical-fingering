@@ -11,7 +11,7 @@ class Edge:
         """Initializes an Edge with a destination node and a cost."""
         self.to_node = to_node
         self.cost = cost
-    
+
     def __repr__(self) -> str:
         """Returns a string representation of the edge."""
         return f"Edge(to_node={self.to_node.id}, cost={self.cost})"
@@ -27,7 +27,7 @@ class Node:
         self.id = node_id
         self.cost = cost
         self.edges: list[Edge] = []
-    
+
     def __repr__(self) -> str:
         """Returns a string representation of the node."""
         return f"Node(id={self.id}, cost={self.cost}, edges={len(self.edges)})"

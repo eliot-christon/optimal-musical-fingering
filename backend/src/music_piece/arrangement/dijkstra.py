@@ -16,7 +16,7 @@ class DijkstraResult:
         """Initializes the DijkstraResult with distances and previous nodes."""
         self.distances = distances
         self.previous = previous
-    
+
     def __repr__(self) -> str:
         """Returns a string representation of the DijkstraResult."""
         return f"DijkstraResult(distances={self.distances}, previous={self.previous})"
