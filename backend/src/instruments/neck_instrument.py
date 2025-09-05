@@ -276,7 +276,7 @@ cost = {self.string_gap_dificulty_factor[finger_pair] * gap}"
         places.extend(
             (string + 1, fret)
             for string, open_note in enumerate(self.open_strings)
-            for fret in range(self.number_of_frets)
+            for fret in range(self.number_of_frets + 1)
             if open_note + fret == note
         )
         return places
