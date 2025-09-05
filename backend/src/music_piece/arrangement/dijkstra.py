@@ -16,6 +16,10 @@ class DijkstraResult:
         """Initializes the DijkstraResult with distances and previous nodes."""
         self.distances = distances
         self.previous = previous
+    
+    def __repr__(self) -> str:
+        """Returns a string representation of the DijkstraResult."""
+        return f"DijkstraResult(distances={self.distances}, previous={self.previous})"
 
     def get_path(self, target_id: int | None) -> list[int]:
         """Reconstructs the shortest path to the target node."""
