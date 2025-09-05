@@ -11,6 +11,10 @@ class Edge:
         """Initializes an Edge with a destination node and a cost."""
         self.to_node = to_node
         self.cost = cost
+    
+    def __repr__(self) -> str:
+        """Returns a string representation of the edge."""
+        return f"Edge(to_node={self.to_node.id}, cost={self.cost})"
 
 
 class Node:
@@ -23,6 +27,10 @@ class Node:
         self.id = node_id
         self.cost = cost
         self.edges: list[Edge] = []
+    
+    def __repr__(self) -> str:
+        """Returns a string representation of the node."""
+        return f"Node(id={self.id}, cost={self.cost}, edges={len(self.edges)})"
 
     def add_edge(self, to_node: "Node", edge_cost: float = 0.0) -> None:
         """Adds a directed edge to another node with a specified cost."""
@@ -35,6 +43,10 @@ class Graph:
     def __init__(self) -> None:
         """Initializes an empty graph."""
         self.nodes: dict[int, Node] = {}
+
+    def __repr__(self) -> str:
+        """Returns a string representation of the graph."""
+        return f"Graph(nodes={list(self.nodes.keys())})"
 
     def add_node(self, position_id: int, cost: float = 0.0) -> Node:
         """Adds a node to the graph and returns it."""
