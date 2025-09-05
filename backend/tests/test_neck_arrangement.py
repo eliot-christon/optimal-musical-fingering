@@ -7,8 +7,8 @@ from pathlib import Path
 from pytest import raises
 
 from backend.src.instruments.neck_instrument import Guitar
+from backend.src.music_piece.arrangement.neck_arrangement import neck_arrangement
 from backend.src.music_piece.music_piece import MusicPiece
-from backend.src.music_piece.neck_arrangement import neck_arrangement
 from backend.src.music_piece.timed_chord import TimedChord
 from backend.src.positions.neck_position import NeckPosition
 
