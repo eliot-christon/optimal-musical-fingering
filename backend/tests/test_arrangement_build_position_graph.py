@@ -17,7 +17,7 @@ test_piece.add_timed_chord(TimedChord(chord=(52, 57, 61), start_time=3.0, durati
 def test_build_position_graph() -> None:
     """Test that the position graph is built correctly."""
     guitar = Guitar()
-    graph = build_position_graph(test_piece, guitar)
+    graph, _ = build_position_graph(test_piece, guitar)
 
     # Check that nodes are created
     assert len(graph.nodes) >= len(test_piece.timed_chords)
@@ -52,7 +52,7 @@ def test_build_position_graph() -> None:
 def test_dijkstra_on_position_graph() -> None:
     """Test that Dijkstra's algorithm works on the position graph."""
     guitar = Guitar()
-    graph = build_position_graph(test_piece, guitar)
+    graph, _ = build_position_graph(test_piece, guitar)
 
     # Run Dijkstra's algorithm from the first node
     start_node_id = -1

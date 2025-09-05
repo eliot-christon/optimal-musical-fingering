@@ -5,9 +5,10 @@ based on the positions available for a given neck instrument.
 """
 
 from backend.src.instruments.neck_instrument import NeckInstrument
+from backend.src.music_piece.arrangement.build_position_graph import build_position_graph
+from backend.src.music_piece.arrangement.dijkstra import dijkstra
 from backend.src.music_piece.music_piece import MusicPiece
 from backend.src.positions.neck_position import NeckPosition
-from backend.src.utils.num2note import num2note
 
 
 def neck_arrangement(music_piece: MusicPiece, instrument: NeckInstrument) -> list[NeckPosition]:
@@ -16,25 +17,27 @@ def neck_arrangement(music_piece: MusicPiece, instrument: NeckInstrument) -> lis
         - position cost
         - transition cost
     """
-    positions = []
-    errors = []
-    for timed_chord in music_piece.timed_chords:
-        notes = list(timed_chord.chord)
-        possible_pos = instrument.possible_positions(notes)
-        if len(possible_pos) == 0:
-            notes_str = ", ".join([num2note(note) for note in notes])
-            errors.append(f"No positions found for notes: {notes_str} for {instrument}")
-            continue
-        valid_pos = [pos for pos in possible_pos if instrument.is_valid_position(pos)]
-
-        if len(valid_pos) == 0:
-            notes_str = ", ".join([num2note(note) for note in notes])
-            errors.append(f"No valid positions found for notes: {notes_str} for {instrument}")
-            continue
-
-        # no logic for now, just taking any position
-        positions.append(valid_pos[0])
-
+    graph, errors = build_position_graph(music_piece, instrument)
+    if len(graph.nodes) == 0:
+        msg = "No valid positions found for the entire piece."
+        raise ValueError(msg)
     if errors:
-        raise ValueError("Errors found during neck arrangement:\n" + "\n\t".join(errors))
-    return positions
+        raise ValueError(
+            "Errors found during neck arrangement:\n" + "\n\t".join(errors.split("\n"))
+        )
+
+    start_node_id = -1
+    terminal_node_id = -2
+    result = dijkstra(graph, start_node_id)
+    if terminal_node_id not in result.distances or result.distances[terminal_node_id] == float(
+        "inf"
+    ):
+        msg = "No valid arrangement found from start to end."
+        raise ValueError(msg)
+
+    path_ids = result.get_path(terminal_node_id)
+    return [
+        NeckPosition.from_placement_code(node_id)
+        for node_id in path_ids
+        if node_id not in (start_node_id, terminal_node_id)
+    ]
