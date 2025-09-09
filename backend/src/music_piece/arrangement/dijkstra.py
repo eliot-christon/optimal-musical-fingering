@@ -34,7 +34,7 @@ class DijkstraResult:
 def dijkstra(graph: Graph, start_id: int) -> DijkstraResult:
     """Implements Dijkstra's algorithm to find the shortest paths
     from the start node to all other nodes in the graph."""
-    distances: dict[int, float] = {nid: float("inf") for nid in graph.nodes}
+    distances: dict[int, float] = {node_id: float("inf") for node_id in graph.nodes}
     previous: dict[int, int | None] = dict.fromkeys(graph.nodes)
     distances[start_id] = graph.nodes[start_id].cost
     queue: list[tuple[float, int]] = [(distances[start_id], start_id)]
