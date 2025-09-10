@@ -25,3 +25,15 @@ export async function getAllPosFromNotes(notes, instrument) {
   if (!res.ok) throw new Error('API call failed')
   return res.json()
 }
+
+export async function uploadMIDIFile(file) {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const res = await fetch(`${CONFIG.API_URL}/upload/`, {
+    method: 'POST',
+    body: formData,
+  })
+  if (!res.ok) throw new Error('File upload failed')
+  return res.json()
+}

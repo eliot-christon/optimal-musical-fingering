@@ -28,6 +28,13 @@
       <div class="container">
         <h2>Instrument Neck Visualizer</h2>
 
+        <!-- Upload MIDI file form -->
+        <form id="uploadForm" enctype="multipart/form-data" style="margin-bottom: 1em">
+          <input type="file" id="fileInput" accept=".mid" />
+          <button type="submit">Upload MIDI</button>
+        </form>
+        <div id="uploadStatus"></div>
+
         <!-- Text input for notes -->
         <label for="notes">Enter Notes (e.g. C D E):</label>
         <input type="text" id="notes" placeholder="Type notes here" />

@@ -4,3 +4,4 @@
 *venv
 uv.lock
 node_modules
+.uploads*
