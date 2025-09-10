@@ -10,7 +10,16 @@ from backend.src.utils.num2note import num2note
 
 
 def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) -> tuple[Graph, str]:
-    """Builds a graph of positions for the given music piece and instrument."""
+    """
+    Builds a graph of positions for the given music piece and instrument.
+
+    Parameters:
+        music_piece (MusicPiece): The music piece to build the graph for.
+        instrument (NeckInstrument): The instrument to use for building the graph.
+
+    Returns:
+        tuple[Graph, str]: A tuple containing the position graph and any error messages.
+    """
     graph = Graph()
     position_map: list[list[int]] = []
     errors: list[str] = []

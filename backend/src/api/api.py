@@ -24,6 +24,7 @@ from backend.src.utils.note2num import note2num
 
 from .get_all_pos_from_notes import get_all_pos_from_notes
 from .get_best_pos_from_notes import get_best_pos_from_notes
+from .midi2optimal_positions import midi2optimal_positions
 
 INSTRUMENT_CLASSES: dict[str, type[NeckInstrument]] = {
     "Guitar": Guitar,
@@ -42,6 +43,14 @@ class NoteInput(BaseModel):
     instrument: str
 
 
+class MidiOptimalPositionsInput(BaseModel):
+    """This class represents the input for the midi2optimalPositions API endpoint."""
+
+    midi_file_name: str
+    instrument_name: str
+    midi_frame_rate: int = 20
+
+
 app = FastAPI()
 
 # Allow CORS for all origins
@@ -54,6 +63,15 @@ app.add_middleware(
 )
 
 
+@app.get("/", response_class=HTMLResponse)
+def read_root() -> HTMLResponse:
+    """Root endpoint for the API, returns the frontend HTML."""
+    index_path = Path(__file__).parents[3] / "frontend" / "index.html"
+    if index_path.exists():
+        return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+    return HTMLResponse(content="<h1>index.html not found</h1>")
+
+
 ALLOWED_EXTENSIONS = {".mid"}
 MIDI_FILE_UPLOAD_FOLDER = Path(__file__).parents[3] / ".uploads" / "midi"
 MIDI_FILE_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -64,25 +82,40 @@ def allowed_file(filename: str) -> bool:
     return any(filename.endswith(ext) for ext in ALLOWED_EXTENSIONS)
 
 
-@app.post("/upload/")
+@app.post("/upload")
 async def upload_file(file: Annotated[UploadFile, File()]) -> dict:
     """Upload a MIDI file to the server."""
     if not file.filename:
         raise HTTPException(status_code=400, detail="No filename provided")
     if not allowed_file(file.filename):
         raise HTTPException(status_code=400, detail="Invalid file extension")
-    with Path.open(MIDI_FILE_UPLOAD_FOLDER / file.filename, "wb", encoding="utf-8") as f:
+    with Path.open(MIDI_FILE_UPLOAD_FOLDER / file.filename, "wb") as f:  # pylint: disable=unspecified-encoding
         f.write(await file.read())
     return {"info": f"file '{file.filename}' saved"}
 
 
-@app.get("/", response_class=HTMLResponse)
-def read_root() -> HTMLResponse:
-    """Root endpoint for the API, returns the frontend HTML."""
-    index_path = Path(__file__).parents[3] / "frontend" / "index.html"
-    if index_path.exists():
-        return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
-    return HTMLResponse(content="<h1>index.html not found</h1>")
+@app.post("/midi2optimalPositions")
+def midi2optimal_positions_api(user_input: MidiOptimalPositionsInput) -> dict:
+    """
+    This function takes a MIDI file name and an instrument, and returns the optimal positions.
+    """
+    midi_file_path = MIDI_FILE_UPLOAD_FOLDER / user_input.midi_file_name
+    if not midi_file_path.exists():
+        raise HTTPException(status_code=400, detail="MIDI file not found")
+
+    if user_input.instrument_name in INSTRUMENT_CLASSES:
+        instrument = INSTRUMENT_CLASSES[user_input.instrument_name]()
+    else:
+        raise HTTPException(status_code=400, detail="Instrument not found.")
+
+    try:
+        optimal_positions = midi2optimal_positions(
+            midi_file_path, instrument, midi_frame_rate=user_input.midi_frame_rate
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+    return {num: pos.to_json() for num, pos in enumerate(optimal_positions)}
 
 
 @app.get("/getInstrumentDetails")
