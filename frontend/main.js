@@ -1,9 +1,14 @@
-import { getInstrumentDetails, getAllPosFromNotes, uploadMIDIFile } from './js/api.js'
-import { drawNeck } from './js/drawNeck.js'
-import { drawPosition } from './js/drawPosition.js'
+// Minimal main.js: imports and initializes modules
+import { setupInstrumentSelect } from './js/NeckVizualisation/instrumentHandler.js'
+import { setupPositionHandlers } from './js/NeckVizualisation/positionHandler.js'
+import { setupMidiUpload } from './js/MidiOptimalFingering/uploadHandler.js'
+import { setupOptimalPositions } from './js/MidiOptimalFingering/optimalPositionHandler.js'
+import { setupNightMode } from './js/theme.js'
 import { clearAll } from './js/clearAll.js'
 
-const instrumentSelect = document.getElementById('instrument')
+// DOM elements
+const instrumentSelect1 = document.getElementById('instrument1')
+const instrumentSelect2 = document.getElementById('instrument2')
 const neckContainer = document.getElementById('neckContainer')
 const submitButton = document.getElementById('submit')
 const notesInput = document.getElementById('notes')
@@ -11,97 +16,24 @@ const changePositionButton = document.getElementById('changePosition')
 const positionDifficulty = document.getElementById('positionDifficulty')
 const difficultyValue = document.getElementById('difficultyValue')
 const midiUploadForm = document.getElementById('uploadForm')
+const uploadStatus = document.getElementById('uploadStatus')
+const optimalPositionsText = document.getElementById('optimalPositions')
+const getOptimalPositionsButton = document.getElementById('getOptimalPositions')
+const nightModeToggle = document.getElementById('nightModeToggle')
 
-// Initial setup, clear any previous state
+// Clear all
 clearAll()
 
-// ⚡️ On instrument change
-instrumentSelect.addEventListener('change', async () => {
-  const instrument = instrumentSelect.value
-  try {
-    const data = await getInstrumentDetails(instrument)
-    drawNeck(neckContainer, data.strings.length, data.frets, data.strings)
-    // Hide the difficulty box initially
-    positionDifficulty.style.display = 'none'
-    changePositionButton.style.display = 'none' // Hide change position button
-    difficultyValue.textContent = '0' // Reset difficulty value
-  } catch (error) {
-    console.error('Loading instrument details failed:', error)
-  }
-})
-
-// ⚡️ On notes submission
-submitButton.addEventListener('click', async () => {
-  const notes = notesInput.value.trim().split(' ').filter(Boolean)
-  const instrument = instrumentSelect.value
-  try {
-    const data = await getAllPosFromNotes(notes, instrument)
-    // data is a dictionary as follows:
-    // { "0": (position_json, cost), "1": (position_json, cost), ... }
-
-    // if error then data is {"error": "msg" }
-    if ('error' in data) {
-      console.error('API call error:', data.error)
-      alert(`${data.error}`)
-      clearAll() // Clear the neck container and reset state
-      return
-    }
-
-    // now sort the positions by cost
-    const sortedPositions = Object.entries(data).sort((a, b) => a[1][1] - b[1][1])
-    // store all positions in a global variable for later use
-    window.positions = sortedPositions
-    window.currentPositionIndex = 0
-    // Update the difficulty value
-    const difficulty = sortedPositions[0][1][1]
-    difficultyValue.textContent = difficulty
-    positionDifficulty.style.display = 'block' // Show the difficulty box
-    changePositionButton.style.display = 'block' // Show the change position button
-    // draw the first position
-    drawPosition(sortedPositions[0][1][0])
-    console.log('Positions data:', data)
-  } catch (error) {
-    console.error('Loading API call failed:', error)
-  }
-})
-
-// Position change
-changePositionButton.addEventListener('click', () => {
-  if (!window.positions || window.positions.length === 0) {
-    console.warn('No positions available to change.')
-    return
-  }
-  // Increment the current position index
-  window.currentPositionIndex = (window.currentPositionIndex + 1) % window.positions.length
-  const currentPosition = window.positions[window.currentPositionIndex][1][0]
-  // Draw the new position
-  drawPosition(currentPosition)
-  // Update the difficulty value
-  const difficulty = window.positions[window.currentPositionIndex][1][1]
-  difficultyValue.textContent = Math.round(difficulty)
-})
-
-// Night mode toggle
-const nightModeToggle = document.getElementById('nightModeToggle')
-nightModeToggle.addEventListener('change', function () {
-  document.body.classList.toggle('night-mode', this.checked)
-})
-
-// Upload MIDI file handler
-midiUploadForm.addEventListener('submit', async event => {
-  event.preventDefault() // Prevent the default form submission
-
-  const fileInput = document.getElementById('fileInput')
-  const file = fileInput.files[0]
-  if (!file) {
-    alert('Please select a MIDI file to upload.')
-    return
-  }
-
-  try {
-    const response = await uploadMIDIFile(file)
-  } catch (error) {
-    console.error('MIDI file upload failed:', error)
-    alert('MIDI file upload failed. Please try again.')
-  }
-})
+// Initialize modules
+setupInstrumentSelect(instrumentSelect1, neckContainer, positionDifficulty, changePositionButton, difficultyValue)
+setupPositionHandlers(
+  submitButton,
+  notesInput,
+  instrumentSelect1,
+  positionDifficulty,
+  changePositionButton,
+  difficultyValue
+)
+setupMidiUpload(midiUploadForm, uploadStatus)
+setupOptimalPositions(getOptimalPositionsButton, optimalPositionsText, instrumentSelect2)
+setupNightMode(nightModeToggle)

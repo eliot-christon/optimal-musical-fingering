@@ -28,20 +28,13 @@
       <div class="container">
         <h2>Instrument Neck Visualizer</h2>
 
-        <!-- Upload MIDI file form -->
-        <form id="uploadForm" enctype="multipart/form-data" style="margin-bottom: 1em">
-          <input type="file" id="fileInput" accept=".mid" />
-          <button type="submit">Upload MIDI</button>
-        </form>
-        <div id="uploadStatus"></div>
-
         <!-- Text input for notes -->
         <label for="notes">Enter Notes (e.g. C D E):</label>
         <input type="text" id="notes" placeholder="Type notes here" />
 
-        <!-- Combo box for selecting instrument -->
-        <label for="instrument">Select Instrument:</label>
-        <select id="instrument">
+        <!-- Combo box for selecting instrument1 -->
+        <label for="instrument1">Select Instrument:</label>
+        <select id="instrument1">
           <option value=" "></option>
           <option value="Guitar">Guitar (6 strings)</option>
           <option value="Bass">Bass (4 strings)</option>
@@ -64,6 +57,35 @@
 
         <!-- Neck visualization -->
         <div class="neck-container" id="neckContainer"></div>
+      </div>
+
+      <div class="container">
+        <h2>Optimal Fingering from MIDI File</h2>
+        <!-- Form for uploading MIDI files -->
+        <form id="uploadForm" enctype="multipart/form-data" style="margin-bottom: 1em">
+          <input type="file" id="fileInput" accept=".mid" />
+          <button type="submit">Upload MIDI</button>
+        </form>
+        <div id="uploadStatus">
+          <!-- Upload status messages will appear here -->
+        </div>
+        <!-- Combo box for selecting instrument2 -->
+        <label for="instrument2">Select Instrument:</label>
+        <select id="instrument2">
+          <option value=" "></option>
+          <option value="Guitar">Guitar (6 strings)</option>
+          <option value="Bass">Bass (4 strings)</option>
+          <option value="Ukulele">Ukulele (4 strings)</option>
+          <option value="Guitarlele">Guitarlele (6 strings)</option>
+          <option value="Banjo">Banjo (5 strings)</option>
+          <option value="Mandolin">Mandolin (8 strings)</option>
+        </select>
+        <button id="getOptimalPositions" style="margin-left: 1em">Get Optimal Positions</button>
+        <!-- Once the instrument is selected, the optimal positions will be displayed in the following text area -->
+        <div id="optimalPositionsContainer" style="margin-top: 1em">
+          <h3>Optimal Positions:</h3>
+          <textarea id="optimalPositions" rows="2" cols="80" readonly></textarea>
+        </div>
       </div>
     </main>
 
