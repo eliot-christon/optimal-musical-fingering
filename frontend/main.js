@@ -1,4 +1,4 @@
-import { getInstrumentDetails, getAllPosFromNotes } from './js/api.js'
+import { getInstrumentDetails, getAllPosFromNotes, uploadMIDIFile } from './js/api.js'
 import { drawNeck } from './js/drawNeck.js'
 import { drawPosition } from './js/drawPosition.js'
 import { clearAll } from './js/clearAll.js'
@@ -10,6 +10,7 @@ const notesInput = document.getElementById('notes')
 const changePositionButton = document.getElementById('changePosition')
 const positionDifficulty = document.getElementById('positionDifficulty')
 const difficultyValue = document.getElementById('difficultyValue')
+const midiUploadForm = document.getElementById('uploadForm')
 
 // Initial setup, clear any previous state
 clearAll()
@@ -84,4 +85,23 @@ changePositionButton.addEventListener('click', () => {
 const nightModeToggle = document.getElementById('nightModeToggle')
 nightModeToggle.addEventListener('change', function () {
   document.body.classList.toggle('night-mode', this.checked)
+})
+
+// Upload MIDI file handler
+midiUploadForm.addEventListener('submit', async event => {
+  event.preventDefault() // Prevent the default form submission
+
+  const fileInput = document.getElementById('fileInput')
+  const file = fileInput.files[0]
+  if (!file) {
+    alert('Please select a MIDI file to upload.')
+    return
+  }
+
+  try {
+    const response = await uploadMIDIFile(file)
+  } catch (error) {
+    console.error('MIDI file upload failed:', error)
+    alert('MIDI file upload failed. Please try again.')
+  }
 })

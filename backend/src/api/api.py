@@ -3,8 +3,9 @@ This module provides an API for interacting with musical instruments and their f
 """
 
 from pathlib import Path
+from typing import Annotated
 
-from fastapi import FastAPI
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
@@ -51,6 +52,28 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
+
+ALLOWED_EXTENSIONS = {".mid"}
+MIDI_FILE_UPLOAD_FOLDER = Path(__file__).parents[3] / ".uploads" / "midi"
+MIDI_FILE_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+
+
+def allowed_file(filename: str) -> bool:
+    """Check if the file has an allowed extension."""
+    return any(filename.endswith(ext) for ext in ALLOWED_EXTENSIONS)
+
+
+@app.post("/upload/")
+async def upload_file(file: Annotated[UploadFile, File()]) -> dict:
+    """Upload a MIDI file to the server."""
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No filename provided")
+    if not allowed_file(file.filename):
+        raise HTTPException(status_code=400, detail="Invalid file extension")
+    with Path.open(MIDI_FILE_UPLOAD_FOLDER / file.filename, "wb", encoding="utf-8") as f:
+        f.write(await file.read())
+    return {"info": f"file '{file.filename}' saved"}
 
 
 @app.get("/", response_class=HTMLResponse)
