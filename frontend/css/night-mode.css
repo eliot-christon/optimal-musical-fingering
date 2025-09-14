@@ -53,3 +53,25 @@ body.night-mode a:active {
   color: deeppink;
   text-decoration: none;
 }
+body.night-mode .menu-dropdown {
+  background: #23272a;
+  border: 1px solid #444;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+body.night-mode .menu-item {
+  color: #e0e0e0;
+}
+body.night-mode .menu-item:hover {
+  background: #444;
+}
+body.night-mode .hamburger-menu .bar {
+  background: #e0e0e0;
+}
+body.night-mode textarea {
+  background: #23272a;
+  color: #e0e0e0;
+  border: 1px solid #444;
+}
+body.night-mode textarea::placeholder {
+  color: #888;
+}

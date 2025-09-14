@@ -5,6 +5,7 @@ import { setupMidiUpload } from './js/MidiOptimalFingering/uploadHandler.js'
 import { setupOptimalPositions } from './js/MidiOptimalFingering/optimalPositionHandler.js'
 import { setupNightMode } from './js/theme.js'
 import { clearAll } from './js/clearAll.js'
+import { setupMenuDropdown } from './js/menu.js'
 
 // DOM elements
 const instrumentSelect1 = document.getElementById('instrument1')
@@ -37,3 +38,4 @@ setupPositionHandlers(
 setupMidiUpload(midiUploadForm, uploadStatus)
 setupOptimalPositions(getOptimalPositionsButton, optimalPositionsText, instrumentSelect2)
 setupNightMode(nightModeToggle)
+setupMenuDropdown()
