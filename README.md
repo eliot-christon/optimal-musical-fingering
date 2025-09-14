@@ -25,11 +25,17 @@ Whether you're practicing or composing, _Optimal Musical Fingering_ helps you pl
 - Chord diagrams display finger positions clearly on the neck, so you can learn and play faster.  
   ![Visualization](frontend/static/visualization.png)
 
+✅ **Full song fingering from MIDI file**
+
+- Input a complete song to receive optimized fingerings and transitions across the entire piece. 
+  ![Visualization](frontend/static/midiFingering.png)
+
 🔜 **Upcoming Features**
 
 - **Chord Transition Optimization**: Determine the smoothest transitions between chord fingerings based on finger movement and hand position.
 - **Personalized Instrument Profiles**: Customize the algorithm for different neck instruments, accounting for unique fretboard layouts and playing styles.
-- **Full Song Analysis**: Input a complete song to receive optimized fingerings and transitions across the entire piece. Output will include a fully playable, optimized tab or partiture.
+- **Tablature output**: Export optimized fingerings and transitions as tablature or sheet music for easy practice and performance.
+- **Flexible arrangement options**: Adjust the arrangement of chords and fingerings to suit pieces not written for the target instrument.
 
 ---
 
@@ -40,6 +46,9 @@ Implemented so far:
 
 - ✅ Best fingering suggestion for individual chords.
 - ✅ Visual switch between all possible fingerings with difficulty evaluation.
+- ✅ Full song fingering from MIDI file.
+- ✅ Basic web interface for easy interaction.
+- ✅ Backend API for chord fingering and MIDI processing.
 
 ---
 
