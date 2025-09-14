@@ -3,3 +3,4 @@
 @import url('fretboard.css'); /*(fretboard, nut, fret, string, etc.)*/
 @import url('components.css'); /*(buttons, inputs, switches, etc.)*/
 @import url('night-mode.css'); /*(styles for night mode)*/
+@import url('menu.css'); /*(hamburger menu styles)*/
