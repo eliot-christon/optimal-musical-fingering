@@ -27,7 +27,7 @@ Whether you're practicing or composing, _Optimal Musical Fingering_ helps you pl
 
 ✅ **Full song fingering from MIDI file**
 
-- Input a complete song to receive optimized fingerings and transitions across the entire piece. 
+- Input a complete song to receive optimized fingerings and transitions across the entire piece.
   ![Visualization](frontend/static/midiFingering.png)
 
 🔜 **Upcoming Features**
