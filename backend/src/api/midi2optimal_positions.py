@@ -26,17 +26,15 @@ def midi2optimal_positions(
     """
     music_piece = MusicPiece().from_midi(midi_file_path, fs=midi_frame_rate)
 
-    graph, error_messages = build_position_graph(music_piece, instrument)
-    if error_messages:
-        raise ValueError(f"Errors in building position graph: {error_messages}")
+    position_graph = build_position_graph(music_piece, instrument)
+    if position_graph.error_messages:
+        raise ValueError(f"Errors in building position graph: {position_graph.error_messages}")
 
-    start_node_id = -1  # Assuming -1 is the ID for the start node
-    terminal_node_id = -2  # Assuming -2 is the ID for the terminal node
-    dijkstra_result: DijkstraResult = dijkstra(graph, start_node_id)
+    dijkstra_result: DijkstraResult = dijkstra(position_graph.graph, position_graph.start_node_id)
 
-    path_node_ids = dijkstra_result.get_path(terminal_node_id)
+    path_node_ids = dijkstra_result.get_path(position_graph.terminal_node_id)
     return [
-        NeckPosition.from_placement_code(node_id // 1000)
+        NeckPosition.from_placement_code(node_id // position_graph.time_index_coef)
         for node_id in path_node_ids
         if node_id >= 0  # Exclude start and terminal nodes
     ]

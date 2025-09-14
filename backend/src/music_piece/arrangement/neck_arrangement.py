@@ -17,7 +17,12 @@ def neck_arrangement(music_piece: MusicPiece, instrument: NeckInstrument) -> lis
         - position cost
         - transition cost
     """
-    graph, errors = build_position_graph(music_piece, instrument)
+    position_graph = build_position_graph(music_piece, instrument)
+    graph = position_graph.graph
+    errors = position_graph.error_messages
+    start_node_id = position_graph.start_node_id
+    terminal_node_id = position_graph.terminal_node_id
+
     if len(graph.nodes) == 0:
         msg = "No valid positions found for the entire piece."
         raise ValueError(msg)
@@ -26,8 +31,6 @@ def neck_arrangement(music_piece: MusicPiece, instrument: NeckInstrument) -> lis
             "Errors found during neck arrangement:\n" + "\n\t".join(errors.split("\n"))
         )
 
-    start_node_id = -1
-    terminal_node_id = -2
     result = dijkstra(graph, start_node_id)
     if terminal_node_id not in result.distances or result.distances[terminal_node_id] == float(
         "inf"
@@ -37,7 +40,7 @@ def neck_arrangement(music_piece: MusicPiece, instrument: NeckInstrument) -> lis
 
     path_ids = result.get_path(terminal_node_id)
     return [
-        NeckPosition.from_placement_code(node_id // 1000)  # last three digits are time index
+        NeckPosition.from_placement_code(node_id // position_graph.time_index_coef)
         for node_id in path_ids
         if node_id not in (start_node_id, terminal_node_id)
     ]

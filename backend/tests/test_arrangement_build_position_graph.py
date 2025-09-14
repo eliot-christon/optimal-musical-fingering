@@ -17,7 +17,8 @@ test_piece.add_timed_chord(TimedChord(chord=(52, 57, 61), start_time=3.0, durati
 def test_build_position_graph() -> None:
     """Test that the position graph is built correctly."""
     guitar = Guitar()
-    graph, _ = build_position_graph(test_piece, guitar)
+    position_graph = build_position_graph(test_piece, guitar)
+    graph = position_graph.graph
 
     # Check that nodes are created
     assert len(graph.nodes) >= len(test_piece.timed_chords)
@@ -52,10 +53,13 @@ def test_build_position_graph() -> None:
 def test_dijkstra_on_position_graph() -> None:
     """Test that Dijkstra's algorithm works on the position graph."""
     guitar = Guitar()
-    graph, _ = build_position_graph(test_piece, guitar)
+    position_graph = build_position_graph(test_piece, guitar)
+    graph = position_graph.graph
+    time_index_coef = position_graph.time_index_coef
 
     # Run Dijkstra's algorithm from the first node
-    start_node_id = -1
+    start_node_id = position_graph.start_node_id
+    terminal_node_id = position_graph.terminal_node_id
     result = dijkstra(graph, start_node_id)
 
     # Check that distances are computed
@@ -74,10 +78,10 @@ def test_dijkstra_on_position_graph() -> None:
             assert path[0] == start_node_id
             assert path[-1] == node_id
 
-    assert result.get_path(-2) == [
-        -1,
-        300040235034000,
-        300050224023001,
-        402130212021002,
-        -2,
-    ]  # terminal node
+    assert result.get_path(terminal_node_id) == [
+        start_node_id,
+        time_index_coef * 300040235034,
+        time_index_coef * 300050224023 + 1,
+        time_index_coef * 402130212021 + 2,
+        terminal_node_id,
+    ]
