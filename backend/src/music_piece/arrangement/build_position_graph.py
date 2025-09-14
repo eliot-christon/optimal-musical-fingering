@@ -9,7 +9,17 @@ from backend.src.positions.neck_position import NeckPosition
 from backend.src.utils.num2note import num2note
 
 
-def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) -> tuple[Graph, str]:
+class PositionGraph:
+    """Class representing a position graph for musical arrangements."""
+
+    graph: Graph
+    error_messages: str
+    start_node_id: int
+    terminal_node_id: int
+    time_index_coef: int
+
+
+def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) -> PositionGraph:
     """
     Builds a graph of positions for the given music piece and instrument.
 
@@ -18,8 +28,9 @@ def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) ->
         instrument (NeckInstrument): The instrument to use for building the graph.
 
     Returns:
-        tuple[Graph, str]: A tuple containing the position graph and any error messages.
+        PositionGraph: The constructed position graph along with any error messages.
     """
+    time_index_coef = 10000  # to create unique node IDs
     graph = Graph()
     position_map: list[list[int]] = []
     errors: list[str] = []
@@ -32,12 +43,15 @@ def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) ->
         ]
 
         if len(valid_positions) == 0:
-            notes_str = ", ".join([num2note(note) for note in notes])
-            errors.append(f"No valid positions found for notes: {notes_str} for {instrument}")
+            errors.append(
+                f"No valid positions found for notes: {
+                    ', '.join([num2note(note) for note in notes])
+                } for {instrument}"
+            )
             continue
 
         for pos in valid_positions:
-            position_id = pos.to_placement_code() * 1000 + time_index  # unique ID
+            position_id = pos.to_placement_code() * time_index_coef + time_index  # unique ID
             graph.add_node(position_id, cost=instrument.position_cost(pos, check_valid=False))
             position_map[time_index].append(position_id)
 
@@ -45,8 +59,8 @@ def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) ->
             for prev_id in position_map[time_index - 1]:
                 for curr_id in position_map[time_index]:
                     transition_cost = instrument.transition_cost(
-                        NeckPosition.from_placement_code(prev_id // 1000),
-                        NeckPosition.from_placement_code(curr_id // 1000),
+                        NeckPosition.from_placement_code(prev_id // time_index_coef),
+                        NeckPosition.from_placement_code(curr_id // time_index_coef),
                     )
                     graph.add_edge(prev_id, curr_id, edge_cost=transition_cost)
 
@@ -62,4 +76,11 @@ def build_position_graph(music_piece: MusicPiece, instrument: NeckInstrument) ->
     for last_id in position_map[-1]:
         graph.add_edge(last_id, terminal_node_id, edge_cost=0.0)
 
-    return graph, "\n".join(errors)
+    result = PositionGraph()
+    result.graph = graph
+    result.error_messages = "\n".join(errors)
+    result.start_node_id = start_node_id
+    result.terminal_node_id = terminal_node_id
+    result.time_index_coef = time_index_coef
+
+    return result
